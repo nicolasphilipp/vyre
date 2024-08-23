@@ -385,7 +385,7 @@ export default function CreateRestoreModal() {
   return (
     <>
     <Button size="md" color="secondary" variant="ghost" onPress={onOpen} aria-label='Create/Restore wallet'>create/restore wallet</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={resetForm} className='dark'>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={resetForm} classNames={{ base: "dark", wrapper: "overflow-hidden"}}>
         <ModalContent>
           {(onClose) => (
             <>

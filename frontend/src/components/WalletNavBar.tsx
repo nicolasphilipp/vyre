@@ -5,6 +5,9 @@ import CreateWallet from './CreateWallet';
 import SelectWallet from './SelectWallet';
 import { useEffect } from "react";
 import { ArrowIcon } from './icons/ArrowIcon';
+import { TransactionIcon } from './icons/TransactionIcon';
+import { SettingsIcon } from './icons/SettingsIcon';
+import { StakingIcon } from './icons/StakingIcon';
 
 export default function WalletNavBar() {
   useEffect(() => {
@@ -21,14 +24,22 @@ export default function WalletNavBar() {
         <SelectWallet />
       </div>
       <div className="nav-link-container">
-        <span className='flex flex-row items-center'>
-          <ArrowIcon className="text-white" width={16} height={16} />
-          <Link id="overview" color='secondary' className='wallet-nav-link' href="/me/overview">Overview</Link>
-        </span>
-        
-        <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions">Transactions</Link>
-        <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/stake">Staking</Link>
-        <Link id="settings" color='secondary' className='wallet-nav-link' href="/me/settings">Settings</Link>
+        <Link id="overview" color='secondary' className='wallet-nav-link' href="/me/overview">
+          <ArrowIcon width={16} height={16} className='mr-0.5' />
+          Overview
+        </Link>
+        <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions"> 
+          <TransactionIcon width={16} height={16} className='mr-1' />
+          Transactions
+        </Link>
+        <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking">
+          <StakingIcon width={16} height={16} className='mr-1' />
+          Staking
+        </Link>
+        <Link id="settings" color='secondary' className='wallet-nav-link' href="/me/settings">
+          <SettingsIcon width={16} height={16} className='mr-1' />
+          Settings
+        </Link>
       </div>
       <div>
         <CreateWallet />
