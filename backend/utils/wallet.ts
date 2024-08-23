@@ -38,7 +38,7 @@ async function renameWallet(wallet: ShelleyWallet, name: string) {
 
 async function getAddresses(id: string) {
     let wallet = await walletServer.getShelleyWallet(id);
-    let addresses = await wallet.getUsedAddresses(); // getAddresses()
+    let addresses = await wallet.getAddresses(); 
 
     let res: any = {};
     res.address = addresses[0];
