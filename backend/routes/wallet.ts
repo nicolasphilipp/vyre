@@ -30,7 +30,12 @@ routes.delete('/:id', async (req: Request, res: Response) => {
   res.sendStatus(204);
 });
 
-routes.post('/rename', async (req: Request, res: Response) => {
+routes.post('/:id/rename', async (req: Request, res: Response) => {
+  if(req.params.id.length !== 40){
+    res.sendStatus(400);
+    return;
+  }
+  
   let renamedWallet = await renameWallet(req.body.wallet, req.body.name);
   res.status(200).send(JSON.stringify(renamedWallet));
 });
