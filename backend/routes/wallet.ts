@@ -36,7 +36,7 @@ routes.post('/:id/rename', async (req: Request, res: Response) => {
     return;
   }
   
-  let renamedWallet = await renameWallet(req.body.wallet, req.body.name);
+  let renamedWallet = await renameWallet(req.params.id, req.body.name);
   res.status(200).send(JSON.stringify(renamedWallet));
 });
 

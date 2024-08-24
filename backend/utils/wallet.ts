@@ -28,7 +28,8 @@ async function removeWallet(id: string) {
     return await wallet.delete();
 }
 
-async function renameWallet(wallet: ShelleyWallet, name: string) {
+async function renameWallet(id: string, name: string) {
+    let wallet = await walletServer.getShelleyWallet(id);
     let newWallet = await wallet.rename(name);
     
     let res: any = {};
