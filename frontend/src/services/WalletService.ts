@@ -44,6 +44,19 @@ export async function syncWallet(id: string) {
         .then((res) => res);
 }
 
+export async function renameWallet(id: string, name: string) {
+    return fetch(WALLET_SERVICE_URL + '/' + id + '/rename', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: name })
+    })
+        .then((res) => res.json())
+        .then((res) => res);
+}
+
 export async function getMnemonicWords() {
     return fetch(WALLET_SERVICE_URL + '/mnemonic')
         .then((res) => res.json())

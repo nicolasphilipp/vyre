@@ -1,5 +1,7 @@
 const COINCAP_API_URL = 'https://api.coincap.io/v2';
 
+//TODO implement caching feature 
+
 export async function getAdaStats() {
     return fetch(COINCAP_API_URL + '/assets/cardano', {
         method: 'GET',

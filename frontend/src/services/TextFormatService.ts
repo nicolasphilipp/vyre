@@ -6,3 +6,15 @@ export function formatNumber(value: number): string {
 
     return `${formattedInteger}.${formattedDecimal}`;
 }
+
+export function formatString(input: string): string {
+    if(input){
+        const visibleCharacters = 8;
+  
+        const start = input.slice(0, visibleCharacters);
+        const end = input.slice(-visibleCharacters);
+      
+        return `${start}...${end}`;
+    }
+    return "";
+}
