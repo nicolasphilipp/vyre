@@ -9,7 +9,11 @@ import { ArrowIcon } from './icons/ArrowIcon';
 import { HelpIcon } from './icons/HelpIcon';
 import { DangerIcon } from './icons/DangerIcon';
 
-export default function CreateRestoreModal() {
+interface ValueProps {
+  wallets: Wallet[];
+}
+
+const CreateRestoreModal: React.FC<ValueProps> = ({ wallets }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [wordcount, setWordcount] = useState("15");
   const [name, setName] = useState("");
@@ -19,7 +23,6 @@ export default function CreateRestoreModal() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const [restore, setRestore] = useState(false);
-  const wallets = useWalletStore((state) => state.wallets);
   const add = useWalletStore((state) => state.add);
   const update = useWalletStore((state) => state.update);
   const [submit, setSubmit] = useState(false);
@@ -384,7 +387,7 @@ export default function CreateRestoreModal() {
 
   return (
     <>
-    <Button size="md" color="secondary" variant="ghost" onPress={onOpen} aria-label='Create/Restore wallet'>create/restore wallet</Button>
+      <Button size="md" color="secondary" variant="ghost" onPress={onOpen} aria-label='Create/Restore wallet'>create/restore wallet</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={resetForm} classNames={{ base: "dark", wrapper: "overflow-hidden"}}>
         <ModalContent>
           {(onClose) => (
@@ -394,6 +397,7 @@ export default function CreateRestoreModal() {
                 <ModalHeader className="flex flex-col gap-1 text-white">Create a wallet</ModalHeader>
                 <ModalBody className='text-base'>
                   <Input
+                    aria-label='Name'
                     isClearable
                     type="text"
                     label="Name"
@@ -418,6 +422,7 @@ export default function CreateRestoreModal() {
                     <Radio value="24">24 words</Radio>
                   </RadioGroup>
                   <Input
+                    aria-label='Passphrase'
                     isRequired
                     label="Passphrase"
                     variant="bordered"
@@ -439,7 +444,7 @@ export default function CreateRestoreModal() {
                 </ModalBody>
                 <ModalFooter className='justify-start'>
                   <div>
-                    <Button className='text-white' variant='light' startContent={<ArrowIcon width={16} height={16} />} onPress={() => updateModalView(true)}>
+                    <Button className='text-white' variant='light' startContent={<ArrowIcon width={16} height={16} className='-mr-1.5 -rotate-45' />} onPress={() => updateModalView(true)}>
                       Restore wallet
                     </Button>
                   </div>
@@ -459,6 +464,7 @@ export default function CreateRestoreModal() {
                 <ModalHeader className="flex flex-col gap-1 text-white">Restore a wallet</ModalHeader>
                 <ModalBody className='text-base'>
                   <Input
+                    aria-label='Name'
                     isClearable
                     type="text"
                     label="Name"
@@ -491,6 +497,7 @@ export default function CreateRestoreModal() {
                     {Array.from({ length: parseInt(mnemCount)}, (_, i) => (
                       <div className='relative' key={"word" + i}>
                         <Input
+                          aria-label={"word" + i}
                           id={"word" + i}
                           type="text" 
                           variant='bordered'
@@ -518,6 +525,7 @@ export default function CreateRestoreModal() {
                   </RadioGroup>
                   <Divider className='my-2' />
                   <Input
+                    aria-label='Passphrase'
                     isRequired
                     label="Passphrase"
                     variant="bordered"
@@ -539,7 +547,7 @@ export default function CreateRestoreModal() {
                 </ModalBody>
                 <ModalFooter className='justify-start'>
                   <div>
-                    <Button className='text-white' variant='light' startContent={<ArrowIcon width={16} height={16} />} onPress={() => updateModalView(false)}>
+                    <Button className='text-white' variant='light' startContent={<ArrowIcon width={16} height={16} className='-mr-1.5 -rotate-45' />} onPress={() => updateModalView(false)}>
                       Create wallet
                     </Button>
                   </div>
@@ -604,3 +612,5 @@ export default function CreateRestoreModal() {
     </>
   );
 };
+
+export default CreateRestoreModal;

@@ -1,6 +1,6 @@
-import { formatNumber } from "@/services/NumberFormatService";
+import { formatNumber } from "@/services/TextFormatService";
 import { SetStateAction, useState } from "react";
-import { ResponsiveContainer, Pie, PieChart, Cell, Sector } from "recharts";
+import { ResponsiveContainer, Pie, PieChart, Cell, Sector, Tooltip, TooltipProps } from "recharts";
 
 interface ValueProps {
   data: Data[]
@@ -25,12 +25,20 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
   };
 
   function getTotalValue(): number {
-    let sum = 0;
-    for(let i = 0; i < data.length; i++) {
-      sum += data[i].value;
-    }
-    return sum;
+    return data.reduce((acc, entry) => acc + entry.value, 0);
   }
+
+  const CustomTooltip: React.FC<TooltipProps<number, string>> = ({active, payload}) => {
+    if (active && payload && payload.length > 0 && payload[0].value) {
+      const percentage = ((payload[0].value / getTotalValue()) * 100).toFixed(2);
+      return (
+        <div className="tooltip-container p-1 text-white">
+          <span>{percentage}%</span>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const renderActiveShape = (props: any) => {
     const RADIAN = Math.PI / 180;
@@ -44,7 +52,7 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
         <text 
           x="50%"
           y="50%"
-          dy={4}
+          dy={0}
           textAnchor="middle"
           dominantBaseline="middle"
           fill="#ffffff"
@@ -54,13 +62,13 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
         <text 
           x="50%"
           y="50%"
-          dy={24}
+          dy={16}
           textAnchor="middle"
           dominantBaseline="middle"
-          fill="#ffffff"
+          fill="#B4B4B4"
           fontSize={14}
         > 
-          { name + ", " + ratio + ", " + totalCount}
+          { name }
         </text>
         <Sector
           cx={cx}
@@ -71,12 +79,14 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
           endAngle={endAngle}
           fill={fill}
           stroke="#ffffff" 
+          strokeWidth={2}
         />
       </g>
     );
   };
     return (
-        <ResponsiveContainer width={200} height={200}>
+        <div style={{ width: "200px", height: "200px" }}>
+          <ResponsiveContainer>
             <PieChart>
                 <Pie
                   activeIndex={activeIndex === null ? undefined : activeIndex}
@@ -86,15 +96,18 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
                   cy="50%"
                   innerRadius={60}
                   outerRadius={80}
-                  fill="#8884d8"
+                  fill="#9353D3"
                   dataKey="value"
                   onMouseEnter={onPieEnter}
                   onMouseLeave={onPieLeave}
+                  stroke="#ffffff" 
+                  strokeWidth={2}
                 >
-                    {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={activeIndex === index ? "#8400FF" : "#9353d3"} />
-                    ))}
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={activeIndex === index ? "#69318F" : "#9353d3"} />
+                  ))}
                 </Pie>
+                <Tooltip offset={8} content={<CustomTooltip />} />
                 {activeIndex === null && (
                     <text
                       x="50%"
@@ -106,9 +119,10 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
                     >
                       {formatNumber(getTotalValue())} €
                     </text>
-                )}       
+                )}      
             </PieChart>
-        </ResponsiveContainer>
+          </ResponsiveContainer>
+        </div>
     );
 }
 

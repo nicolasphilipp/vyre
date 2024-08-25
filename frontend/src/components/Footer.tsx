@@ -82,6 +82,7 @@ export default function Footer() {
                     <div className="footer-email">
                         <div className='flex flex-row gap-3'>
                             <Input
+                                aria-label='Email Subscription'
                                 size='md'
                                 value={value}
                                 description={success ? "Thank you for subscribing!" : "Sign up for our newsletter if you want to receive frequent updates."}

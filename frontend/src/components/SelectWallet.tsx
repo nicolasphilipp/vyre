@@ -3,16 +3,20 @@ import {Button, Select, SelectItem} from "@nextui-org/react";
 import useWalletStore from "@/model/WalletState";
 import { Wallet } from "@/model/Wallet";
 import { RemoveIcon } from "./icons/RemoveIcon";
-import { removeWallet } from "@/services/WalletService";
+import { formatNumber } from "@/services/TextFormatService";
+import { EditIcon } from "./icons/EditIcon";
+import EditWalletModal from "./EditWalletModal";
 
-export default function SelectWallet() {
-    const wallets = useWalletStore((state) => state.wallets);
+interface ValueProps {
+    wallets: Wallet[];
+}
+
+const SelectWallet: React.FC<ValueProps> = ({ wallets }) => {
     const update = useWalletStore((state) => state.update);
-    const remove = useWalletStore((state) => state.remove);
     const [selected, setSelected] = useState("");
 
     useEffect(() => {
-        let selectedWallet = wallets.filter(wallet => wallet.isSelected === true)[0];
+        let selectedWallet = wallets.filter(w => w.isSelected)[0];
         if(selectedWallet) {
             setSelected(selectedWallet.id);
         }
@@ -32,14 +36,10 @@ export default function SelectWallet() {
         } 
     };
 
-    function removeLocalWallet(wallet: Wallet): void {
-        removeWallet(wallet.id);
-        remove(wallet);
-    }
-
     return (
         <>
             <Select
+                aria-label="Select wallet"
                 size="md"
                 color="secondary"
                 variant="bordered"
@@ -49,29 +49,24 @@ export default function SelectWallet() {
                 selectedKeys={[selected]}
                 onChange={handleSelectionChange}
                 classNames={{
-                    base: "max-w-xs",
+                    base: "max-w-36",
                     popoverContent: "pop-content"
                 }}
                 renderValue={(items) => {
                     return items.map((item) => (
-                        <div key={item.key} className="flex items-center gap-2">
-                            <div className="flex flex-col">
-                                <span className="text-md text-white">{item.data?.name}</span>
-                                <span className="text-tiny">({item.data?.id})</span>
-                            </div>
+                        <div key={item.key}>
+                            <span className="text-md text-white">{item.data?.name}</span>
                         </div>
                     ));
                 }}
             >
             {(wallet) => (
-                <SelectItem hideSelectedIcon color="secondary" key={wallet.id} textValue={wallet.name} endContent={
-                    <Button size="sm" isIconOnly color="danger" onClick={() => removeLocalWallet(wallet)} aria-label="Remove wallet"><RemoveIcon /></Button>}>
-                    <div className="flex gap-2 items-center">
+                <SelectItem hideSelectedIcon color="secondary" key={wallet.id} textValue={wallet.name}>
+                    <div className="flex items-center justify-between">
                         <div className="flex flex-col">
                             <span className="text-md text-white">{wallet.name}</span>
-                            <span className="text-tiny">{wallet.id}</span>
+                            <span>{formatNumber(1800)} €</span>
                         </div>
-                        
                     </div>
                 </SelectItem>
             )}
@@ -79,3 +74,5 @@ export default function SelectWallet() {
         </>
     );
 }
+
+export default SelectWallet;
