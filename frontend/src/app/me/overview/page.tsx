@@ -1,7 +1,7 @@
 'use client';
 
 import CreateWallet from "@/components/CreateWallet";
-import { Divider, Tooltip} from '@nextui-org/react';
+import { Divider, Link, Snippet, Tooltip} from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
@@ -11,10 +11,23 @@ import { DangerIcon } from "@/components/icons/DangerIcon";
 import { getAdaStats } from "@/services/CoinCapService";
 import { AdaData } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
-import { formatNumber } from "@/services/NumberFormatService";
+import { formatNumber, formatString } from "@/services/TextFormatService";
+import { EditIcon } from "@/components/icons/EditIcon";
+import { RemoveIcon } from "@/components/icons/RemoveIcon";
+import EditWalletModal from "@/components/EditWalletModal";
+import RemoveWalletModal from "@/components/RemoveWalletModal";
+import { QRCodeSVG } from "qrcode.react";
+import { ArrowIcon } from "@/components/icons/ArrowIcon";
+import { TransactionIcon } from "@/components/icons/TransactionIcon";
+import { StakingIcon } from "@/components/icons/StakingIcon";
+import { PageContext } from "../layout";
+import React from "react";
+import { setActiveItem } from "@/services/NavbarHelperService";
+import TransactionHistoryEntry from "@/components/TransactionHistoryEntry";
 
 export default function Home() {
-  const wallets = useWalletStore((state) => state.wallets);
+  const wallets = React.useContext(PageContext);
+
   const update = useWalletStore((state) => state.update);
   const [selectedWallet, setSelectedWallet] = useState(wallets.filter(w => w.isSelected)[0]);
   const [address, setAddress] = useState({} as Address);
@@ -29,13 +42,12 @@ export default function Home() {
     { name: 'TLS', totalCount: 100, value: 200, ratio: 0.25 }
   ];
 
-  useEffect(() => {
+  /*useEffect(() => {
     getAdaStats()
       .then(res => {
-        console.log(JSON.parse(res).data);
         setAdaData(JSON.parse(res).data);
       });
-  }, []);
+  }, []);*/
  
   useEffect(() => {
     for(let i = 0; i < wallets.length; i++) {
@@ -90,8 +102,16 @@ export default function Home() {
         <div className="wallet-overview-content text-medium">
           <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
 
-            <div className="col-span-2 row-span-3 p-4 overview-card break-words">
-              <span className="text-xl text-white">Wallet Overview</span>
+            <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words">
+              <div className="flex justify-between">
+                <span className="text-xl text-white">Wallet Overview</span>
+
+                <div className="flex gap-2">
+                  <EditWalletModal id={selectedWallet?.id} value={selectedWallet?.name} />
+                  <RemoveWalletModal id={selectedWallet?.id} />
+                </div>
+              </div>
+
               <div className="flex justify-center">
                 <OverviewPieChart data={pieChartData} />
               </div>
@@ -111,7 +131,7 @@ export default function Home() {
                   <span className='absolute ml-0.5 mt-0.5'><DangerIcon width={12} height={12} /></span>
                   </Tooltip>
                 </span>
-                <div className="flex flex-row gap-4 justify-between w-3/5">
+                <div className="flex flex-row gap-4 justify-between w-6/12">
                   <span>{selectedWallet && <span>₳ {formatNumber(selectedWallet.balance.available.quantity / loveLaceToAda)}</span>}</span>
                   <span>0.00 €</span>
                 </div>
@@ -132,7 +152,7 @@ export default function Home() {
                   <span className='absolute ml-0.5 mt-0.5'><DangerIcon width={12} height={12} /></span>
                   </Tooltip>
                 </span>
-                <div className="flex flex-row gap-4 justify-between w-3/5">
+                <div className="flex flex-row gap-4 justify-between w-6/12">
                   <span>{selectedWallet && <span>₳ {formatNumber(selectedWallet.balance.reward.quantity / loveLaceToAda)}</span>}</span>
                   <span>250.99 €</span>
                 </div>
@@ -140,7 +160,7 @@ export default function Home() {
 
               <div className="flex flex-row justify-between">
                 <span>Total</span>
-                <div className="flex flex-row gap-4 justify-between w-3/5">
+                <div className="flex flex-row gap-4 justify-between w-6/12">
                   <span>{selectedWallet && <span>₳ {formatNumber(selectedWallet.balance.total.quantity / loveLaceToAda)}</span>}</span>
                   <span>10,346.12 €</span>
                 </div>
@@ -153,20 +173,53 @@ export default function Home() {
 
             </div>
                     
-            <div className="col-span-3 row-span-4 overview-card break-words items-center justify-center">
-              <span>{Math.round(parseFloat(adaData.priceUsd) * 10000) / 10000}</span>
+            <div className="col-span-3 row-span-4 overview-card flex-col break-words items-center justify-center">
+              <span>{adaData.priceUsd ? Math.round(parseFloat(adaData.priceUsd) * 10000) / 10000 : "0"}</span>
+            </div>
+
+            <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words justify-between">
+              <div>
+                <div className="flex gap-1 items-center">
+                  <span className="text-xl text-white">Recent Transactions</span>
+                  <TransactionIcon className="text-white" width={16} height={16} />
+                </div>
+
+                <TransactionHistoryEntry date="08.08." amount={500.33} fee={0} currency="ADA" />
+                <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                
+              </div>
+              <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onClick={() => setActiveItem("transactions")}>
+                View all transactions
+                <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
+              </Link>
             </div>
                     
-            <div className="col-span-2 row-span-2 p-4 overview-card break-words">
-              <span className="text-xl text-white">Staking Overview</span>
-              <div>
-                <span>{selectedWallet && <span>Status: {selectedWallet.delegation.active.status}</span>}</span>
+            <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words justify-center items-center">
+              <div className="flex flex-col gap-4 justify-center items-center">
+                <QRCodeSVG value={address?.id} includeMargin size={140} />
+                <Snippet 
+                  symbol="" 
+                  tooltipProps={{
+                    className: "dark"
+                  }}
+                  codeString={address?.id}
+                >
+                  {formatString(address?.id)}
+                </Snippet>
               </div>
             </div>
 
-            <div className="col-span-3 row-span-1 overview-card break-words items-center justify-center">
+            <div className="col-span-3 row-span-1 p-4 overview-card flex-col break-words">
+              <div className="flex justify-between">
+                <div className="flex gap-1 items-center">
+                  <span className="text-xl text-white">Staking Overview</span>
+                  <StakingIcon className="text-white" width={16} height={16} />
+                </div>
+                <span>You can earn up to ~3% APY on your ADA by staking to a stake pool.</span>
+              </div>
               <div>
-                Quick Actions
+                <span>{selectedWallet && <span>Status: {selectedWallet.delegation.active.status}</span>}</span>
               </div>
             </div> 
           </div>

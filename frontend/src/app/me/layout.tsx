@@ -3,12 +3,15 @@
 import { FireIcon } from "@/components/icons/FireIcon";
 import { HelpIcon } from "@/components/icons/HelpIcon";
 import WalletNavBar from "@/components/WalletNavBar";
+import { Wallet } from "@/model/Wallet";
+import useWalletStore from "@/model/WalletState";
+import React from "react";
 
-export default function PageLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const PageContext = React.createContext([] as Wallet[]);
+
+export default function PageLayout({ children }: Readonly<{children: React.ReactNode}>) {
+  const wallets = useWalletStore((state) => state.wallets);
+
   return (
     <div>
       <a href="/" className="text-white absolute">
@@ -20,10 +23,10 @@ export default function PageLayout({
       </div>
       <div className="h-screen w-screen flex flex-col justify-center items-center"> 
         <div className="wallet-overview-container">
-          <WalletNavBar />
+          <PageContext.Provider value={wallets}><WalletNavBar /></PageContext.Provider>
 
           <div className="w-full h-full">
-            {children}
+            <PageContext.Provider value={wallets}>{children}</PageContext.Provider>
           </div>
 
         </div>
