@@ -7,6 +7,8 @@ interface WalletState {
     add: (toAdd: Wallet) => void;
     remove: (toRemove: Wallet) => void;
     update: (id: string, toUpdate: Wallet) => void;
+    selected: string;
+    setSelected: (value: string) => void;
 }
 
 const useWalletStore = create<WalletState>()(
@@ -19,9 +21,22 @@ const useWalletStore = create<WalletState>()(
             remove: (toRemove) => set((state) => ({
                 wallets: state.wallets.filter((wallet) => wallet.id !== toRemove.id), 
             })),
-            update: (id, toUpdate) => set((state) => ({
-                wallets: state.wallets.map((wallet) => wallet.id === id ? { ...wallet, value: toUpdate } : wallet),
-            })) 
+            update: (id, toUpdate) => set((state) => {
+                let index = -1;
+                state.wallets.forEach((wallet, ind) => {
+                    if(wallet.id === id) {
+                        index = ind; 
+                        return;
+                    }
+                });
+
+                if(index !== -1){
+                    state.wallets[index] = toUpdate;
+                }
+                return { wallets: state.wallets };
+            }),
+            selected: "",
+            setSelected: (value) => set({ selected: value })
         }),
         {
             name: 'wallet-store'
