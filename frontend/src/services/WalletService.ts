@@ -26,10 +26,12 @@ export async function restoreWallet(name: string, mnemonic: string[], passphrase
         .then((res) => res);
 }
 
-export function removeWallet(id: string) {
+export async function removeWallet(id: string) {
     return fetch(WALLET_SERVICE_URL + '/' + id, {
         method: 'DELETE'
-    });
+    })
+        .then((res) => res.json())
+        .then((res) => res);
 }
 
 export async function getAddress(id: string) {
