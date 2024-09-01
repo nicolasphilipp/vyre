@@ -2,15 +2,18 @@ import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDi
 import { RemoveIcon } from "./icons/RemoveIcon";
 import { useEffect, useRef, useState } from "react";
 import { removeWallet, renameWallet } from "@/services/WalletService";
+import useWalletStore from "@/model/WalletState";
+import { Wallet } from "@/model/Wallet";
 
 interface ValueProps {
-    id: string;
+    wallet: Wallet;
 }
 
-const RemoveWalletModal: React.FC<ValueProps> = ({ id }) => {
+const RemoveWalletModal: React.FC<ValueProps> = ({ wallet }) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const [submit, setSubmit] = useState(false);
     const firstRender = useRef(true);
+    const { remove, setSelected } = useWalletStore();
 
     function submitInput(): void {
         setSubmit(!submit);
@@ -22,10 +25,19 @@ const RemoveWalletModal: React.FC<ValueProps> = ({ id }) => {
           return;
         }
         
-        removeWallet(id);
+        removeWallet(wallet.id)
+            .then(res => {
+                if(res.error) {
+                    // TODO show toaster notification with error message
+                    console.log("There was an error removing the wallet with id: " + wallet.id);
+                } else {
+                    setSelected("");
+                    remove(wallet);
+                }
+            });
+
         onClose();
       }, [submit]);
-
 
     return (
         <>

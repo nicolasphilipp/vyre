@@ -1,29 +1,22 @@
 import React, { useEffect, useState } from "react";
-import {Button, Select, SelectItem} from "@nextui-org/react";
+import {Select, SelectItem} from "@nextui-org/react";
 import useWalletStore from "@/model/WalletState";
 import { Wallet } from "@/model/Wallet";
-import { RemoveIcon } from "./icons/RemoveIcon";
 import { formatNumber } from "@/services/TextFormatService";
-import { EditIcon } from "./icons/EditIcon";
-import EditWalletModal from "./EditWalletModal";
 
-interface ValueProps {
-    wallets: Wallet[];
-}
-
-const SelectWallet: React.FC<ValueProps> = ({ wallets }) => {
-    const update = useWalletStore((state) => state.update);
-    const [selected, setSelected] = useState("");
+export default function SelectWallet() {
+    const wallets = useWalletStore(state => state.wallets);
+    const { update, selected, setSelected } = useWalletStore();
 
     useEffect(() => {
         let selectedWallet = wallets.filter(w => w.isSelected)[0];
         if(selectedWallet) {
             setSelected(selectedWallet.id);
         }
-    });
+    }, [wallets]);
 
     const handleSelectionChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-        setSelected(e.target.value);
+        setSelected(e.target.value as string);
 
         for(let i = 0; i < wallets.length; i++) {
             let wallet: Wallet = wallets[i];
@@ -43,36 +36,29 @@ const SelectWallet: React.FC<ValueProps> = ({ wallets }) => {
                 size="md"
                 color="secondary"
                 variant="bordered"
-                items={wallets}
                 placeholder="Select a wallet"
                 labelPlacement="outside"
                 selectedKeys={[selected]}
                 onChange={handleSelectionChange}
                 classNames={{
                     base: "max-w-36",
-                    popoverContent: "pop-content"
-                }}
-                renderValue={(items) => {
-                    return items.map((item) => (
-                        <div key={item.key}>
-                            <span className="text-md text-white">{item.data?.name}</span>
-                        </div>
-                    ));
+                    popoverContent: "pop-content",
+                    value: "text-white"
                 }}
             >
-            {(wallet) => (
-                <SelectItem hideSelectedIcon color="secondary" key={wallet.id} textValue={wallet.name}>
-                    <div className="flex items-center justify-between">
-                        <div className="flex flex-col">
-                            <span className="text-md text-white">{wallet.name}</span>
-                            <span>{formatNumber(1800)} €</span>
+            {
+                wallets.map(wallet => (
+                    <SelectItem hideSelectedIcon color="secondary" key={wallet.id} textValue={wallet.name}>
+                        <div className="flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <span className="text-md text-white">{wallet.name}</span>
+                                <span>{formatNumber(1800)} €</span>
+                            </div>
                         </div>
-                    </div>
-                </SelectItem>
-            )}
+                    </SelectItem>
+                ))
+            }
             </Select>
         </>
     );
 }
-
-export default SelectWallet;

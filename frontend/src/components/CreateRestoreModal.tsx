@@ -1,5 +1,5 @@
 import useWalletStore from '@/model/WalletState';
-import { createWallet, getMnemonicWords, restoreWallet } from '@/services/WalletService';
+import { createWallet, getMnemonicWords, removeWallet, restoreWallet } from '@/services/WalletService';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Radio, RadioGroup, Input, Divider, input, Tooltip} from "@nextui-org/react";
 import { useEffect, useRef, useState } from 'react';
 import {EyeFilledIcon} from "./icons/EyeFilledIcon";
@@ -9,11 +9,7 @@ import { ArrowIcon } from './icons/ArrowIcon';
 import { HelpIcon } from './icons/HelpIcon';
 import { DangerIcon } from './icons/DangerIcon';
 
-interface ValueProps {
-  wallets: Wallet[];
-}
-
-const CreateRestoreModal: React.FC<ValueProps> = ({ wallets }) => {
+export default function CreateRestoreModal() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [wordcount, setWordcount] = useState("15");
   const [name, setName] = useState("");
@@ -23,8 +19,8 @@ const CreateRestoreModal: React.FC<ValueProps> = ({ wallets }) => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const [restore, setRestore] = useState(false);
-  const add = useWalletStore((state) => state.add);
-  const update = useWalletStore((state) => state.update);
+  const { wallets, add, update, selected, setSelected } = useWalletStore();
+
   const [submit, setSubmit] = useState(false);
   const firstRender = useRef(true);
 
@@ -337,25 +333,25 @@ const CreateRestoreModal: React.FC<ValueProps> = ({ wallets }) => {
       do{
         count++;
         walletName = "Wallet " + count;
-      } while(wallets.filter(wallet => wallet.name === walletName).length > 0);
+      } while(wallets && wallets.filter(wallet => wallet.name === walletName).length > 0);
     }
     
     if(!restore) { 
       createWallet(walletName, parseInt(wordcount), passphrase)
         .then(res => {
-          let jsonRes = JSON.parse(res);
-          jsonRes.wallet.isSelected = true;
-          add(jsonRes.wallet);
-          
+          res.wallet.isSelected = true;
+          setSelected(res.wallet.id);
+          add(res.wallet);
+
           for(let i = 0; i < wallets.length; i++) {
             let wallet: Wallet = wallets[i];
-            if(wallet.id !== jsonRes.wallet.id){
+            if(wallet.id !== res.wallet.id){
               wallet.isSelected = false;
             }
             update(wallet.id, wallet);
           } 
-  
-          setRecovery(jsonRes.mnemonic);
+        
+          setRecovery(res.mnemonic);
           setShowRecovery(true);
         });
     } else {
@@ -367,13 +363,13 @@ const CreateRestoreModal: React.FC<ValueProps> = ({ wallets }) => {
       // TODO show error if wallet is present on this wallet node -> same multiple wallets possible in later version
       restoreWallet(walletName, mnemonic, passphrase)
         .then(res => {
-          let jsonRes = JSON.parse(res);
-          jsonRes.wallet.isSelected = true;
-          add(jsonRes.wallet);
-          
+          res.wallet.isSelected = true;
+          setSelected(res.wallet.id);
+          add(res.wallet);
+
           for(let i = 0; i < wallets.length; i++) {
             let wallet: Wallet = wallets[i];
-            if(wallet.id !== jsonRes.wallet.id){
+            if(wallet.id !== res.wallet.id){
               wallet.isSelected = false;
             }
             update(wallet.id, wallet);
@@ -612,5 +608,3 @@ const CreateRestoreModal: React.FC<ValueProps> = ({ wallets }) => {
     </>
   );
 };
-
-export default CreateRestoreModal;

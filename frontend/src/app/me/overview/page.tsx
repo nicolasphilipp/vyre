@@ -1,7 +1,7 @@
 'use client';
 
 import CreateWallet from "@/components/CreateWallet";
-import { Divider, Link, Snippet, Tooltip} from '@nextui-org/react';
+import { Button, Divider, Link, Snippet, Tooltip} from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
@@ -20,16 +20,14 @@ import { QRCodeSVG } from "qrcode.react";
 import { ArrowIcon } from "@/components/icons/ArrowIcon";
 import { TransactionIcon } from "@/components/icons/TransactionIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
-import { PageContext } from "../layout";
 import React from "react";
 import { setActiveItem } from "@/services/NavbarHelperService";
 import TransactionHistoryEntry from "@/components/TransactionHistoryEntry";
 
 export default function Home() {
-  const wallets = React.useContext(PageContext);
+  const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
 
-  const update = useWalletStore((state) => state.update);
-  const [selectedWallet, setSelectedWallet] = useState(wallets.filter(w => w.isSelected)[0]);
+  const [selectedWallet, setSelectedWallet] = useState({} as Wallet);
   const [address, setAddress] = useState({} as Address);
   const loveLaceToAda = 1000000;
 
@@ -50,26 +48,27 @@ export default function Home() {
   }, []);*/
  
   useEffect(() => {
+    let activeWallet = {} as Wallet;
+
     for(let i = 0; i < wallets.length; i++) {
       if(wallets[i].isSelected) {
-        setSelectedWallet(wallets[i]);
+        activeWallet = wallets[i];
 
         getAddress(wallets[i].id)
           .then(res => {
-            let jsonRes = JSON.parse(res);
-            setAddress(jsonRes.address);
+            setAddress(res.address);
           });
 
-          syncWallet(wallets[i].id)
-            .then(res => {
-              let jsonRes = JSON.parse(res);
-  
-              jsonRes.wallet.isSelected = wallets[i].isSelected;
-              wallets[i] = jsonRes.wallet as Wallet;
-            });
+        syncWallet(wallets[i].id)
+          .then(res => {
+            res.wallet.isSelected = wallets[i].isSelected;
+            wallets[i] = res.wallet as Wallet;
+          });
       }
     }
-  }, [wallets]);
+
+    setSelectedWallet(activeWallet);
+  }, [selected]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -79,9 +78,8 @@ export default function Home() {
         for(let i = 0; i < wallets.length; i++) {
           syncWallet(wallets[i].id)
             .then(res => {
-              let jsonRes = JSON.parse(res);
-              jsonRes.wallet.isSelected = wallets[i].isSelected;
-              wallets[i] = jsonRes.wallet as Wallet;
+              res.wallet.isSelected = wallets[i].isSelected;
+              wallets[i] = res.wallet as Wallet;
             });
         }
       }, 5000);
@@ -93,12 +91,26 @@ export default function Home() {
     <>
       {
         wallets.length <= 0 &&
-        <div className='flex flex-col gap-4 justify-center items-center'>
-          {wallets.length <= 0 && <span className="text-center">You currently do not have any wallets saved. <br></br>Start by creating or restoring one.</span> }
-          <CreateWallet />
+        <div className="w-full h-full flex flex-col justify-center items-center">
+          <div className="absolute top-0 right-0 mt-16 mr-20 text-white">
+            <ArrowIcon className="rotate-45"/>
+          </div>
+          <span className="text-center">You currently do not have any wallets saved. <br></br>Start by creating or restoring one.</span>
         </div>
       }
-      {wallets.length > 0 && 
+      {
+        wallets.length > 0 && !selectedWallet.id &&
+        <div className="w-full h-full flex flex-col justify-center items-center">
+          <div className="absolute top-0 right-0 mt-16 mr-20 text-white">
+            <ArrowIcon className="rotate-45"/>
+          </div>
+          <div className="absolute top-0 left-0 mt-16 ml-20 text-white">
+            <ArrowIcon className="-rotate-45"/>
+          </div>
+          <span className="text-center">Select one of your wallets or add a new wallet <br></br> by creating or restoring an existing wallet.</span>
+        </div>
+      }
+      {wallets.length > 0 && selectedWallet.id && 
         <div className="wallet-overview-content text-medium">
           <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
 
@@ -108,7 +120,7 @@ export default function Home() {
 
                 <div className="flex gap-2">
                   <EditWalletModal id={selectedWallet?.id} value={selectedWallet?.name} />
-                  <RemoveWalletModal id={selectedWallet?.id} />
+                  <RemoveWalletModal wallet={selectedWallet} />
                 </div>
               </div>
 

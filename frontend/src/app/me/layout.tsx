@@ -3,15 +3,9 @@
 import { FireIcon } from "@/components/icons/FireIcon";
 import { HelpIcon } from "@/components/icons/HelpIcon";
 import WalletNavBar from "@/components/WalletNavBar";
-import { Wallet } from "@/model/Wallet";
-import useWalletStore from "@/model/WalletState";
 import React from "react";
 
-export const PageContext = React.createContext([] as Wallet[]);
-
 export default function PageLayout({ children }: Readonly<{children: React.ReactNode}>) {
-  const wallets = useWalletStore((state) => state.wallets);
-
   return (
     <div>
       <a href="/" className="text-white absolute">
@@ -23,10 +17,10 @@ export default function PageLayout({ children }: Readonly<{children: React.React
       </div>
       <div className="h-screen w-screen flex flex-col justify-center items-center"> 
         <div className="wallet-overview-container">
-          <PageContext.Provider value={wallets}><WalletNavBar /></PageContext.Provider>
+          <WalletNavBar />
 
           <div className="w-full h-full">
-            <PageContext.Provider value={wallets}>{children}</PageContext.Provider>
+            {children}
           </div>
 
         </div>

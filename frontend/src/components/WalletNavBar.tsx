@@ -8,13 +8,10 @@ import { ArrowIcon } from './icons/ArrowIcon';
 import { TransactionIcon } from './icons/TransactionIcon';
 import { SettingsIcon } from './icons/SettingsIcon';
 import { StakingIcon } from './icons/StakingIcon';
-import { PageContext } from '@/app/me/layout';
 import React from 'react';
 import { setActiveItem } from '@/services/NavbarHelperService';
 
 export default function WalletNavBar() {
-  const wallets = React.useContext(PageContext);
-
   useEffect(() => {
     let lastIndex = window.location.href.lastIndexOf("/");
     let currentRoute = window.location.href.substring(lastIndex + 1);
@@ -25,7 +22,7 @@ export default function WalletNavBar() {
 
   return (
     <div className="wallet-nav-container">
-      <SelectWallet wallets={wallets} />
+      <SelectWallet />
       <div className="nav-link-container">
         <Link id="overview" color='secondary' className='wallet-nav-link' href="/me/overview" onClick={() => setActiveItem("overview")}>
           <ArrowIcon width={16} height={16} className='mr-0.5 -rotate-45' />

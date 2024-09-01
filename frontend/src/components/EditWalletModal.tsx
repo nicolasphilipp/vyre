@@ -3,6 +3,7 @@ import { EditIcon } from "./icons/EditIcon";
 import { useEffect, useRef, useState } from "react";
 import { renameWallet } from "@/services/WalletService";
 import useWalletStore from "@/model/WalletState";
+import { Wallet } from "@/model/Wallet";
 
 interface ValueProps {
     id: string;
@@ -14,7 +15,7 @@ const EditWalletModal: React.FC<ValueProps> = ({ id, value }) => {
     const [name, setName] = useState("");
     const [submit, setSubmit] = useState(false);
     const firstRender = useRef(true);
-    const update = useWalletStore((state) => state.update);
+    const { wallets, update, setSelected } = useWalletStore();
 
     useEffect(() => {
         setName(value);
@@ -36,9 +37,11 @@ const EditWalletModal: React.FC<ValueProps> = ({ id, value }) => {
         
         renameWallet(id, name)
             .then(res => {
-                let jsonRes = JSON.parse(res);
-                jsonRes.wallet.isSelected = true;
-                update(id, jsonRes.wallet);
+                let wallet = res.wallet as Wallet;
+                wallet.isSelected = true;
+
+                update(id, wallet);
+                setSelected(id);
             });
 
         resetForm();
