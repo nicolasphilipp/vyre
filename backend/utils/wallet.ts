@@ -1,57 +1,77 @@
 import { WalletServer, Seed, ShelleyWallet } from 'cardano-wallet-js';
 let walletServer = WalletServer.init('http://localhost:8090/v2');
 
-// refactor so that wallet API is used and not cardano-wallet-js library
+// TODO refactor so that wallet API is used and not cardano-wallet-js library
 
 async function createWallet(name: string, wordcount: number, passphrase: string){
-    let recoveryPhrase = Seed.generateRecoveryPhrase(wordcount);
-    let mnemonic_list = Seed.toMnemonicList(recoveryPhrase);
-    let wallet = await walletServer.createOrRestoreShelleyWallet(name, mnemonic_list, passphrase);    
-    
-    let res: any = {};
-    res.mnemonic = mnemonic_list;
-    res.wallet = wallet;
-    return JSON.stringify(res);
+    try {
+        let recoveryPhrase = Seed.generateRecoveryPhrase(wordcount);
+        let mnemonic_list = Seed.toMnemonicList(recoveryPhrase);
+        let wallet = await walletServer.createOrRestoreShelleyWallet(name, mnemonic_list, passphrase);    
+        return JSON.stringify({ mnemonic: mnemonic_list, wallet: wallet });
+    } catch(e) {
+        console.log(e);
+
+        return JSON.stringify({ error: e });
+    }
 }
 
 async function restoreWallet(name: string, mnemonic: string[], passphrase: string){
-    let wallet = await walletServer.createOrRestoreShelleyWallet(name, mnemonic, passphrase);
+    try {    
+        let wallet = await walletServer.createOrRestoreShelleyWallet(name, mnemonic, passphrase);
+        return JSON.stringify({ mnemonic: mnemonic, wallet: wallet });
+    } catch(e) {
+        console.log(e);
 
-    let res: any = {};
-    res.mnemonic = mnemonic;
-    res.wallet = wallet;
-    return JSON.stringify(res);
+        return JSON.stringify({ error: e });
+    }
 }
 
 async function removeWallet(id: string) {
-    let wallet = await walletServer.getShelleyWallet(id);
-    return await wallet.delete();
+    try {
+        let wallet = await walletServer.getShelleyWallet(id);
+        await wallet.delete();
+        return JSON.stringify({ status: 'OK' });
+    } catch(e) {
+        console.log(e);
+
+        return JSON.stringify({ error: e });
+    }
 }
 
 async function renameWallet(id: string, name: string) {
-    let wallet = await walletServer.getShelleyWallet(id);
-    let newWallet = await wallet.rename(name);
-    
-    let res: any = {};
-    res.wallet = newWallet;
-    return JSON.stringify(res);
+    try {    
+        let wallet = await walletServer.getShelleyWallet(id);
+        let newWallet = await wallet.rename(name);
+        return JSON.stringify({ wallet: newWallet });
+    } catch(e) {
+        console.log(e);
+
+        return JSON.stringify({ error: e });
+    }
 }
 
 async function getAddresses(id: string) {
-    let wallet = await walletServer.getShelleyWallet(id);
-    let addresses = await wallet.getAddresses(); 
+    try {
+        let wallet = await walletServer.getShelleyWallet(id);
+        let addresses = await wallet.getAddresses(); 
+        return JSON.stringify({ address: addresses[0] });
+    } catch(e) {
+        console.log(e);
 
-    let res: any = {};
-    res.address = addresses[0];
-    return JSON.stringify(res);
+        return JSON.stringify({ error: e });
+    }
 }
 
 async function getWallet(id: string) {
-    let wallet = await walletServer.getShelleyWallet(id);
+    try {
+        let wallet = await walletServer.getShelleyWallet(id);
+        return JSON.stringify({ wallet: wallet });
+    } catch(e) {
+        console.log(e);
 
-    let res: any = {};
-    res.wallet = wallet;
-    return JSON.stringify(res);
+        return JSON.stringify({ error: e });
+    }
 }
 
 function getAvailableBalance(wallet: ShelleyWallet){
