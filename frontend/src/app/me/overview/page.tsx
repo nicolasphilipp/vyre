@@ -32,13 +32,34 @@ export default function Home() {
   const loveLaceToAda = 1000000;
 
   const [adaData, setAdaData] = useState({} as AdaData);
+  const adaPrice = 0.32; // TODO only for testing
 
-  const pieChartData = [
-    { name: 'ADA', totalCount: 100, value: 400, ratio: 0.25 },
-    { name: 'SNEK', totalCount: 100, value: 300, ratio: 0.25 },
-    { name: 'AXS', totalCount: 100, value: 900, ratio: 0.25 },
-    { name: 'TLS', totalCount: 100, value: 200, ratio: 0.25 }
-  ];
+  const getPieChartData = () => {
+    let data = [];
+    let assets = selectedWallet.assets.total;
+
+    if(selectedWallet) {
+      let adaQuantity = selectedWallet.balance.available.quantity / loveLaceToAda;
+      data.push({ name: "ADA", quantity: adaQuantity, value: adaQuantity * adaPrice });
+
+      for(let i = 0; i < assets.length; i++) {
+        // TODO call backend for current price of native token
+        let value = 400; // TODO only for testing
+
+        data.push({ name: assets[i].assetName, quantity: assets[i].quantitiy, value: value });
+      }
+    }
+
+    /*
+    return [
+      { name: 'ADA', quantity: 100, value: 400, ratio: 0.25 },
+      { name: 'SNEK', quantity: 100, value: 300, ratio: 0.25 },
+      { name: 'AXS', quantity: 100, value: 900, ratio: 0.25 },
+      { name: 'TLS', quantity: 100, value: 200, ratio: 0.25 }
+    ];
+    */
+    return data;
+  };
 
   /*useEffect(() => {
     getAdaStats()
@@ -119,13 +140,13 @@ export default function Home() {
                 <span className="text-xl text-white">Wallet Overview</span>
 
                 <div className="flex gap-2">
-                  <EditWalletModal id={selectedWallet?.id} value={selectedWallet?.name} />
+                  <EditWalletModal id={selectedWallet.id} value={selectedWallet.name} />
                   <RemoveWalletModal wallet={selectedWallet} />
                 </div>
               </div>
 
               <div className="flex justify-center">
-                <OverviewPieChart data={pieChartData} />
+                <OverviewPieChart data={getPieChartData()} />
               </div>
 
               <div className="flex flex-row justify-between mt-2">
@@ -144,8 +165,8 @@ export default function Home() {
                   </Tooltip>
                 </span>
                 <div className="flex flex-row gap-4 justify-between w-6/12">
-                  <span>{selectedWallet && <span>₳ {formatNumber(selectedWallet.balance.available.quantity / loveLaceToAda)}</span>}</span>
-                  <span>0.00 €</span>
+                  <span>{<span>₳ {formatNumber(selectedWallet.balance.available.quantity / loveLaceToAda)}</span>}</span>
+                  <span>{<span>{formatNumber((selectedWallet.balance.available.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
                 </div>
               </div>
 
@@ -165,16 +186,16 @@ export default function Home() {
                   </Tooltip>
                 </span>
                 <div className="flex flex-row gap-4 justify-between w-6/12">
-                  <span>{selectedWallet && <span>₳ {formatNumber(selectedWallet.balance.reward.quantity / loveLaceToAda)}</span>}</span>
-                  <span>250.99 €</span>
+                  <span>{<span>₳ {formatNumber(selectedWallet.balance.reward.quantity / loveLaceToAda)}</span>}</span>
+                  <span>{<span>{formatNumber((selectedWallet.balance.reward.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
                 </div>
               </div>
 
               <div className="flex flex-row justify-between">
                 <span>Total</span>
                 <div className="flex flex-row gap-4 justify-between w-6/12">
-                  <span>{selectedWallet && <span>₳ {formatNumber(selectedWallet.balance.total.quantity / loveLaceToAda)}</span>}</span>
-                  <span>10,346.12 €</span>
+                  <span>{<span>₳ {formatNumber(selectedWallet.balance.total.quantity / loveLaceToAda)}</span>}</span>
+                  <span>{<span>{formatNumber((selectedWallet.balance.total.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
                 </div>
               </div>
 

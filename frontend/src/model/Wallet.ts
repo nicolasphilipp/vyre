@@ -51,8 +51,14 @@ interface Tip {
 }
 
 interface Assets {
-    available: string[];
-    total: string[];
+    available: Asset[];
+    total: Asset[];
+}
+
+interface Asset {
+    assetName: string;
+    quantitiy: number;
+    policyId: string;
 }
 
 interface State {

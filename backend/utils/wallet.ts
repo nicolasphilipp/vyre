@@ -2,12 +2,15 @@ import { WalletServer, Seed, ShelleyWallet } from 'cardano-wallet-js';
 let walletServer = WalletServer.init('http://localhost:8090/v2');
 
 // TODO refactor so that wallet API is used and not cardano-wallet-js library
+// caching?
 
 async function createWallet(name: string, wordcount: number, passphrase: string){
     try {
         let recoveryPhrase = Seed.generateRecoveryPhrase(wordcount);
         let mnemonic_list = Seed.toMnemonicList(recoveryPhrase);
         let wallet = await walletServer.createOrRestoreShelleyWallet(name, mnemonic_list, passphrase);    
+        
+        wallet = await walletServer.getShelleyWallet(wallet.id);
         return JSON.stringify({ mnemonic: mnemonic_list, wallet: wallet });
     } catch(e) {
         console.log(e);
@@ -19,6 +22,8 @@ async function createWallet(name: string, wordcount: number, passphrase: string)
 async function restoreWallet(name: string, mnemonic: string[], passphrase: string){
     try {    
         let wallet = await walletServer.createOrRestoreShelleyWallet(name, mnemonic, passphrase);
+
+        wallet = await walletServer.getShelleyWallet(wallet.id);
         return JSON.stringify({ mnemonic: mnemonic, wallet: wallet });
     } catch(e) {
         console.log(e);

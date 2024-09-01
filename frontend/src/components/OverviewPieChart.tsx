@@ -8,9 +8,8 @@ interface ValueProps {
 
 interface Data {
   name: string;
-  totalCount: number;
+  quantity: number;
   value: number;
-  ratio: number;
 }
 
 const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
@@ -44,7 +43,7 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
     const RADIAN = Math.PI / 180;
     const {
       cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle,
-      fill, payload, percent, value, name, totalCount, ratio
+      fill, payload, percent, value, name, quantity
     } = props;
     
     return (
