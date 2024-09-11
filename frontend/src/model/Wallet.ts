@@ -39,14 +39,14 @@ interface Status {
 }
 
 interface Passphrase {
-    lastUpdated: Date; 
+    last_updated_at: Date; 
 }
 
 interface Tip {
-    absoluteSlotNumber: number;
-    epochNumber: number;
+    absolute_slot_number: number;
+    epoch_number: number;
     height: UnitBalance;
-    slotNumber: number;
+    slot_number: number;
     time: Date;
 }
 
@@ -56,9 +56,9 @@ interface Assets {
 }
 
 interface Asset {
-    assetName: string;
-    quantitiy: number;
-    policyId: string;
+    asset_name: string;
+    quantity: number;
+    policy_id: string;
 }
 
 interface State {

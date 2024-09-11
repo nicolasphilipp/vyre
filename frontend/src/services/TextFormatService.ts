@@ -1,10 +1,9 @@
 export function formatNumber(value: number): string {
-    const [integerPart, decimalPart] = value.toString().split('.');
-
+    const roundedValue = value.toFixed(2);
+    const [integerPart, decimalPart] = roundedValue.split('.');
+    
     const formattedInteger = parseInt(integerPart, 10).toLocaleString('en-US');
-    const formattedDecimal = decimalPart ? decimalPart.padEnd(2, '0') : '00';
-
-    return `${formattedInteger}.${formattedDecimal}`;
+    return `${formattedInteger}.${decimalPart}`;
 }
 
 export function formatString(input: string): string {
@@ -18,3 +17,17 @@ export function formatString(input: string): string {
     }
     return "";
 }
+
+export function hexToAsciiString(hexString: string): string {
+     if (hexString.length % 2 !== 0) {
+        throw new Error("Invalid hex string. Length must be even.");
+    }
+
+    let asciiString = '';
+    for (let i = 0; i < hexString.length; i += 2) {
+        const hexPair = hexString.substr(i, 2);
+        const decimalValue = parseInt(hexPair, 16);
+        asciiString += String.fromCharCode(decimalValue);
+    }
+    return asciiString;
+  }

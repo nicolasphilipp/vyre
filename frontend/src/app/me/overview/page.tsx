@@ -1,7 +1,7 @@
 'use client';
 
 import CreateWallet from "@/components/CreateWallet";
-import { Button, Divider, Link, Snippet, Tooltip} from '@nextui-org/react';
+import { Button, Divider, Link, ScrollShadow, Snippet, Tooltip} from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import { DangerIcon } from "@/components/icons/DangerIcon";
 import { getAdaStats } from "@/services/CoinCapService";
 import { AdaData } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
-import { formatNumber, formatString } from "@/services/TextFormatService";
+import { formatNumber, formatString, hexToAsciiString } from "@/services/TextFormatService";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { RemoveIcon } from "@/components/icons/RemoveIcon";
 import EditWalletModal from "@/components/EditWalletModal";
@@ -46,7 +46,7 @@ export default function Home() {
         // TODO call backend for current price of native token
         let value = 400; // TODO only for testing
 
-        data.push({ name: assets[i].assetName, quantity: assets[i].quantitiy, value: value });
+        data.push({ name: hexToAsciiString(assets[i].asset_name), quantity: assets[i].quantity, value: value });
       }
     }
 
@@ -135,7 +135,7 @@ export default function Home() {
         <div className="wallet-overview-content text-medium">
           <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
 
-            <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words">
+            <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words" style={{height: "450px"}}>
               <div className="flex justify-between">
                 <span className="text-xl text-white">Wallet Overview</span>
 
@@ -149,7 +149,7 @@ export default function Home() {
                 <OverviewPieChart data={getPieChartData()} />
               </div>
 
-              <div className="flex flex-row justify-between mt-2">
+              <div className="flex flex-row justify-between">
                 <span>Available 
                   <Tooltip
                     color="warning"
@@ -199,11 +199,43 @@ export default function Home() {
                 </div>
               </div>
 
-              <Divider className="my-4" />
-              <div>
-                <span>Native Tokens will be shown here</span>
-              </div>
-
+              <Divider className="my-3" />
+              <ScrollShadow hideScrollBar size={20}>
+                {
+                  selectedWallet.assets.total.map((asset, i) => 
+                    <>
+                      <div key={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                      <div key={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                      <div key={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                      <div key={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                      <div key={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                      <div key={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                      <div key={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                    </>
+                  )
+                }
+              </ScrollShadow>
             </div>
                     
             <div className="col-span-3 row-span-4 overview-card flex-col break-words items-center justify-center">
