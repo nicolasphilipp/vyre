@@ -23,6 +23,7 @@ import { StakingIcon } from "@/components/icons/StakingIcon";
 import React from "react";
 import { setActiveItem } from "@/services/NavbarHelperService";
 import TransactionHistoryEntry from "@/components/TransactionHistoryEntry";
+import { LightningIcon } from "@/components/icons/LightningIcon";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -107,7 +108,6 @@ export default function Home() {
     }, 5000);
   }, []);
 
-  // TODO: fix bug when creating wallet from button inside content div, the mnemonic modal is not showing
   return (
     <>
       {
@@ -260,31 +260,55 @@ export default function Home() {
               </Link>
             </div>
                     
-            <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words justify-center items-center">
-              <div className="flex flex-col gap-4 justify-center items-center">
-                <QRCodeSVG value={address?.id} includeMargin size={140} />
+            <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
+              <div className="flex gap-0.5 items-center">
+                <span className="text-xl text-white">Quick Actions</span>
+                <LightningIcon className="text-white" width={16} height={16} />
+              </div>
+              
+              <div className="flex justify-center mt-9">
                 <Snippet 
                   symbol="" 
                   tooltipProps={{
                     className: "dark"
                   }}
                   codeString={address?.id}
+                  size="sm"
                 >
                   {formatString(address?.id)}
                 </Snippet>
               </div>
+
+              <div className="absolute bottom-0 mb-4">
+                <div className="flex justify-center items-center gap-4">
+                  <div>
+                    <QRCodeSVG value={address?.id} includeMargin size={110} />
+                  </div>
+                  <div className="flex flex-col gap-4 justify-between">
+                    <Button size="md" color="secondary" variant="ghost" aria-label='Send ADA'>Send ADA</Button>
+                    <Button size="md" color="secondary" variant="ghost" aria-label='Mint $handle'>Mint $handle</Button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="col-span-3 row-span-1 p-4 overview-card flex-col break-words">
-              <div className="flex justify-between">
+              <div>
                 <div className="flex gap-1 items-center">
                   <span className="text-xl text-white">Staking Overview</span>
                   <StakingIcon className="text-white" width={16} height={16} />
                 </div>
-                <span>You can earn up to ~3% APY on your ADA by staking to a stake pool.</span>
               </div>
               <div>
                 <span>{selectedWallet && <span>Status: {selectedWallet.delegation.active.status}</span>}</span>
+              </div>
+
+              <div className="h-full absolute top-0 right-0 p-4 flex flex-col justify-between items-end">
+                <span className="text-center">You can earn up to ~3% APY on <br></br> your ADA by staking to a stake pool.</span>
+                <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking" onClick={() => setActiveItem("staking")}>
+                  Stake to a pool
+                  <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
+                </Link>
               </div>
             </div> 
           </div>
