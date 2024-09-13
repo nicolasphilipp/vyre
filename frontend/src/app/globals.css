@@ -460,6 +460,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  font-size: var(--nextui-font-size-medium);
+  line-height: var(--nextui-line-height-medium);
 }
 
 .overview-card {

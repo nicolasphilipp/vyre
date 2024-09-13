@@ -1,5 +1,6 @@
 'use client';
 
+import "./overview.css";
 import CreateWallet from "@/components/CreateWallet";
 import { Button, Divider, Link, ScrollShadow, Snippet, Tooltip} from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
@@ -11,7 +12,7 @@ import { DangerIcon } from "@/components/icons/DangerIcon";
 import { getAdaStats } from "@/services/CoinCapService";
 import { AdaData } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
-import { formatNumber, formatString, hexToAsciiString } from "@/services/TextFormatService";
+import { formatAdaAddress, formatNumber, hexToAsciiString } from "@/services/TextFormatService";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { RemoveIcon } from "@/components/icons/RemoveIcon";
 import EditWalletModal from "@/components/EditWalletModal";
@@ -34,6 +35,19 @@ export default function Home() {
 
   const [adaData, setAdaData] = useState({} as AdaData);
   const adaPrice = 0.32; // TODO only for testing
+
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);  
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const getPieChartData = () => {
     let data = [];
@@ -132,70 +146,77 @@ export default function Home() {
         </div>
       }
       {wallets.length > 0 && selectedWallet.id && 
-        <div className="wallet-overview-content text-medium">
+        <div className="wallet-overview-content">
           <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
 
-            <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words" style={{height: "450px"}}>
+            <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words" style={{height: "460px"}}>
               <div className="flex justify-between">
-                <span className="text-xl text-white">Wallet Overview</span>
+                <span className="section-headline">Wallet Overview</span>
 
-                <div className="flex gap-2">
-                  <EditWalletModal id={selectedWallet.id} value={selectedWallet.name} />
-                  <RemoveWalletModal wallet={selectedWallet} />
+                <div className="flex flex-col gap-2 items-end">
+                  <div className="flex gap-2">
+                    <EditWalletModal id={selectedWallet.id} value={selectedWallet.name} />
+                    <RemoveWalletModal wallet={selectedWallet} />
+                  </div>
+                  <Button className="absolute translate-y-8" size="sm" color="secondary" variant="ghost" aria-label='Buy ADA'>Buy ADA</Button>
                 </div>
               </div>
 
-              <div className="flex justify-center">
-                <OverviewPieChart data={getPieChartData()} />
-              </div>
-
-              <div className="flex flex-row justify-between">
-                <span>Available 
-                  <Tooltip
-                    color="warning"
-                    className='tooltip-container text-white'
-                    content={
-                      <div className="px-1 py-2">
-                        <div className="text-small font-bold text-success">Information</div>
-                        <div className="text-tiny">The funds which are not locked <br></br> and you can use to full extend.</div>
-                      </div>
-                    }
-                  >
-                  <span className='absolute ml-0.5 mt-0.5'><DangerIcon width={12} height={12} /></span>
-                  </Tooltip>
-                </span>
-                <div className="flex flex-row gap-4 justify-between w-6/12">
-                  <span>{<span>₳ {formatNumber(selectedWallet.balance.available.quantity / loveLaceToAda)}</span>}</span>
-                  <span>{<span>{formatNumber((selectedWallet.balance.available.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+              <div className="balance-overview-container">
+                <div className="flex justify-center">
+                  <OverviewPieChart data={getPieChartData()} />
                 </div>
-              </div>
 
-              <div className="flex flex-row justify-between">
-                <span>Reward
-                  <Tooltip
-                    color="warning"
-                    className='tooltip-container text-white'
-                    content={
-                      <div className="px-1 py-2">
-                        <div className="text-small font-bold text-success">Information</div>
-                        <div className="text-tiny">The funds which where earned through staking.</div>
-                      </div>
-                    }
-                  >
-                  <span className='absolute ml-0.5 mt-0.5'><DangerIcon width={12} height={12} /></span>
-                  </Tooltip>
-                </span>
-                <div className="flex flex-row gap-4 justify-between w-6/12">
-                  <span>{<span>₳ {formatNumber(selectedWallet.balance.reward.quantity / loveLaceToAda)}</span>}</span>
-                  <span>{<span>{formatNumber((selectedWallet.balance.reward.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
-                </div>
-              </div>
+                <div className="w-full flex flex-col justify-end">
+                  <div className="balance-container">
+                    <span>Available 
+                      <Tooltip
+                        color="warning"
+                        className='tooltip-container text-white'
+                        content={
+                          <div className="px-1 py-2">
+                            <div className="text-small font-bold text-success">Information</div>
+                            <div className="text-tiny">The funds which are not locked <br></br> and you can use to full extend.</div>
+                          </div>
+                        }
+                      >
+                      <span className='absolute ml-0.5 mt-0.5'><DangerIcon width={12} height={12} /></span>
+                      </Tooltip>
+                    </span>
+                    <div className="balance-price-container">
+                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.available.quantity / loveLaceToAda)}</span>}</span>
+                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.available.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+                    </div>
+                  </div>
 
-              <div className="flex flex-row justify-between">
-                <span>Total</span>
-                <div className="flex flex-row gap-4 justify-between w-6/12">
-                  <span>{<span>₳ {formatNumber(selectedWallet.balance.total.quantity / loveLaceToAda)}</span>}</span>
-                  <span>{<span>{formatNumber((selectedWallet.balance.total.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+                  <div className="balance-container">
+                    <span>Reward
+                      <Tooltip
+                        color="warning"
+                        className='tooltip-container text-white'
+                        content={
+                          <div className="px-1 py-2">
+                            <div className="text-small font-bold text-success">Information</div>
+                            <div className="text-tiny">The funds which where earned through staking.</div>
+                          </div>
+                        }
+                      >
+                      <span className='absolute ml-0.5 mt-0.5'><DangerIcon width={12} height={12} /></span>
+                      </Tooltip>
+                    </span>
+                    <div className="balance-price-container">
+                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.reward.quantity / loveLaceToAda)}</span>}</span>
+                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.reward.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+                    </div>
+                  </div>
+
+                  <div className="balance-container">
+                    <span>Total</span>
+                    <div className="balance-price-container">
+                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.total.quantity / loveLaceToAda)}</span>}</span>
+                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.total.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -242,31 +263,42 @@ export default function Home() {
               <span>{adaData.priceUsd ? Math.round(parseFloat(adaData.priceUsd) * 10000) / 10000 : "0"}</span>
             </div>
 
-            <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words justify-between">
+            <div className="col-span-1 row-span-2 p-4 overview-card flex-col gap-2 break-words justify-between">
               <div>
                 <div className="flex gap-1 items-center">
-                  <span className="text-xl text-white">Recent Transactions</span>
+                  <span className="section-headline">Recent</span>
                   <TransactionIcon className="text-white" width={16} height={16} />
                 </div>
 
-                <TransactionHistoryEntry date="08.08." amount={500.33} fee={0} currency="ADA" />
-                <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                  <ScrollShadow className="h-52" hideScrollBar size={20}>
+                    <TransactionHistoryEntry date="08.08." amount={500.33} fee={0} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                  </ScrollShadow>
                 
               </div>
-              <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onClick={() => setActiveItem("transactions")}>
-                View all transactions
-                <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
-              </Link>
+              <div className="flex items-center text-right justify-end">
+                <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onClick={() => setActiveItem("transactions")}>
+                  View all
+                  <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
+                </Link>
+              </div>
             </div>
                     
             <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
               <div className="flex gap-0.5 items-center">
-                <span className="text-xl text-white">Quick Actions</span>
+                <span className="section-headline">Actions</span>
                 <LightningIcon className="text-white" width={16} height={16} />
               </div>
               
-              <div className="flex justify-center mt-9">
+              <div className="adaAddress">
                 <Snippet 
                   symbol="" 
                   tooltipProps={{
@@ -275,15 +307,13 @@ export default function Home() {
                   codeString={address?.id}
                   size="sm"
                 >
-                  {formatString(address?.id)}
+                  {windowWidth > 1450 ? formatAdaAddress(address?.id, 8) : formatAdaAddress(address?.id, 4)}
                 </Snippet>
               </div>
 
-              <div className="absolute bottom-0 mb-4">
-                <div className="flex justify-center items-center gap-4">
-                  <div>
-                    <QRCodeSVG value={address?.id} includeMargin size={110} />
-                  </div>
+              <div className="absolute bottom-0 left-0 p-4 w-full">
+                <div className="quickaction-container">
+                  <QRCodeSVG className="qrcode" value={address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
                   <div className="flex flex-col gap-4 justify-between">
                     <Button size="md" color="secondary" variant="ghost" aria-label='Send ADA'>Send ADA</Button>
                     <Button size="md" color="secondary" variant="ghost" aria-label='Mint $handle'>Mint $handle</Button>
@@ -295,7 +325,7 @@ export default function Home() {
             <div className="col-span-3 row-span-1 p-4 overview-card flex-col break-words">
               <div>
                 <div className="flex gap-1 items-center">
-                  <span className="text-xl text-white">Staking Overview</span>
+                  <span className="section-headline">Staking Overview</span>
                   <StakingIcon className="text-white" width={16} height={16} />
                 </div>
               </div>

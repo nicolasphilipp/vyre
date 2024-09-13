@@ -1,0 +1,92 @@
+@media (max-width: 1630px) or (min-height: 1100px) {
+    .quickaction-container {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 1430px) {
+    .transaction-row {
+        gap: 0 !important;
+        flex-direction: column;
+    }
+
+    .section-headline {
+        font-size: var(--nextui-font-size-medium) !important;
+        line-height: var(--nextui-line-height-medium) !important;
+    } 
+
+    .wallet-overview-content, .wallet-nav-link {
+        font-size: var(--nextui-font-size-small);
+        line-height: var(--nextui-line-height-small);
+    }
+}
+
+@media (max-width: 1762px) {
+    .balance-container {
+        flex-direction: column;
+    }
+
+    .balance-price-container {
+        margin-bottom: 4px;
+    }
+}
+
+@media (max-width: 1500px) {
+    .balance-overview-container {
+        flex-direction: column;
+    }
+
+    .balance-container {
+        flex-direction: row;
+    }
+
+    .balance-price-container {
+        margin-bottom: unset;
+    }
+}
+
+.section-headline {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    color: rgb(255 255 255);
+}
+
+.balance-overview-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.balance-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.balance-price-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: end;
+    text-align: right;
+}
+
+.price-field {
+    min-width: 80px;
+}
+
+.adaAddress {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.quickaction-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.transaction-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}

@@ -6,13 +6,10 @@ export function formatNumber(value: number): string {
     return `${formattedInteger}.${decimalPart}`;
 }
 
-export function formatString(input: string): string {
-    if(input){
-        const visibleCharacters = 8;
-  
+export function formatAdaAddress(input: string, visibleCharacters: number): string {
+    if(input){  
         const start = input.slice(0, visibleCharacters);
         const end = input.slice(-visibleCharacters);
-      
         return `${start}...${end}`;
     }
     return "";

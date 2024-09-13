@@ -11,7 +11,7 @@ export default function PageLayout({ children }: Readonly<{children: React.React
       <a href="/" className="text-white absolute">
         <FireIcon className="mt-4 ml-4" width={72} height={72} />
       </a>
-      <div className="absolute right-0 top-0 mt-4 mr-4 flex flex-row gap-2 items-center">
+      <div className="absolute right-0 top-0 mt-4 mr-4 flex flex-row gap-2 items-center hidden">
         <HelpIcon width={24} height={24} />
         <span>Need help?</span>
       </div>
