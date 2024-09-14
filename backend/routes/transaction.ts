@@ -31,12 +31,12 @@ routes.get('/:id/detail/:txId', async (req: Request, res: Response) => {
 });
 
 routes.post('/estimate', async (req: Request, res: Response) => {
-    if(req.body.sender.length !== 40 || req.body.receiver.length !== 40 || req.body.amount <= 0) {
-        res.sendStatus(400);
-        return;
+    if(req.body.amount <= 0) {
+      res.sendStatus(400);
+      return;
     }
 
-    let estimate = JSON.parse(await estimateFees(req.body.sender, req.body.receiver, req.body.amount));
+    let estimate = JSON.parse(await estimateFees(req.body.senderId, req.body.receiver, req.body.amount));
     if(estimate.error){
         res.status(500).send(JSON.stringify({ error: estimate.error }));
     } else {  
@@ -45,12 +45,12 @@ routes.post('/estimate', async (req: Request, res: Response) => {
 });
   
 routes.post('/', async (req: Request, res: Response) => {
-    if(req.body.sender.length !== 40 || req.body.receiver.length !== 40 || req.body.amount <= 0 || req.body.passphrase.length < 10) {
+    if(req.body.amount <= 0 || req.body.passphrase.length < 10) {
         res.sendStatus(400);
         return;
     } 
 
-    let tx = JSON.parse(await submitTx(req.body.sender, req.body.receiver, req.body.amount, req.body.passphrase));
+    let tx = JSON.parse(await submitTx(req.body.senderId, req.body.receiver, req.body.amount, req.body.passphrase));
     if(tx.error){
         res.status(500).send(JSON.stringify({ error: tx.error }));
     } else {  

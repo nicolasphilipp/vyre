@@ -32,10 +32,10 @@ async function getTxDetails(walletId: string, txId: string) {
     }
 }
 
-async function estimateFees(senderId: string, receiverId: string, amount: number) {
+async function estimateFees(senderId: string, receiverAddress: string, amount: number) {
     try {
         let wallet = await walletServer.getShelleyWallet(senderId);
-        let receiver = new AddressWallet(receiverId);
+        let receiver = new AddressWallet(receiverAddress);
         let estimatedFees = await wallet.estimateFee([receiver], [amount * loveLaceToAda]);
 
         return JSON.stringify({ fees: estimatedFees });
@@ -46,10 +46,10 @@ async function estimateFees(senderId: string, receiverId: string, amount: number
     }
 }
 
-async function submitTx(senderId: string, receiverId: string, amount: number, passphrase: string) {
+async function submitTx(senderId: string, receiverAddress: string, amount: number, passphrase: string) {
     try {
         let wallet = await walletServer.getShelleyWallet(senderId);
-        let receiver = new AddressWallet(receiverId);
+        let receiver = new AddressWallet(receiverAddress);
         let payment = await wallet.sendPayment(passphrase, [receiver], [amount * loveLaceToAda]);
 
         return JSON.stringify({ transaction: payment });
