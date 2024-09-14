@@ -108,6 +108,7 @@ export default function CreateRestoreModal() {
   function resetForm(): void {
     setPassTouched(false);
     setPassphrase("");
+    setIsVisible(false);
     setName("");
     setWordcount("15");
     setMnemCount("15");

@@ -18,31 +18,31 @@ export interface Wallet {
     isSelected: boolean;
 }
 
-interface Balance {
+export interface Balance {
     available: UnitBalance;
     reward: UnitBalance;
     total: UnitBalance;
 }
 
-interface UnitBalance {
+export interface UnitBalance {
     quantity: number;
     unit: string;
 }
 
-interface Delegation {
+export interface Delegation {
     active: Status;
     next: string[];
 }
 
-interface Status {
+export interface Status {
     status: string;
 }
 
-interface Passphrase {
+export interface Passphrase {
     last_updated_at: Date; 
 }
 
-interface Tip {
+export interface Tip {
     absolute_slot_number: number;
     epoch_number: number;
     height: UnitBalance;
@@ -50,27 +50,27 @@ interface Tip {
     time: Date;
 }
 
-interface Assets {
+export interface Assets {
     available: Asset[];
     total: Asset[];
 }
 
-interface Asset {
+export interface Asset {
     asset_name: string;
     quantity: number;
     policy_id: string;
 }
 
-interface State {
+export interface State {
     progress: UnitBalance;
     status: string;
 }
 
-interface Api {
+export interface Api {
     basePath: string;
     configuration: Configuration;
 }
 
-interface Configuration {
+export interface Configuration {
     basePath: string;
 }

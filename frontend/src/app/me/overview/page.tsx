@@ -25,6 +25,10 @@ import React from "react";
 import { setActiveItem } from "@/services/NavbarHelperService";
 import TransactionHistoryEntry from "@/components/TransactionHistoryEntry";
 import { LightningIcon } from "@/components/icons/LightningIcon";
+import { IncreaseIcon } from "@/components/icons/IncreaseIcon";
+import { SwapIcon } from "@/components/icons/SwapIcon";
+import { SendIcon } from "@/components/icons/SendIcon";
+import SendAdaModal from "@/components/SendAdaModal";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -158,7 +162,12 @@ export default function Home() {
                     <EditWalletModal id={selectedWallet.id} value={selectedWallet.name} />
                     <RemoveWalletModal wallet={selectedWallet} />
                   </div>
-                  <Button className="absolute translate-y-8" size="sm" color="secondary" variant="ghost" aria-label='Buy ADA'>Buy ADA</Button>
+                  <Button className="absolute translate-y-8" size="sm" color="secondary" variant="ghost" aria-label='Buy ADA'>
+                    <span className="flex gap-0.5 items-center">
+                      Buy ADA
+                      <IncreaseIcon width={16} height={16} />
+                    </span>
+                  </Button>
                 </div>
               </div>
 
@@ -315,8 +324,13 @@ export default function Home() {
                 <div className="quickaction-container">
                   <QRCodeSVG className="qrcode" value={address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
                   <div className="flex flex-col gap-4 justify-between">
-                    <Button size="md" color="secondary" variant="ghost" aria-label='Send ADA'>Send ADA</Button>
-                    <Button size="md" color="secondary" variant="ghost" aria-label='Mint $handle'>Mint $handle</Button>
+                    <SendAdaModal wallet={selectedWallet} />
+                    <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
+                      <span className="flex gap-0.5 items-center">
+                        Swap ADA
+                        <SwapIcon width={16} height={16} />
+                      </span>
+                    </Button>
                   </div>
                 </div>
               </div>

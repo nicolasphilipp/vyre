@@ -22,10 +22,9 @@ export default function PageLayout({ children }: Readonly<{children: React.React
           <div className="w-full h-full">
             {children}
           </div>
-
         </div>
         
-        <span id="copyright" className="absolute bottom-2">© Vyre 2024</span>
+        <span id="copyright" className="absolute bottom-2 left-4">© Vyre 2024</span>
       </div>
     </div>
   );
