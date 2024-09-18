@@ -1,13 +1,42 @@
 'use client';
 
+import { DangerIcon } from "@/components/icons/DangerIcon";
 import { FireIcon } from "@/components/icons/FireIcon";
 import { HelpIcon } from "@/components/icons/HelpIcon";
 import WalletNavBar from "@/components/WalletNavBar";
+import { Spinner } from "@nextui-org/react";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
 export default function PageLayout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
     <div>
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 900000, // TODO set duration to 8 seconds 
+          style: {
+            color: 'rgb(180, 180, 180)', //#ffffff
+            borderRadius: '20px',
+            background: 'rgba(30, 30, 30, 0.9)',
+            border: '2px solid rgb(40, 40, 40)'
+          },
+          loading: {
+            icon: <Spinner size="sm" color="secondary" />
+          },
+          success: {
+            // TODO success icon
+            icon: <DangerIcon width={16} height={16} className="text-success" />
+          },
+          error: {
+            style: {
+              //background: 'rgba(243, 18, 96, 0.5)',
+              //border: '2px solid rgb(253, 28, 106)'
+            },
+            icon: <DangerIcon width={16} height={16} className="text-danger" />
+          }
+        }}
+      />
       <a href="/" className="text-white absolute">
         <FireIcon className="mt-4 ml-4" width={72} height={72} />
       </a>
