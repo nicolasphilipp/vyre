@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { renameWallet } from "@/services/WalletService";
 import useWalletStore from "@/model/WalletState";
 import { Wallet } from "@/model/Wallet";
+import toast from "react-hot-toast";
 
 interface ValueProps {
     id: string;
@@ -34,19 +35,31 @@ const EditWalletModal: React.FC<ValueProps> = ({ id, value }) => {
           firstRender.current = false;
           return;
         }
-        
-        renameWallet(id, name)
-            .then(res => {
-                let wallet = res.wallet as Wallet;
-                wallet.isSelected = true;
 
-                update(id, wallet);
-                setSelected(id);
-            });
+        toast.promise(new Promise((resolve, reject) =>  {
+            renameWallet(id, name)
+                .then(res => {
+                    if(res.error){
+                        reject(res.error);
+                    } else {
+                        let wallet = res.wallet as Wallet;
+                        wallet.isSelected = true;
+    
+                        update(id, wallet);
+                        setSelected(id);
 
-        resetForm();
-        onClose();
-      }, [submit]);
+                        resetForm();
+                        onClose();
+                        resolve("");
+                    }
+                })
+        }),
+        {
+            loading: 'Renaming wallet...',
+            success: 'Successfully renamed wallet.',
+            error: 'Error renaming wallet.',
+        });
+    }, [submit]);
 
     return (
         <>

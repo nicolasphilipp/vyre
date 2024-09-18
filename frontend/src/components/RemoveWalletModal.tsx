@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { removeWallet, renameWallet } from "@/services/WalletService";
 import useWalletStore from "@/model/WalletState";
 import { Wallet } from "@/model/Wallet";
+import toast from "react-hot-toast";
 
 interface ValueProps {
     wallet: Wallet;
@@ -25,18 +26,25 @@ const RemoveWalletModal: React.FC<ValueProps> = ({ wallet }) => {
           return;
         }
         
-        removeWallet(wallet.id)
-            .then(res => {
-                if(res.error) {
-                    // TODO show toaster notification with error message
-                    console.log("There was an error removing the wallet with id: " + wallet.id);
-                } else {
-                    setSelected("");
-                    remove(wallet);
-                }
-            });
+        toast.promise(new Promise((resolve, reject) =>  {
+            removeWallet(wallet.id)
+                .then(res => {
+                    if(res.error) {
+                        reject(res.error);
+                    } else {
+                        setSelected("");
+                        remove(wallet);
 
-        onClose();
+                        onClose();
+                        resolve("");
+                    }
+                })
+        }),
+        {
+            loading: 'Removing wallet...',
+            success: 'Successfully removed wallet.',
+            error: 'Error removing wallet.',
+        });
       }, [submit]);
 
     return (

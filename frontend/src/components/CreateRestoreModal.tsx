@@ -8,6 +8,7 @@ import { Wallet } from '@/model/Wallet';
 import { ArrowIcon } from './icons/ArrowIcon';
 import { HelpIcon } from './icons/HelpIcon';
 import { DangerIcon } from './icons/DangerIcon';
+import toast from 'react-hot-toast';
 
 export default function CreateRestoreModal() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -338,23 +339,38 @@ export default function CreateRestoreModal() {
     }
     
     if(!restore) { 
-      createWallet(walletName, parseInt(wordcount), passphrase)
-        .then(res => {
-          res.wallet.isSelected = true;
-          setSelected(res.wallet.id);
-          add(res.wallet);
+      toast.promise(new Promise((resolve, reject) =>  {
+        createWallet(walletName, parseInt(wordcount), passphrase)
+          .then(res => {
+            if(res.error){
+              reject(res.error);
+            } else {
+              res.wallet.isSelected = true;
+              setSelected(res.wallet.id);
+              add(res.wallet);
 
-          for(let i = 0; i < wallets.length; i++) {
-            let wallet: Wallet = wallets[i];
-            if(wallet.id !== res.wallet.id){
-              wallet.isSelected = false;
+              for(let i = 0; i < wallets.length; i++) {
+                let wallet: Wallet = wallets[i];
+                if(wallet.id !== res.wallet.id){
+                  wallet.isSelected = false;
+                }
+                update(wallet.id, wallet);
+              } 
+            
+              setRecovery(res.mnemonic);
+              setShowRecovery(true);
+
+              resetForm();
+              onClose();
+              resolve("");
             }
-            update(wallet.id, wallet);
-          } 
-        
-          setRecovery(res.mnemonic);
-          setShowRecovery(true);
-        });
+          })
+      }), 
+      {
+        loading: 'Creating wallet...',
+        success: 'Successfully created wallet.',
+        error: 'Error creating wallet.',
+      });
     } else {
       let mnemonic: string[] = [];
       for(let i = 0; i < parseInt(mnemCount); i++) {
@@ -362,24 +378,36 @@ export default function CreateRestoreModal() {
       }
 
       // TODO show error if wallet is present on this wallet node -> same multiple wallets possible in later version
-      restoreWallet(walletName, mnemonic, passphrase)
-        .then(res => {
-          res.wallet.isSelected = true;
-          setSelected(res.wallet.id);
-          add(res.wallet);
+      toast.promise(new Promise((resolve, reject) =>  {
+        restoreWallet(walletName, mnemonic, passphrase)
+          .then(res => {
+            if(res.error){
+              reject(res.error);
+            } else {
+              res.wallet.isSelected = true;
+              setSelected(res.wallet.id);
+              add(res.wallet);
 
-          for(let i = 0; i < wallets.length; i++) {
-            let wallet: Wallet = wallets[i];
-            if(wallet.id !== res.wallet.id){
-              wallet.isSelected = false;
+              for(let i = 0; i < wallets.length; i++) {
+                let wallet: Wallet = wallets[i];
+                if(wallet.id !== res.wallet.id){
+                  wallet.isSelected = false;
+                }
+                update(wallet.id, wallet);
+              } 
+
+              resetForm();
+              onClose();
+              resolve("");
             }
-            update(wallet.id, wallet);
-          } 
-        });
+          })
+      }), 
+      {
+        loading: 'Restoring wallet...',
+        success: 'Successfully restored wallet.',
+        error: 'Error restoring wallet.',
+      });
     }
-
-    resetForm();
-    onClose();
   }, [submit]);
 
   return (

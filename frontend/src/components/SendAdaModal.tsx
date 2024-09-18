@@ -1,4 +1,4 @@
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Radio, RadioGroup, Input, Divider, input, Tooltip} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Radio, RadioGroup, Input, Divider, input, Tooltip, Spinner} from "@nextui-org/react";
 import { useEffect, useRef, useState } from 'react';
 
 import { SendIcon } from './icons/SendIcon';
@@ -12,6 +12,7 @@ import { DangerIcon } from "./icons/DangerIcon";
 import { Address } from "@/model/Address";
 import { estimateFees, submitTx } from "@/services/TxService";
 import { Transaction, TxFees } from "@/model/Transaction";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ValueProps {
     wallet: Wallet;
@@ -80,6 +81,9 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
   }
 
   function isAddressInvalid(address: string): boolean {
+    if(address === "") {
+        return true;
+    }
     // TODO call backend to check if address is invalid
     // or check only if address has the required length?
     return false;
@@ -118,19 +122,29 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
         return;
     }
   
-    // TODO keep Modal open if the password was entered incorrectly
+    toast.promise(new Promise((resolve, reject) =>  {
+        submitTx(wallet.id, receiver, getTxAmount(), passphrase)
+            .then(res => {
+                if(res.error){
+                    reject(res.error);
+                } else {
+                    let tx = res.transaction as Transaction;
+                    console.log(tx);
 
-    submitTx(wallet.id, receiver, getTxAmount(), passphrase)
-        .then(res => {
-            let tx = res.transaction as Transaction;
-            console.log(tx);
-        });
-    
-    resetForm();
-    onClose();
+                    resetForm();
+                    onClose();
+                    resolve("");
+                }
+            })
+    }), 
+    {
+        loading: 'Submitting transaction...',
+        success: 'Successfully submitted transaction.',
+        error: 'Error submitting transaction.',
+    });
+
   }, [submit]);
-
-  // TODO show estimated execution time
+  
   return (
     <>
         <Button size="md" color="secondary" variant="ghost" aria-label='Send ADA' onPress={onOpen}>
