@@ -193,8 +193,8 @@ export default function Home() {
                       </Tooltip>
                     </span>
                     <div className="balance-price-container">
-                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.available.quantity / loveLaceToAda)}</span>}</span>
-                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.available.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.available.quantity / loveLaceToAda, 2)}</span>}</span>
+                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.available.quantity / loveLaceToAda) * adaPrice, 2)} €</span>}</span>
                     </div>
                   </div>
 
@@ -214,16 +214,16 @@ export default function Home() {
                       </Tooltip>
                     </span>
                     <div className="balance-price-container">
-                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.reward.quantity / loveLaceToAda)}</span>}</span>
-                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.reward.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.reward.quantity / loveLaceToAda, 2)}</span>}</span>
+                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.reward.quantity / loveLaceToAda) * adaPrice, 2)} €</span>}</span>
                     </div>
                   </div>
 
                   <div className="balance-container">
                     <span>Total</span>
                     <div className="balance-price-container">
-                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.total.quantity / loveLaceToAda)}</span>}</span>
-                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.total.quantity / loveLaceToAda) * adaPrice)} €</span>}</span>
+                      <span className="price-field">{<span>₳ {formatNumber(selectedWallet.balance.total.quantity / loveLaceToAda, 2)}</span>}</span>
+                      <span className="price-field">{<span>{formatNumber((selectedWallet.balance.total.quantity / loveLaceToAda) * adaPrice, 2)} €</span>}</span>
                     </div>
                   </div>
                 </div>

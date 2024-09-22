@@ -1,8 +1,11 @@
-export function formatNumber(value: number): string {
-    const roundedValue = value.toFixed(2);
+export function formatNumber(value: number, decimals: number): string {
+    const roundedValue = value.toFixed(decimals);
     const [integerPart, decimalPart] = roundedValue.split('.');
     
     const formattedInteger = parseInt(integerPart, 10).toLocaleString('en-US');
+    if(parseInt(decimalPart) === 0){
+        return `${formattedInteger}.00`;
+    }
     return `${formattedInteger}.${decimalPart}`;
 }
 
@@ -28,3 +31,10 @@ export function hexToAsciiString(hexString: string): string {
     }
     return asciiString;
   }
+
+export function parseDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = date.getUTCDate().toString().padStart(2, '0');  
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    return `${day}.${month}.`;
+}

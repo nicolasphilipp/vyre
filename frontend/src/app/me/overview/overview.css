@@ -45,12 +45,6 @@
     }
 }
 
-.section-headline {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-    color: rgb(255 255 255);
-}
-
 .balance-overview-container {
     display: flex;
     gap: 0.5rem;
@@ -83,10 +77,4 @@
     justify-content: center;
     align-items: center;
     gap: 1rem;
-}
-
-.transaction-row {
-    display: flex;
-    gap: 0.5rem;
-    width: 100%;
 }

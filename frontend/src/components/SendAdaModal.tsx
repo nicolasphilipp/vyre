@@ -186,7 +186,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                             value={amount}
                             onValueChange={setAmountInputTouched}
                             isInvalid={isAmountInvalid()}
-                            errorMessage={"Amount can not be higher than your available balance! Available: ₳ " + formatNumber(wallet.balance.available.quantity / loveLaceToAda)}
+                            errorMessage={"Amount can not be higher than your available balance! Available: ₳ " + formatNumber(wallet.balance.available.quantity / loveLaceToAda, 2)}
                         />
 
                         <Divider className="my-1" />
@@ -212,7 +212,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                             </div>
                             <div className="flex justify-between w-9/12">
                                 <span>Balance after execution: </span>
-                                <span>₳ {formatNumber(getResultBalance())}</span>
+                                <span>₳ {formatNumber(getResultBalance(), 2)}</span>
                             </div>
                         </div>
 

@@ -56,7 +56,7 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
           dominantBaseline="middle"
           fill="#ffffff"
         > 
-          {formatNumber(value)} €
+          {formatNumber(value, 2)} €
         </text>
         <text 
           x="50%"
@@ -116,7 +116,7 @@ const OverviewPieChart: React.FC<ValueProps> = ({ data }) => {
                       dominantBaseline="middle"
                       fill="#ffffff"
                     >
-                      {formatNumber(getTotalValue())} €
+                      {formatNumber(getTotalValue(), 2)} €
                     </text>
                 )}      
             </PieChart>

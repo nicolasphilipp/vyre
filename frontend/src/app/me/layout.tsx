@@ -3,6 +3,7 @@
 import { DangerIcon } from "@/components/icons/DangerIcon";
 import { FireIcon } from "@/components/icons/FireIcon";
 import { HelpIcon } from "@/components/icons/HelpIcon";
+import { SuccessIcon } from "@/components/icons/SuccessIcon";
 import WalletNavBar from "@/components/WalletNavBar";
 import { Spinner } from "@nextui-org/react";
 import React from "react";
@@ -14,9 +15,9 @@ export default function PageLayout({ children }: Readonly<{children: React.React
       <Toaster 
         position="top-right"
         toastOptions={{
-          duration: 900000, // TODO set duration to 8 seconds 
+          duration: 8000,
           style: {
-            color: 'rgb(180, 180, 180)', //#ffffff
+            color: 'rgb(180, 180, 180)',
             borderRadius: '20px',
             background: 'rgba(30, 30, 30, 0.9)',
             border: '2px solid rgb(40, 40, 40)'
@@ -25,8 +26,7 @@ export default function PageLayout({ children }: Readonly<{children: React.React
             icon: <Spinner size="sm" color="secondary" />
           },
           success: {
-            // TODO success icon
-            icon: <DangerIcon width={16} height={16} className="text-success" />
+            icon: <SuccessIcon width={16} height={16} className="text-success" />
           },
           error: {
             style: {

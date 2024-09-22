@@ -7,11 +7,16 @@ import { formatNumber } from "@/services/TextFormatService";
 export default function SelectWallet() {
     const wallets = useWalletStore(state => state.wallets);
     const { update, selected, setSelected } = useWalletStore();
+    const [selectedWallet, setSelectedWallet] = useState({} as Wallet);  
+
+    const loveLaceToAda = 1000000;
+    const adaPrice = 0.32;
 
     useEffect(() => {
         let selectedWallet = wallets.filter(w => w.isSelected)[0];
         if(selectedWallet) {
             setSelected(selectedWallet.id);
+            setSelectedWallet(selectedWallet);
         }
     }, [wallets]);
 
@@ -46,18 +51,21 @@ export default function SelectWallet() {
                     value: "text-white"
                 }}
             >
-            {
-                wallets.map(wallet => (
-                    <SelectItem hideSelectedIcon color="secondary" key={wallet.id} textValue={wallet.name}>
-                        <div className="flex items-center justify-between">
-                            <div className="flex flex-col">
-                                <span className="text-md text-white">{wallet.name}</span>
-                                <span>{formatNumber(1800)} €</span>
+                {
+                    wallets.map(wallet => (
+                        <SelectItem color="secondary" key={wallet.id} textValue={wallet.name}>
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="text-md text-white">{wallet.name}</span>
+                                    {
+                                        wallet.balance &&
+                                        <span>{formatNumber((wallet.balance.total.quantity / loveLaceToAda) * adaPrice, 2)} €</span>
+                                    }
+                                </div>
                             </div>
-                        </div>
-                    </SelectItem>
-                ))
-            }
+                        </SelectItem>
+                    ))
+                }
             </Select>
         </>
     );

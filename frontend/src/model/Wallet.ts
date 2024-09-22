@@ -47,7 +47,7 @@ export interface Tip {
     epoch_number: number;
     height: UnitBalance;
     slot_number: number;
-    time: Date;
+    time: string;
 }
 
 export interface Assets {
