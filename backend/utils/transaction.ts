@@ -1,17 +1,50 @@
-import { WalletServer, Seed, ShelleyWallet, AddressWallet } from 'cardano-wallet-js';
+import { WalletServer, Seed, ShelleyWallet, AddressWallet, TransactionWallet } from 'cardano-wallet-js';
 let walletServer = WalletServer.init('http://localhost:8090/v2');
 
 const loveLaceToAda = 1000000;
 
-// TODO implement pagination
+// TODO use Dtos instead of passing normal parameters
 
-async function getTxHistory(id: string, results: number, start: Date, end: Date) {
+async function getTxHistory(walletId: string, resultCount: number, page: number) {
     try {
-        let wallet = await walletServer.getShelleyWallet(id);
+        let wallet = await walletServer.getShelleyWallet(walletId);
+        let transactions = await wallet.getTransactions();
+
+        let results: TransactionWallet[] = [];
+        let index = (resultCount * (page - 1 >= 0 ? page - 1 : 0));
+        for(let i = index; i < index + resultCount; i++) {
+            if(transactions[i]) {
+                results.push(transactions[i]);
+            }
+        }
+
+        return JSON.stringify({ 
+            totalResults: transactions.length, 
+            totalPages: Math.floor((transactions.length / resultCount)) + 1, 
+            currentPage: page, 
+            transactions: results 
+        });
+    } catch(e) {
+        console.log(e);
+
+        return JSON.stringify({ error: e });
+    }
+}
+
+async function searchTx(walletId: string, receiverId: string, start: Date, end: Date, resultCount: number, page: number) {
+    try {
+        let wallet = await walletServer.getShelleyWallet(walletId);
         let transactions = await wallet.getTransactions(start, end);
 
-        // return totalResults, currentPage, resultCount for pagination
-        return JSON.stringify({ transactions: transactions });
+        // TODO search transactions for provided search parameters
+        let results: TransactionWallet[] = [];
+        
+        return JSON.stringify({ 
+            totalResults: transactions.length, 
+            totalPages: Math.floor((transactions.length / resultCount)), 
+            currentPage: page, 
+            transactions: results 
+        });
     } catch(e) {
         console.log(e);
 
@@ -40,8 +73,6 @@ async function estimateFees(senderId: string, receiverAddress: string, amount: n
 
         return JSON.stringify({ fees: estimatedFees });
     } catch(e) {
-        console.log(e);
-
         return JSON.stringify({ error: e });
     }
 }
@@ -54,10 +85,8 @@ async function submitTx(senderId: string, receiverAddress: string, amount: numbe
 
         return JSON.stringify({ transaction: payment });
     } catch(e) {
-        console.log(e);
-
         return JSON.stringify({ error: e });
     }
 }
 
-export { getTxHistory, getTxDetails, estimateFees, submitTx };
+export { getTxHistory, getTxDetails, estimateFees, submitTx, searchTx };
