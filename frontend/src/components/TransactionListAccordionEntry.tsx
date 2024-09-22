@@ -15,11 +15,11 @@ const TransactionListAccordionEntry: React.FC<ValueProps> = ({ transaction }) =>
   return (
     <>
       {
-        transaction.direction === "incoming" && 
+        transaction && transaction.direction === "incoming" && 
           <div className="flex justify-between items-center mt-2 text-success">
             <div className="transaction-row">
               <div className="transaction-date-container">
-                <span>{parseDate(transaction.inserted_at.time)}</span>
+                <span>{transaction.inserted_at && parseDate(transaction.inserted_at.time)}</span>
               </div>
               <div className="flex w-full justify-between">
                 <span>+{formatNumber(isLoveLace ? transaction.amount.quantity / loveLaceToAda : transaction.amount.quantity, 6)} {isLoveLace ? "ADA" : transaction.amount.unit}</span>
@@ -29,11 +29,11 @@ const TransactionListAccordionEntry: React.FC<ValueProps> = ({ transaction }) =>
           </div>
       }
       {
-        transaction.direction === "outgoing" &&
+        transaction && transaction.direction === "outgoing" &&
           <div className="flex justify-between items-center mt-2 text-danger">
             <div className="transaction-row">
               <div className="transaction-date-container">
-                <span>{parseDate(transaction.inserted_at.time)}</span>
+                <span>{transaction.inserted_at && parseDate(transaction.inserted_at.time)}</span>
               </div>
               <div className="flex w-full justify-between">
                 <div className="flex flex-col">

@@ -20,7 +20,7 @@ async function getTxHistory(walletId: string, resultCount: number, page: number)
 
         return JSON.stringify({ 
             totalResults: transactions.length, 
-            totalPages: Math.floor((transactions.length / resultCount)) + 1, 
+            totalPages: Math.ceil((transactions.length / resultCount)), 
             currentPage: page, 
             transactions: results 
         });
