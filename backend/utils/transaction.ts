@@ -13,7 +13,7 @@ async function getTxHistory(walletId: string, resultCount: number, page: number)
         let results: TransactionWallet[] = [];
         let index = (resultCount * (page - 1 >= 0 ? page - 1 : 0));
         for(let i = index; i < index + resultCount; i++) {
-            if(transactions[i]) {
+            if(transactions[i] && transactions[i].inserted_at) {
                 results.push(transactions[i]);
             }
         }
@@ -31,17 +31,35 @@ async function getTxHistory(walletId: string, resultCount: number, page: number)
     }
 }
 
-async function searchTx(walletId: string, receiverId: string, start: Date, end: Date, resultCount: number, page: number) {
+async function searchTx(walletId: string, resultCount: number, page: number, receiverId?: string, start?: Date, end?: Date) {
     try {
         let wallet = await walletServer.getShelleyWallet(walletId);
         let transactions = await wallet.getTransactions(start, end);
+        let allResults: TransactionWallet[] = [];
 
-        // TODO search transactions for provided search parameters
+        for(let i = 0; i < transactions.length; i++) {
+            if(transactions[i].inserted_at) {
+                if(receiverId) {
+                    if(transactions[i].outputs[0].address.startsWith(receiverId)) {
+                        allResults.push(transactions[i]);
+                    }
+                } else {
+                    allResults.push(transactions[i]);
+                }
+            }
+        }
+
         let results: TransactionWallet[] = [];
-        
+        let index = (resultCount * (page - 1 >= 0 ? page - 1 : 0));
+        for(let i = index; i < index + resultCount; i++) {
+            if(allResults[i]) {
+                results.push(allResults[i]);
+            }
+        }
+
         return JSON.stringify({ 
-            totalResults: transactions.length, 
-            totalPages: Math.floor((transactions.length / resultCount)), 
+            totalResults: allResults.length, 
+            totalPages: Math.ceil((allResults.length / resultCount)), 
             currentPage: page, 
             transactions: results 
         });
