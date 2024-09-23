@@ -13,9 +13,9 @@ import useWalletStore from "@/model/WalletState";
 import { syncWallet } from "@/services/WalletService";
 import { Accordion, AccordionItem, Button, DatePicker, Divider, Input, Pagination, ScrollShadow, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import {parseDate, getLocalTimeZone, CalendarDate} from "@internationalized/date";
+import {parseDate, getLocalTimeZone, CalendarDate, today} from "@internationalized/date";
 import {useDateFormatter} from "@react-aria/i18n";
-import { getTxHistory } from "@/services/TxService";
+import { getTxHistory, searchTxHistory } from "@/services/TxService";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -23,8 +23,8 @@ export default function Home() {
   const [transactions, setTransactions] = useState([] as Transaction[]);
 
   const [receiver, setReceiver] = useState("");
-  const [startDate, setStartDate] = useState(parseDate("2024-04-04"));
-  const [endDate, setEndDate] = useState(parseDate("2024-04-04"));
+  const [startDate, setStartDate] = useState(parseDate("2019-01-01"));
+  const [endDate, setEndDate] = useState(today("UTC"));
   const [currentPage, setCurrentPage] = useState(1);
   const [oldPage, setOldPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -53,17 +53,26 @@ export default function Home() {
       setOldPage(currentPage);
     }
     
-    if(selectedWallet) {
-      getTxHistory(selectedWallet.id, currentPage, parseInt(resultCount))
+    if(selectedWallet && selectedWallet.id) {
+      searchTxHistory(selectedWallet.id, currentPage, parseInt(resultCount), receiver, startDate, endDate)
         .then(res => {
           console.log(res);
 
           let listDto = res as TransactionListDto;
           setTotalPages(listDto.totalPages);
           setTransactions(listDto.transactions);
+
+          
         }); 
     }
-  }, [selectedWallet, currentPage, resultCount]);
+  }, [selectedWallet, currentPage, resultCount, receiver, startDate, endDate]);
+
+  useEffect(() => {
+    if(!resultCount) {
+      setResultCount("5");
+    }
+    setCurrentPage(1);
+  }, [resultCount, receiver, startDate, endDate]);
 
   return (
     <>
