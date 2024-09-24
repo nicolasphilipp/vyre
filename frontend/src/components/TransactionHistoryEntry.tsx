@@ -1,63 +1,63 @@
 import { Tooltip } from "@nextui-org/react";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
-import { formatNumber } from "@/services/TextFormatService";
+import { formatNumber, parseDate } from "@/services/TextFormatService";
+import { Transaction } from "@/model/Transaction";
 
 interface ValueProps {
-  date: string;
-  amount: number;
-  fee: number;
-  currency: string;
+  transaction: Transaction;
 }
 
-const TransactionHistoryEntry: React.FC<ValueProps> = ({ date, amount, fee, currency }) => {
+const TransactionHistoryEntry: React.FC<ValueProps> = ({ transaction }) => {
+  const loveLaceToAda = 1000000;  // TODO add global constants
+  const isLoveLace = transaction.amount.unit === "lovelace";
 
   return (
     <>
       {
-        amount >= 0 && 
+        transaction && transaction.direction === "incoming" && 
           <div className="flex justify-between items-center mt-2 text-success">
             <div className="transaction-row">
               <div className="transaction-date-container">
-                <span>{date}</span>
+                <span>{transaction.inserted_at && parseDate(transaction.inserted_at.time)}</span>
               </div>
               <div className="flex w-full justify-between">
-                <span>+{formatNumber(amount, 2)} {currency}</span>
+                <span>+{formatNumber(isLoveLace ? transaction.amount.quantity / loveLaceToAda : transaction.amount.quantity, 2)} {isLoveLace ? "ADA" : transaction.amount.unit}</span>
                 <ArrowIcon width={20} height={20} className="rotate-45" />
               </div>
             </div>
           </div>
       }
       {
-        amount < 0 &&
-          <div className="flex justify-between items-center mt-2 text-danger">
-            <div className="transaction-row">
-              <div className="transaction-date-container">
-                <span>{date}</span>
+        transaction && transaction.direction === "outgoing" &&
+        <div className="flex justify-between items-center mt-2 text-danger">
+          <div className="transaction-row">
+            <div className="transaction-date-container">
+              <span>{transaction.inserted_at && parseDate(transaction.inserted_at.time)}</span>
+            </div>
+            <div className="flex w-full justify-between">
+              <div className="flex flex-col">
+                <span>{formatNumber(isLoveLace ? transaction.amount.quantity / loveLaceToAda : transaction.amount.quantity, 2)} {isLoveLace ? "ADA" : transaction.amount.unit}</span>
+                <span className="text-xs ml-3 flex">
+                  Fee: {formatNumber(isLoveLace ? transaction.fee.quantity / loveLaceToAda : transaction.fee.quantity, 2)} {isLoveLace ? "ADA" : transaction.amount.unit}
+                  <Tooltip
+                    color="warning"
+                    className='tooltip-container text-white'
+                    content={
+                      <div className="px-1 py-2">
+                        <div className="text-small font-bold text-success">Information</div>
+                        <div className="text-tiny">Cardano uses a transaction fee system that covers the processing <br></br> and long-term storage cost of transactions.</div>
+                      </div>
+                    }
+                  >
+                    <span><DangerIcon width={10} height={10} /></span>
+                  </Tooltip>
+                </span>
               </div>
-              <div className="flex w-full justify-between">
-                <div className="flex flex-col">
-                  <span>{formatNumber(amount, 2)} {currency}</span>
-                  <span className="text-xs ml-3 flex">
-                    Fee: {formatNumber(fee, 2)} {currency}
-                    <Tooltip
-                      color="warning"
-                      className='tooltip-container text-white'
-                      content={
-                        <div className="px-1 py-2">
-                          <div className="text-small font-bold text-success">Information</div>
-                            <div className="text-tiny">Cardano uses a transaction fee system that covers the processing <br></br> and long-term storage cost of transactions.</div>
-                          </div>
-                      }
-                    >
-                      <span><DangerIcon width={10} height={10} /></span>
-                    </Tooltip>
-                  </span>
-                </div>
-                <ArrowIcon width={20} height={20} style={{ transform: "rotate(135deg)" }} />
-              </div>
+              <ArrowIcon width={20} height={20} style={{ transform: "rotate(135deg)" }} />
             </div>
           </div>
+        </div>
       }
     </>
   );

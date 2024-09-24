@@ -2,11 +2,11 @@
 
 import "./overview.css";
 import CreateWallet from "@/components/CreateWallet";
-import { Button, Divider, Link, ScrollShadow, Snippet, Tooltip} from '@nextui-org/react';
+import { AccordionItem, Button, Divider, Link, ScrollShadow, Snippet, Tooltip} from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
-import { Wallet } from "@/model/Wallet";
+import { DelegationStatus, Wallet } from "@/model/Wallet";
 import { Address } from "@/model/Address";
 import { DangerIcon } from "@/components/icons/DangerIcon";
 import { getAdaStats } from "@/services/CoinCapService";
@@ -29,12 +29,20 @@ import { IncreaseIcon } from "@/components/icons/IncreaseIcon";
 import { SwapIcon } from "@/components/icons/SwapIcon";
 import { SendIcon } from "@/components/icons/SendIcon";
 import SendAdaModal from "@/components/SendAdaModal";
+import { queryPool } from "@/services/StakeService";
+import { StakePool } from "@/model/StakePool";
+import { Transaction, TransactionListDto } from "@/model/Transaction";
+import { getTxHistory, searchTxHistory } from "@/services/TxService";
+import TransactionListAccordionEntry from "@/components/TransactionListAccordionEntry";
+import TransactionListDetailEntry from "@/components/TransactionListDetailEntry";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
 
   const [selectedWallet, setSelectedWallet] = useState({} as Wallet);
+  const [transactions, setTransactions] = useState([] as Transaction[]);
   const [address, setAddress] = useState({} as Address);
+  const [stakePool, setStakePool] = useState({} as StakePool);
   const loveLaceToAda = 1000000;
 
   const [adaData, setAdaData] = useState({} as AdaData);
@@ -104,11 +112,30 @@ export default function Home() {
             res.wallet.isSelected = wallets[i].isSelected;
             wallets[i] = res.wallet as Wallet;
           });
+
+          if(wallets[i].delegation.active.target) {
+            queryPool(wallets[i].delegation.active.target, wallets[i].balance.available.quantity)
+              .then(res => {
+                setStakePool(res.pool);
+              });
+          }
       }
     }
 
     setSelectedWallet(activeWallet);
   }, [selected]);
+
+  useEffect(() => {
+    if(selectedWallet && selectedWallet.id) {
+      getTxHistory(selectedWallet.id, 1, 10)
+        .then(res => {
+          console.log(res);
+
+          let listDto = res as TransactionListDto;
+          setTransactions(listDto.transactions);
+        }); 
+    }
+  }, [selectedWallet]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -280,18 +307,12 @@ export default function Home() {
                 </div>
 
                   <ScrollShadow className="h-52" hideScrollBar size={20}>
-                    <TransactionHistoryEntry date="08.08." amount={500.33} fee={0} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
-                    <TransactionHistoryEntry date="11.08." amount={-1123.79} fee={0.65} currency="ADA" />
+                    {
+                      transactions && transactions.map((tx, i) => 
+                        <TransactionHistoryEntry key={i} transaction={tx} />
+                      )
+                    }
                   </ScrollShadow>
-                
               </div>
               <div className="flex items-center text-right justify-end">
                 <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onClick={() => setActiveItem("transactions")}>
@@ -343,17 +364,27 @@ export default function Home() {
                   <StakingIcon className="text-white" width={16} height={16} />
                 </div>
               </div>
-              <div>
-                <span>{selectedWallet && <span>Status: {selectedWallet.delegation.active.status}</span>}</span>
+              <div className="flex flex-col">
+                <span>
+                  { selectedWallet && 
+                  (selectedWallet.delegation.active.status === DelegationStatus.Delegating || selectedWallet.delegation.active.status === DelegationStatus.VotingAndDelegating) && 
+                  <span>delegated to $ticker</span>
+                  }
+                </span>
+                <span>{stakePool.pledge && <span>Pledge: {stakePool.pledge.quantity}</span>}</span>
+                <span>{stakePool.metrics && <span>Saturation: {stakePool.metrics.saturation}</span>}</span>
               </div>
-
-              <div className="h-full absolute top-0 right-0 p-4 flex flex-col justify-between items-end">
-                <span className="text-center">You can earn up to ~3% APY on <br></br> your ADA by staking to a stake pool.</span>
-                <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking" onClick={() => setActiveItem("staking")}>
-                  Stake to a pool
-                  <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
-                </Link>
-              </div>
+                
+              {
+                selectedWallet && selectedWallet.delegation.active.status === DelegationStatus.NotDelegating &&
+                <div className="h-full absolute top-0 right-0 p-4 flex flex-col justify-between items-end">
+                  <span className="text-center">You can earn up to ~3% APY on <br></br> your ADA by staking to a stake pool.</span>
+                  <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking" onClick={() => setActiveItem("staking")}>
+                    Stake to a pool
+                    <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
+                  </Link>
+                </div>
+              }
             </div> 
           </div>
         </div>

@@ -30,12 +30,31 @@ export interface UnitBalance {
 }
 
 export interface Delegation {
-    active: Status;
-    next: string[];
+    active: ActiveDelegation;
+    next: NextDelegation[];
 }
 
-export interface Status {
-    status: string;
+export interface ActiveDelegation {
+    status: DelegationStatus;
+    target: string;
+    voting: string;
+}
+
+export interface NextDelegation {
+    status: DelegationStatus;
+    target: string;
+    changes_at: EpochTime;
+}
+
+export interface EpochTime {
+    epoch_number: number;
+    epoch_start_time: string;
+}
+
+export enum DelegationStatus {
+    NotDelegating = "not_delegating",
+    Delegating = "delegating",
+    VotingAndDelegating = "voting_and_delegating"
 }
 
 export interface Passphrase {
