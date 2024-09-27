@@ -13,6 +13,22 @@ body {
   font-size: large;
 }
 
+::-webkit-scrollbar {
+  width: 12px;
+  position: absolute;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
 .background-dark {
   background-color: rgb(10, 10, 10);
 }

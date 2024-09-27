@@ -38,6 +38,8 @@ import TransactionListDetailEntry from "@/components/TransactionListDetailEntry"
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import StakePoolCard from "@/components/StakePoolCard";
 import { adaPrice, loveLaceToAda } from "@/Constants";
+import { PieChartIcon } from "@/components/icons/PieChartIcon";
+import { TreasureIcon } from "@/components/icons/TreasureIcon";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -192,7 +194,10 @@ export default function Home() {
 
             <div className="col-span-3 row-span-3 p-4 overview-card flex-col break-words" style={{height: "460px"}}>
               <div className="flex justify-between">
-                <span className="section-headline">Wallet Overview</span>
+                <div className="flex gap-1 items-center">
+                  <span className="section-headline">Wallet Overview</span>
+                  <TreasureIcon className="text-white" width={18} height={18} />
+                </div>
 
                 <div className="flex flex-col gap-2 items-end">
                   <div className="flex gap-2">

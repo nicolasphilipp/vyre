@@ -31,8 +31,8 @@ export default function Home() {
   const [totalPages, setTotalPages] = useState(1);
 
   const [selectedKeys, setSelectedKeys] = useState(new Set(["-1"]));
-  const [resultCount, setResultCount] = useState("5");
-  const resultCounts = ["5", "10", "15"];
+  const [resultCount, setResultCount] = useState("10");
+  const resultCounts = ["10", "15", "20"];
   
   const handleResultCountChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
     setResultCount(e.target.value as string);
@@ -92,22 +92,22 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="col-span-2 row-span-4 p-4 overview-card flex-col break-words">
+          <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words">
             <div className="flex gap-1 items-center">
               <span className="section-headline">Insights</span>
               <InsightsIcon className="text-white" width={18} height={18} />
             </div>
           </div>
 
-          <div className="col-span-3 row-span-3 p-4 overview-card flex-col break-words">
+          <div className="col-span-3 row-span-4 p-4 overview-card flex-col break-words">
             <div className="flex gap-1 items-center">
               <span className="section-headline">Transactions</span>
               <TransactionIcon className="text-white" width={16} height={16} />
             </div>
 
             <div className="flex flex-col justify-between h-full">
-              <div className="w-full" style={{height: "300px"}}>
-                <ScrollShadow className="h-full" hideScrollBar size={20}>
+              <div className="w-full" style={{height: "495px"}}>
+                <ScrollShadow className="h-full" size={20}>
                   <Accordion isCompact showDivider={false} selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys}>
                     {
                       transactions && transactions.map((tx, i) => 
@@ -157,13 +157,13 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="col-span-2 row-span-5 p-4 overview-card flex-col break-words">
+          <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
             <div className="flex gap-0.5 items-center">
               <span className="section-headline">Actions</span>
               <LightningIcon className="text-white" width={16} height={16} />
             </div>
 
-            <div className="flex flex-col gap-4 mt-3 w-1/4">
+            <div className="flex flex-col gap-4 mt-3">
               <SendAdaModal wallet={selectedWallet} />
               <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
                 <span className="flex gap-0.5 items-center">
@@ -174,8 +174,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="col-span-3 row-span-5 p-4 overview-card flex-col break-words">
-            <span>More Diagrams</span>
+          <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
+            <span>Placeholder</span>
           </div>
         </div>
       </div>
