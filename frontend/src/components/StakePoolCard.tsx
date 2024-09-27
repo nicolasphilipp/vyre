@@ -67,7 +67,7 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
             <div className="flex gap-4 items-center">
                 <span>Saturation</span>
                 <div className="flex gap-2 items-center w-full">
-                    <Progress color="secondary" value={parseFloat(numberToPercent(pool.saturation, 2))} />
+                    <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(pool.saturation, 2))} />
                     <span>{numberToPercent(pool.saturation, 2)}</span>
                 </div>
             </div>

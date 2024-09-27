@@ -24,19 +24,19 @@ export default function WalletNavBar() {
     <div className="wallet-nav-container">
       <SelectWallet />
       <div className="nav-link-container">
-        <Link id="overview" color='secondary' className='wallet-nav-link' href="/me/overview" onClick={() => setActiveItem("overview")}>
+        <Link id="overview" color='secondary' className='wallet-nav-link' href="/me/overview" onPress={() => setActiveItem("overview")}>
           <ArrowIcon width={16} height={16} className='mr-0.5 -rotate-45' />
           Overview
         </Link>
-        <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onClick={() => setActiveItem("transactions")}> 
+        <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onPress={() => setActiveItem("transactions")}> 
           <TransactionIcon width={16} height={16} className='mr-1' />
           Transactions
         </Link>
-        <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking" onClick={() => setActiveItem("staking")}>
+        <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking" onPress={() => setActiveItem("staking")}>
           <StakingIcon width={16} height={16} className='mr-1' />
           Staking
         </Link>
-        <Link id="settings" color='secondary' className='wallet-nav-link' href="/me/settings" onClick={() => setActiveItem("settings")}>
+        <Link id="settings" color='secondary' className='wallet-nav-link' href="/me/settings" onPress={() => setActiveItem("settings")}>
           <SettingsIcon width={16} height={16} className='mr-1' />
           Settings
         </Link>

@@ -181,7 +181,8 @@ export default function Home() {
           <span className="text-center">Select one of your wallets or add a new wallet <br></br> by creating or restoring an existing wallet.</span>
         </div>
       }
-      {wallets.length > 0 && selectedWallet.id && 
+      {
+        wallets.length > 0 && selectedWallet.id && 
         <div className="wallet-overview-content">
           <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
 
@@ -265,36 +266,36 @@ export default function Home() {
               <ScrollShadow hideScrollBar size={20}>
                 {
                   selectedWallet.assets.total.map((asset, i) => 
-                    <>
-                      <div key={"asset" + i} className="flex justify-between">
+                    <div key={"assetList" + i}>
+                      <div key={"asset" + 0} aria-label={"asset" + 0} className="flex justify-between">
                         <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
                         <span>N/A €</span>
                       </div>
-                      <div key={"asset" + i} className="flex justify-between">
+                      <div key={"asset" + 1} aria-label={"asset" + 1} className="flex justify-between">
                         <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
                         <span>N/A €</span>
                       </div>
-                      <div key={"asset" + i} className="flex justify-between">
+                      <div key={"asset" + 2} aria-label={"asset" + 2} className="flex justify-between">
                         <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
                         <span>N/A €</span>
                       </div>
-                      <div key={"asset" + i} className="flex justify-between">
+                      <div key={"asset" + 3} aria-label={"asset" + 3} className="flex justify-between">
                         <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
                         <span>N/A €</span>
                       </div>
-                      <div key={"asset" + i} className="flex justify-between">
+                      <div key={"asset" + 4} aria-label={"asset" + 4} className="flex justify-between">
                         <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
                         <span>N/A €</span>
                       </div>
-                      <div key={"asset" + i} className="flex justify-between">
+                      <div key={"asset" + 5} aria-label={"asset" + 5} className="flex justify-between">
                         <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
                         <span>N/A €</span>
                       </div>
-                      <div key={"asset" + i} className="flex justify-between">
+                      <div key={"asset" + 6} aria-label={"asset" + 6} className="flex justify-between">
                         <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
                         <span>N/A €</span>
                       </div>
-                    </>
+                    </div>
                   )
                 }
               </ScrollShadow>
@@ -314,13 +315,13 @@ export default function Home() {
                   <ScrollShadow className="h-52" hideScrollBar size={20}>
                     {
                       transactions && transactions.map((tx, i) => 
-                        <TransactionHistoryEntry key={i} transaction={tx} />
+                        <TransactionHistoryEntry key={"transaction" + i} aria-label={"transaction" + i} transaction={tx} />
                       )
                     }
                   </ScrollShadow>
               </div>
               <div className="flex items-center text-right justify-end">
-                <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onClick={() => setActiveItem("transactions")}>
+                <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onPress={() => setActiveItem("transactions")}>
                   View all
                   <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
                 </Link>
@@ -344,7 +345,6 @@ export default function Home() {
                 </div>
               </div>
 
-             
             </div> 
           </div>
         </div>
