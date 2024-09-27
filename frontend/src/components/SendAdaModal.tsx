@@ -13,14 +13,13 @@ import { Address } from "@/model/Address";
 import { estimateFees, submitTx } from "@/services/TxService";
 import { Transaction, TxFees } from "@/model/Transaction";
 import toast, { Toaster } from "react-hot-toast";
+import { loveLaceToAda } from "@/Constants";
 
 interface ValueProps {
     wallet: Wallet;
 }
 
 const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
-  const loveLaceToAda = 1000000;
-
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   
   const [receiver, setReceiver] = useState("");
@@ -54,7 +53,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
         document.getElementById("amount")?.classList.remove("text-danger");
     }
 
-    if(!isReceiverInvalid() && !isAmountInvalid()) {
+    if((receiverTouched && !isReceiverInvalid()) && (amountTouched && !isAmountInvalid())) {
         // TODO only call this after waiting 2 seconds after last amount change?
 
         estimateFees(wallet.id, receiver, getTxAmount())
