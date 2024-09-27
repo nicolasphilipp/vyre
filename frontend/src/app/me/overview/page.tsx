@@ -112,6 +112,8 @@ export default function Home() {
           .then(res => {
             res.wallet.isSelected = wallets[i].isSelected;
             wallets[i] = res.wallet as Wallet;
+
+            update(wallets[i].id, wallets[i]);
           });
 
           if(wallets[i].delegation.active.target) {
@@ -152,6 +154,8 @@ export default function Home() {
             .then(res => {
               res.wallet.isSelected = wallets[i].isSelected;
               wallets[i] = res.wallet as Wallet;
+
+              update(wallets[i].id, wallets[i]);
             });
         }
       }, 5000);
@@ -322,7 +326,7 @@ export default function Home() {
               </div>
               <div className="flex items-center text-right justify-end">
                 <Link id="transactions" color='secondary' className='wallet-nav-link' href="/me/transactions" onPress={() => setActiveItem("transactions")}>
-                  View all
+                  View all transactions
                   <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
                 </Link>
               </div>

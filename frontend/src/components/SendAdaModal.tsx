@@ -14,12 +14,14 @@ import { estimateFees, submitTx } from "@/services/TxService";
 import { Transaction, TxFees } from "@/model/Transaction";
 import toast, { Toaster } from "react-hot-toast";
 import { loveLaceToAda } from "@/Constants";
+import { syncWallet } from "@/services/WalletService";
 
 interface ValueProps {
     wallet: Wallet;
 }
 
 const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
+  const { update } = useWalletStore();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   
   const [receiver, setReceiver] = useState("");
@@ -142,6 +144,13 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
         error: 'Error submitting transaction.',
     });
 
+    syncWallet(wallet.id)
+        .then(res => {
+            res.wallet.isSelected = wallet.isSelected;
+            wallet = res.wallet as Wallet;
+            
+            update(wallet.id, wallet);
+        });
   }, [submit]);
   
   return (

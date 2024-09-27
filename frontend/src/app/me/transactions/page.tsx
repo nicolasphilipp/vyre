@@ -13,9 +13,10 @@ import useWalletStore from "@/model/WalletState";
 import { syncWallet } from "@/services/WalletService";
 import { Accordion, AccordionItem, Button, DatePicker, Divider, Input, Pagination, ScrollShadow, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import {parseDate, getLocalTimeZone, CalendarDate, today} from "@internationalized/date";
+import {parseDate, getLocalTimeZone, CalendarDate, today } from "@internationalized/date";
 import {useDateFormatter} from "@react-aria/i18n";
 import { getTxHistory, searchTxHistory } from "@/services/TxService";
+import { InsightsIcon } from "@/components/icons/InsightsIcon";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -24,7 +25,7 @@ export default function Home() {
 
   const [receiver, setReceiver] = useState("");
   const [startDate, setStartDate] = useState(parseDate("2019-01-01"));
-  const [endDate, setEndDate] = useState(today("UTC"));
+  const [endDate, setEndDate] = useState(today("UTC").add({days: 1}));
   const [currentPage, setCurrentPage] = useState(1);
   const [oldPage, setOldPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -56,14 +57,12 @@ export default function Home() {
     if(selectedWallet && selectedWallet.id) {
       searchTxHistory(selectedWallet.id, currentPage, parseInt(resultCount), receiver, startDate, endDate)
         .then(res => {
-          console.log(res);
+            console.log(res);
 
-          let listDto = res as TransactionListDto;
-          setTotalPages(listDto.totalPages);
-          setTransactions(listDto.transactions);
-
-          
-        }); 
+            let listDto = res as TransactionListDto;
+            setTotalPages(listDto.totalPages);
+            setTransactions(listDto.transactions);
+          }); 
     }
   }, [selectedWallet, currentPage, resultCount, receiver, startDate, endDate]);
 
@@ -73,6 +72,8 @@ export default function Home() {
     }
     setCurrentPage(1);
   }, [resultCount, receiver, startDate, endDate]);
+
+  // TODO pass function to sendAdaModal -> that executes searchTxHistory
 
   return (
     <>
@@ -92,7 +93,10 @@ export default function Home() {
           </div>
 
           <div className="col-span-2 row-span-4 p-4 overview-card flex-col break-words">
-            <span>Statistic Diagrams</span>
+            <div className="flex gap-1 items-center">
+              <span className="section-headline">Insights</span>
+              <InsightsIcon className="text-white" width={18} height={18} />
+            </div>
           </div>
 
           <div className="col-span-3 row-span-3 p-4 overview-card flex-col break-words">
