@@ -186,7 +186,7 @@ export default function Home() {
         <div className="wallet-overview-content">
           <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
 
-            <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words" style={{height: "460px"}}>
+            <div className="col-span-3 row-span-3 p-4 overview-card flex-col break-words" style={{height: "460px"}}>
               <div className="flex justify-between">
                 <span className="section-headline">Wallet Overview</span>
 
@@ -301,14 +301,14 @@ export default function Home() {
               </ScrollShadow>
             </div>
                     
-            <div className="col-span-3 row-span-4 overview-card flex-col break-words items-center justify-center">
+            <div className="col-span-2 row-span-3 overview-card flex-col break-words items-center justify-center">
               <span>{adaData.priceUsd ? Math.round(parseFloat(adaData.priceUsd) * 10000) / 10000 : "0"}</span>
             </div>
 
-            <div className="col-span-1 row-span-2 p-4 overview-card flex-col gap-2 break-words justify-between">
+            <div className="col-span-2 row-span-2 p-4 overview-card flex-col gap-2 break-words justify-between">
               <div>
                 <div className="flex gap-1 items-center">
-                  <span className="section-headline">Recent</span>
+                  <span className="section-headline">Recent Transactions</span>
                   <TransactionIcon className="text-white" width={16} height={16} />
                 </div>
 
@@ -328,20 +328,46 @@ export default function Home() {
               </div>
             </div>
                     
-            <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
+            <div className="col-span-2 row-span-2 p-4 overview-card flex-col break-words">
               <div className="flex gap-0.5 items-center">
-                <span className="section-headline">Staking</span>
+                <span className="section-headline">Staking Overview</span>
                 <StakingIcon className="text-white" width={16} height={16} />
               </div>
 
               <StakePoolCard pool={poolData} />
             </div>
 
-            <div className="col-span-3 row-span-1 p-4 overview-card flex-col break-words">
-              <div>
-                <div className="flex gap-1 items-center">
-                  <span className="section-headline">Staking Overview</span>
-                  <StakingIcon className="text-white" width={16} height={16} />
+            <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
+              <div className="flex gap-0.5 items-center">
+                <span className="section-headline">Actions</span>
+                <LightningIcon className="text-white" width={16} height={16} />
+              </div>
+              
+              <div className="adaAddress">
+                <Snippet 
+                  symbol="" 
+                  tooltipProps={{
+                    className: "dark"
+                  }}
+                  codeString={address?.id}
+                  size="sm"
+                >
+                  {windowWidth > 1450 ? formatAdaAddress(address?.id, 8) : formatAdaAddress(address?.id, 4)}
+                </Snippet>
+              </div>
+
+              <div className="absolute bottom-0 left-0 p-4 w-full">
+                <div className="quickaction-container">
+                  <QRCodeSVG className="qrcode" value={address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
+                  <div className="flex flex-col gap-4 justify-between">
+                    <SendAdaModal wallet={selectedWallet} />
+                    <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
+                      <span className="flex gap-0.5 items-center">
+                        Swap ADA
+                        <SwapIcon width={16} height={16} />
+                      </span>
+                    </Button>
+                  </div>
                 </div>
               </div>
 
