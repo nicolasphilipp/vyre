@@ -30,7 +30,7 @@ import { SwapIcon } from "@/components/icons/SwapIcon";
 import { SendIcon } from "@/components/icons/SendIcon";
 import SendAdaModal from "@/components/SendAdaModal";
 import { queryPool } from "@/services/StakeService";
-import { StakePool } from "@/model/StakePool";
+import { StakePool, StakePoolData } from "@/model/StakePool";
 import { Transaction, TransactionListDto } from "@/model/Transaction";
 import { getTxHistory, searchTxHistory } from "@/services/TxService";
 import TransactionListAccordionEntry from "@/components/TransactionListAccordionEntry";
@@ -44,7 +44,7 @@ export default function Home() {
   const [selectedWallet, setSelectedWallet] = useState({} as Wallet);
   const [transactions, setTransactions] = useState([] as Transaction[]);
   const [address, setAddress] = useState({} as Address);
-  const [stakePool, setStakePool] = useState({} as StakePool);
+  const [poolData, setPoolData] = useState({} as StakePoolData);
   const loveLaceToAda = 1000000;
 
   const [adaData, setAdaData] = useState({} as AdaData);
@@ -116,12 +116,14 @@ export default function Home() {
           });
 
           if(wallets[i].delegation.active.target) {
-            queryPool(wallets[i].delegation.active.target, wallets[i].balance.available.quantity)
+            queryPool(wallets[i].delegation.active.target)
               .then(res => {
-                setStakePool(res.pool);
+                console.log(res);
+
+                setPoolData(res.pool);
               });
           } else {
-            setStakePool({} as StakePool);
+            setPoolData({} as StakePoolData);
           }
       }
     }
@@ -332,7 +334,7 @@ export default function Home() {
                 <StakingIcon className="text-white" width={16} height={16} />
               </div>
 
-              <StakePoolCard pool={stakePool} />
+              <StakePoolCard pool={poolData} />
             </div>
 
             <div className="col-span-3 row-span-1 p-4 overview-card flex-col break-words">
@@ -343,27 +345,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex flex-col">
-                <span>
-                  { selectedWallet && 
-                    (selectedWallet.delegation.active.status === DelegationStatus.Delegating || selectedWallet.delegation.active.status === DelegationStatus.VotingAndDelegating) && 
-                    <span>delegated to $ticker</span>
-                  }
-                </span>
-                <span>{stakePool.pledge && <span>Pledge: {stakePool.pledge.quantity}</span>}</span>
-                <span>{stakePool.metrics && <span>Saturation: {stakePool.metrics.saturation}</span>}</span>
-              </div>
-                
-              {
-                selectedWallet && selectedWallet.delegation.active.status === DelegationStatus.NotDelegating &&
-                <div className="h-full absolute top-0 right-0 p-4 flex flex-col justify-between items-end">
-                  <span className="text-center">You can earn up to ~3% APY on <br></br> your ADA by staking to a stake pool.</span>
-                  <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking" onClick={() => setActiveItem("staking")}>
-                    Stake to a pool
-                    <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
-                  </Link>
-                </div>
-              }
+             
             </div> 
           </div>
         </div>

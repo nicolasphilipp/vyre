@@ -6,32 +6,43 @@ import { Transaction } from "@/model/Transaction";
 import { DelegationStatus } from "@/model/Wallet";
 import { setActiveItem } from "@/services/NavbarHelperService";
 import { ExternalLinkIcon } from "./icons/ExternalLinkIcon";
-import { StakePool } from "@/model/StakePool";
+import { StakePool, StakePoolData } from "@/model/StakePool";
 
 interface ValueProps {
-    pool: StakePool;
+    pool: StakePoolData;
 }
 
 const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
   const loveLaceToAda = 1000000;  // TODO add global constants
 
+    function extractTicker(name: string, ticker: boolean): string {
+        if(name) {
+            if(ticker) {
+                return name.slice(0, name.indexOf("]") + 1);
+            } else {
+                return name.slice(name.indexOf("]") + 1);
+            }
+        } 
+        return "";
+    }
+
   return (
     <div className="overview-highlight-card p-2 mt-2">
         <div className="flex flex-col">
-            <Link color='secondary' className='wallet-nav-link absolute top-2 right-2' href="https://preview.cardanoscan.io/pool/0bf63c6f8504de6d4ed5cf272784e0245632323e7f4bae161c57f527" isExternal>
+            <Link color='secondary' className='wallet-nav-link absolute top-2 right-2' href={pool.url} isExternal>
                 <ExternalLinkIcon width={16} height={16} />
             </Link>
             <div className="flex gap-3 items-center">
                 <Image
-                    alt="Stake Pool Logo"
+                    alt={pool.name}
                     height={40}
                     radius="sm"
-                    src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
+                    src={pool.img}
                     width={40}
                 />
                 <div className="flex flex-col">
-                    <span>[ADAR]</span>
-                    <span>ADA Rewards</span>
+                    <span>{extractTicker(pool.name, true)}</span>
+                    <span>{extractTicker(pool.name, false)}</span>
                 </div>
             </div>
 
@@ -40,51 +51,37 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
                 tooltipProps={{
                     className: "dark"
                 }}
-                codeString={"pool1p0mrcmu9qn0x6nk4eunj0p8qy3tryv370a96u9su2l6jwkytnru"}
+                codeString={pool.pool_id}
                 size="md"
                 classNames={{
                     base: "p-0 bg-transparent text-inherit",
                     pre: "font-sans"
                 }}
             >
-                <span>{cutText("pool1p0mrcmu9qn0x6nk4eunj0p8qy3tryv370a96u9su2l6jwkytnru", 20)}</span>
+                <span>{cutText(pool.pool_id, 20)}</span>
             </Snippet>
 
             <Divider className="mb-1" />
                   
-            <span>
-                { pool.metrics && 
-                    <div className="flex gap-4 items-center">
-                       <span>Saturation</span>
-                        <div className="flex gap-2 items-center w-full">
-                          <Progress color="secondary" value={parseFloat(numberToPercent(pool.metrics.saturation, 2))} />
-                          <span>{numberToPercent(pool.metrics.saturation, 2)}</span>
-                        </div>
-                    </div>
-                }
-            </span>
-            <span>
-                { pool.pledge && 
-                    <div className="flex justify-between">
-                        <span>Pledge </span>
-                        <span>₳ {formatNumber(pool.pledge.quantity / loveLaceToAda, 2)}</span>
-                    </div>
-                }
-            </span>
-            <span>
-                { pool.margin && pool.cost && 
-                    <div className="flex justify-between">
-                        <span>Fees </span>
-                        <span>₳ {formatNumber(pool.cost.quantity / loveLaceToAda, 2)} ({pool.margin.quantity}%)</span>
-                    </div>
-                }
-            </span>
 
+            <div className="flex gap-4 items-center">
+                <span>Saturation</span>
+                <div className="flex gap-2 items-center w-full">
+                    <Progress color="secondary" value={parseFloat(numberToPercent(pool.saturation, 2))} />
+                    <span>{numberToPercent(pool.saturation, 2)}</span>
+                </div>
+            </div>
+            <div className="flex justify-between">
+                <span>Pledge </span>
+                <span>₳ {formatNumber(parseFloat(pool.pledge) / loveLaceToAda, 2)}</span>
+            </div>
+            <div className="flex justify-between">
+                <span>Fees </span>
+                <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({pool.tax_ratio}%)</span>
+            </div>
             <Divider className="my-1"/>
                   
-            <span>
-                APY: 2.55%
-            </span>
+            <span>APY: ~{pool.roa_short}%</span>
         </div>
     </div>
   );
