@@ -3,17 +3,31 @@ export function formatNumber(value: number, decimals: number): string {
     const [integerPart, decimalPart] = roundedValue.split('.');
     
     const formattedInteger = parseInt(integerPart, 10).toLocaleString('en-US');
-    if(parseInt(decimalPart) === 0){
+    if(parseInt(decimalPart) === 0) {
         return `${formattedInteger}.00`;
     }
     return `${formattedInteger}.${decimalPart}`;
 }
 
+export function numberToPercent(value: number, decimals: number): string {
+    const percentValue = value * 100;
+    const formattedValue = percentValue.toFixed(decimals);
+    return `${formattedValue}%`;
+}
+
 export function formatAdaAddress(input: string, visibleCharacters: number): string {
-    if(input){  
+    if(input) {  
         const start = input.slice(0, visibleCharacters);
         const end = input.slice(-visibleCharacters);
         return `${start}...${end}`;
+    }
+    return "";
+}
+
+export function cutText(input: string, visibleCharacters: number): string {
+    if(input) {
+        const start = input.slice(0, visibleCharacters);
+        return `${start}...`;
     }
     return "";
 }

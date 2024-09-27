@@ -2,7 +2,7 @@
 
 import "./overview.css";
 import CreateWallet from "@/components/CreateWallet";
-import { AccordionItem, Button, Divider, Link, ScrollShadow, Snippet, Tooltip} from '@nextui-org/react';
+import { AccordionItem, Avatar, Button, Card, CardBody, CardFooter, CardHeader, Divider, Link, ScrollShadow, Snippet, Tooltip, Image, Progress } from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import { DangerIcon } from "@/components/icons/DangerIcon";
 import { getAdaStats } from "@/services/CoinCapService";
 import { AdaData } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
-import { formatAdaAddress, formatNumber, hexToAsciiString } from "@/services/TextFormatService";
+import { cutText, formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent } from "@/services/TextFormatService";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { RemoveIcon } from "@/components/icons/RemoveIcon";
 import EditWalletModal from "@/components/EditWalletModal";
@@ -35,6 +35,8 @@ import { Transaction, TransactionListDto } from "@/model/Transaction";
 import { getTxHistory, searchTxHistory } from "@/services/TxService";
 import TransactionListAccordionEntry from "@/components/TransactionListAccordionEntry";
 import TransactionListDetailEntry from "@/components/TransactionListDetailEntry";
+import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
+import StakePoolCard from "@/components/StakePoolCard";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -118,6 +120,8 @@ export default function Home() {
               .then(res => {
                 setStakePool(res.pool);
               });
+          } else {
+            setStakePool({} as StakePool);
           }
       }
     }
@@ -324,37 +328,11 @@ export default function Home() {
                     
             <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
               <div className="flex gap-0.5 items-center">
-                <span className="section-headline">Actions</span>
-                <LightningIcon className="text-white" width={16} height={16} />
-              </div>
-              
-              <div className="adaAddress">
-                <Snippet 
-                  symbol="" 
-                  tooltipProps={{
-                    className: "dark"
-                  }}
-                  codeString={address?.id}
-                  size="sm"
-                >
-                  {windowWidth > 1450 ? formatAdaAddress(address?.id, 8) : formatAdaAddress(address?.id, 4)}
-                </Snippet>
+                <span className="section-headline">Staking</span>
+                <StakingIcon className="text-white" width={16} height={16} />
               </div>
 
-              <div className="absolute bottom-0 left-0 p-4 w-full">
-                <div className="quickaction-container">
-                  <QRCodeSVG className="qrcode" value={address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
-                  <div className="flex flex-col gap-4 justify-between">
-                    <SendAdaModal wallet={selectedWallet} />
-                    <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
-                      <span className="flex gap-0.5 items-center">
-                        Swap ADA
-                        <SwapIcon width={16} height={16} />
-                      </span>
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              <StakePoolCard pool={stakePool} />
             </div>
 
             <div className="col-span-3 row-span-1 p-4 overview-card flex-col break-words">
@@ -364,11 +342,12 @@ export default function Home() {
                   <StakingIcon className="text-white" width={16} height={16} />
                 </div>
               </div>
+
               <div className="flex flex-col">
                 <span>
                   { selectedWallet && 
-                  (selectedWallet.delegation.active.status === DelegationStatus.Delegating || selectedWallet.delegation.active.status === DelegationStatus.VotingAndDelegating) && 
-                  <span>delegated to $ticker</span>
+                    (selectedWallet.delegation.active.status === DelegationStatus.Delegating || selectedWallet.delegation.active.status === DelegationStatus.VotingAndDelegating) && 
+                    <span>delegated to $ticker</span>
                   }
                 </span>
                 <span>{stakePool.pledge && <span>Pledge: {stakePool.pledge.quantity}</span>}</span>
