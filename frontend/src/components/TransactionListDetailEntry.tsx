@@ -10,8 +10,6 @@ interface ValueProps {
 }
 
 const TransactionListDetailEntry: React.FC<ValueProps> = ({ transaction }) => {
-  const loveLaceToAda = 1000000;
-  const isLoveLace = transaction.amount.unit === "lovelace";
 
   return (
     <>

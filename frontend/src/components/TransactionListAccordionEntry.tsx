@@ -3,13 +3,13 @@ import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
 import { formatNumber, parseDate } from "@/services/TextFormatService";
 import { Transaction } from "@/model/Transaction";
+import { loveLaceToAda } from "@/Constants";
 
 interface ValueProps {
   transaction: Transaction;
 }
 
 const TransactionListAccordionEntry: React.FC<ValueProps> = ({ transaction }) => {
-  const loveLaceToAda = 1000000;
   const isLoveLace = transaction.amount.unit === "lovelace";
 
   return (

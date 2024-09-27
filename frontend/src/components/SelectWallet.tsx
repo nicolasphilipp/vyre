@@ -3,14 +3,12 @@ import {Select, SelectItem} from "@nextui-org/react";
 import useWalletStore from "@/model/WalletState";
 import { Wallet } from "@/model/Wallet";
 import { formatNumber } from "@/services/TextFormatService";
+import { loveLaceToAda, adaPrice } from "@/Constants";
 
 export default function SelectWallet() {
     const wallets = useWalletStore(state => state.wallets);
     const { update, selected, setSelected } = useWalletStore();
     const [selectedWallet, setSelectedWallet] = useState({} as Wallet);  
-
-    const loveLaceToAda = 1000000;
-    const adaPrice = 0.32;
 
     useEffect(() => {
         let selectedWallet = wallets.filter(w => w.isSelected)[0];

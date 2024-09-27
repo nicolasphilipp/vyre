@@ -37,6 +37,7 @@ import TransactionListAccordionEntry from "@/components/TransactionListAccordion
 import TransactionListDetailEntry from "@/components/TransactionListDetailEntry";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import StakePoolCard from "@/components/StakePoolCard";
+import { adaPrice, loveLaceToAda } from "@/Constants";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -45,10 +46,8 @@ export default function Home() {
   const [transactions, setTransactions] = useState([] as Transaction[]);
   const [address, setAddress] = useState({} as Address);
   const [poolData, setPoolData] = useState({} as StakePoolData);
-  const loveLaceToAda = 1000000;
 
   const [adaData, setAdaData] = useState({} as AdaData);
-  const adaPrice = 0.32; // TODO only for testing
 
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
 

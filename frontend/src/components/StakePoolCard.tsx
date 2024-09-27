@@ -7,13 +7,13 @@ import { DelegationStatus } from "@/model/Wallet";
 import { setActiveItem } from "@/services/NavbarHelperService";
 import { ExternalLinkIcon } from "./icons/ExternalLinkIcon";
 import { StakePool, StakePoolData } from "@/model/StakePool";
+import { loveLaceToAda } from "@/Constants";
 
 interface ValueProps {
     pool: StakePoolData;
 }
 
 const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
-  const loveLaceToAda = 1000000;  // TODO add global constants
 
     function extractTicker(name: string, ticker: boolean): string {
         if(name) {
@@ -35,10 +35,10 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
             <div className="flex gap-3 items-center">
                 <Image
                     alt={pool.name}
-                    height={40}
+                    height={50}
                     radius="sm"
                     src={pool.img}
-                    width={40}
+                    width={50}
                 />
                 <div className="flex flex-col">
                     <span>{extractTicker(pool.name, true)}</span>
