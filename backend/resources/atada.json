@@ -1,0 +1,150 @@
+{
+    "code": 200,
+    "time": "Fri, 27 Sep 2024 12:12:30 +0000",
+    "msg": "OK",
+    "data": {
+        "pool_id": "pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9",
+        "name": "[ATADA] ATADA Stakepool in Austria",
+        "stake": "66350365459318",
+        "stake_active": "66487383556774",
+        "pool_id_hash": "00000036d515e12e18cd3c88c74f09a67984c2c279a5296aa96efe89",
+        "tax_ratio": "1",
+        "tax_fix": "340000000",
+        "blocks_epoch": "8",
+        "blocks_lifetime": 18052,
+        "roa_short": "2.662",
+        "roa_lifetime": "3.99",
+        "pledge": "1300000000000",
+        "delegators": "2043",
+        "position": "101",
+        "blocks_est_epoch": "63.57",
+        "luck_lifetime": "0.976",
+        "saturation": 0.890617,
+        "handles": {
+            "github_handle": "gitmachtl",
+            "twitch_handle": "",
+            "discord_handle": "",
+            "twitter_handle": "ATADA_Stakepool",
+            "youtube_handle": "",
+            "facebook_handle": "ATADA.StakePool.Austria",
+            "telegram_handle": "atada_stakepool_austria",
+            "homepage": "\"https://stakepool.at\""
+        },
+        "url": "https://cexplorer.io/pool/pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9",
+        "img": "https://img.cexplorer.io/6/5/7/9/2/pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9.png",
+        "stats": [
+            {
+                "epoch": "510",
+                "blocks": "66",
+                "blocks_est": "64.547",
+                "active_stake": "67501811866170",
+                "luck": "1.023",
+                "reward_member": "25731353928",
+                "return_member": "2.841",
+                "delegators": "2051",
+                "epoch_stake": "66487383556774"
+            },
+            {
+                "epoch": "509",
+                "blocks": "56",
+                "blocks_est": "64.096",
+                "active_stake": "67093061367582",
+                "luck": "0.874",
+                "reward_member": "21785496788",
+                "return_member": "2.42",
+                "delegators": "2053",
+                "epoch_stake": "66772849216165"
+            },
+            {
+                "epoch": "508",
+                "blocks": "57",
+                "blocks_est": "63.775",
+                "active_stake": "66687999240449",
+                "luck": "0.894",
+                "reward_member": "22223824965",
+                "return_member": "2.484",
+                "delegators": "2049",
+                "epoch_stake": "67501811866170"
+            },
+            {
+                "epoch": "507",
+                "blocks": "54",
+                "blocks_est": "62.823",
+                "active_stake": "65638055704707",
+                "luck": "0.86",
+                "reward_member": "21079066900",
+                "return_member": "2.395",
+                "delegators": "2047",
+                "epoch_stake": "67093061367582"
+            },
+            {
+                "epoch": "506",
+                "blocks": "58",
+                "blocks_est": "62.497",
+                "active_stake": "65391199873944",
+                "luck": "0.928",
+                "reward_member": "22684694445",
+                "return_member": "2.587",
+                "delegators": "2047",
+                "epoch_stake": "66687999240449"
+            },
+            {
+                "epoch": "505",
+                "blocks": "64",
+                "blocks_est": "62.878",
+                "active_stake": "65790411668029",
+                "luck": "1.018",
+                "reward_member": "25114742359",
+                "return_member": "2.847",
+                "delegators": "2045",
+                "epoch_stake": "65638055704707"
+            },
+            {
+                "epoch": "504",
+                "blocks": "62",
+                "blocks_est": "62.116",
+                "active_stake": "65513834852561",
+                "luck": "0.998",
+                "reward_member": "24559396416",
+                "return_member": "2.83232",
+                "delegators": "2044",
+                "epoch_stake": "65391199873944"
+            },
+            {
+                "epoch": "503",
+                "blocks": "68",
+                "blocks_est": "62.12",
+                "active_stake": "65413737421480",
+                "luck": "1.095",
+                "reward_member": "26970710193",
+                "return_member": "3.11617",
+                "delegators": "2044",
+                "epoch_stake": "67071022965786"
+            },
+            {
+                "epoch": "502",
+                "blocks": "55",
+                "blocks_est": "61.769",
+                "active_stake": "65229902216387",
+                "luck": "0.89",
+                "reward_member": "21860220644",
+                "return_member": "2.499",
+                "delegators": "2045",
+                "epoch_stake": "65513834852561"
+            },
+            {
+                "epoch": "501",
+                "blocks": "57",
+                "blocks_est": "61.729",
+                "active_stake": "65144311065505",
+                "luck": "0.923",
+                "reward_member": "22710369522",
+                "return_member": "2.6",
+                "delegators": "2042",
+                "epoch_stake": "65413737421480"
+            }
+        ],
+        "updated": "2024-09-27T12:12:30+00:00"
+    },
+    "terms": "source+backlink required if you reproduce data publicly (unless otherwise agreed); disclaimer: https://cexplorer.io/disclaimer"
+}
