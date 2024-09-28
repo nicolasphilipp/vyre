@@ -168,7 +168,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
             <div>
                 { adaPriceData.eur && adaInfo.symbol &&
                     <div className="absolute top-4 right-6 flex flex-col items-end">
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2.5 items-center">
                             <span className="text-xl text-white">{adaInfo.symbol.toUpperCase()}</span>
                             <span className="text-xl text-white">{formatNumber(adaPriceData.eur, 5)} €</span>
                             <span className="pulsating-dot"></span>
