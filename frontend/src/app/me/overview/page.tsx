@@ -9,8 +9,7 @@ import { useEffect, useState } from "react";
 import { DelegationStatus, Wallet } from "@/model/Wallet";
 import { Address } from "@/model/Address";
 import { DangerIcon } from "@/components/icons/DangerIcon";
-import { getAdaStats } from "@/services/CoinCapService";
-import { AdaData } from "@/model/AdaData";
+import { AdaData, AdaInfo } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
 import { cutText, formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent } from "@/services/TextFormatService";
 import { EditIcon } from "@/components/icons/EditIcon";
@@ -40,6 +39,9 @@ import StakePoolCard from "@/components/StakePoolCard";
 import { adaPrice, loveLaceToAda } from "@/Constants";
 import { PieChartIcon } from "@/components/icons/PieChartIcon";
 import { TreasureIcon } from "@/components/icons/TreasureIcon";
+import { AreaChart } from "@tremor/react";
+import AdaPriceChart from "@/components/AdaPriceChart";
+import { getCoinInfo, getCoinPriceData } from "@/services/CoinDataService";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -50,7 +52,7 @@ export default function Home() {
   const [poolData, setPoolData] = useState({} as StakePoolData);
 
   const [adaData, setAdaData] = useState({} as AdaData);
-
+  const [adaInfo, setAdaInfo] = useState({} as AdaInfo);
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
 
   useEffect(() => {
@@ -91,12 +93,21 @@ export default function Home() {
     return data;
   };
 
-  /*useEffect(() => {
-    getAdaStats()
+  useEffect(() => {
+    getCoinPriceData("cardano")
       .then(res => {
-        setAdaData(JSON.parse(res).data);
+        console.log(res);
+
+        setAdaData(res.data as AdaData);
       });
-  }, []);*/
+    
+    getCoinInfo("cardano")
+      .then(res => {
+        console.log(res);
+
+        setAdaInfo(res.data as AdaInfo);
+      });
+  }, []);
  
   useEffect(() => {
     let activeWallet = {} as Wallet;
@@ -310,8 +321,8 @@ export default function Home() {
               </ScrollShadow>
             </div>
                     
-            <div className="col-span-2 row-span-3 overview-card flex-col break-words items-center justify-center">
-              <span>{adaData.priceUsd ? Math.round(parseFloat(adaData.priceUsd) * 10000) / 10000 : "0"}</span>
+            <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words">
+              <AdaPriceChart adaPriceData={adaData} adaInfo={adaInfo} />
             </div>
 
             <div className="col-span-2 row-span-2 p-4 overview-card flex-col gap-2 break-words justify-between">
