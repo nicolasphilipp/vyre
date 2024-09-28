@@ -1,0 +1,26 @@
+{
+    "id": "cardano",
+    "symbol": "ada",
+    "name": "Cardano",
+    "image": {
+      "thumb": "https://coin-images.coingecko.com/coins/images/975/thumb/cardano.png?1696502090",
+      "small": "https://coin-images.coingecko.com/coins/images/975/small/cardano.png?1696502090"
+    },
+    "market_data": {
+      "current_price": {
+        "eur": 0.35948356687111094,
+        "gbp": 0.2996122941486387,
+        "usd": 0.40177478222264984
+      },
+      "market_cap": {
+        "eur": 12820815760.841408,
+        "gbp": 10685228657.91683,
+        "usd": 14328375823.065205
+      },
+      "total_volume": {
+        "eur": 391689035.87293404,
+        "gbp": 326454006.37419003,
+        "usd": 437769043.1208818
+      }
+    }
+}
