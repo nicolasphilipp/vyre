@@ -52,3 +52,7 @@ export function parseDate(dateString: string): string {
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
     return `${day}.${month}.`;
 }
+
+export function convertUnixToDate(unixTimestamp: number): string {
+    return new Date(unixTimestamp * 1000).toUTCString();
+}
