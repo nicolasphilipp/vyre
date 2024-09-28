@@ -354,7 +354,23 @@ export default function Home() {
                 <StakingIcon className="text-white" width={16} height={16} />
               </div>
 
-              <StakePoolCard pool={poolData} />
+              {
+                selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
+                  <StakePoolCard pool={poolData} />
+              }
+              {
+                selectedWallet.delegation.active.status === DelegationStatus.NotDelegating &&
+                <div className="flex justify-center items-center w-full h-full">
+                  <span>You are currently not staking to a pool.</span>
+                  <div className="h-full absolute top-0 right-0 p-4 flex flex-col justify-between items-end">
+                    <span className="text-center">You can earn up to ~3% APY on <br></br> your ADA by staking to a stake pool.</span>
+                    <Link id="staking" color='secondary' className='wallet-nav-link' href="/me/staking" onPress={() => setActiveItem("staking")}>
+                      Stake to a pool
+                      <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
+                    </Link>
+                  </div>
+                </div>
+              }
             </div>
 
             <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">

@@ -18,7 +18,7 @@ interface DataPoint {
 }
 
 const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
-    const [prices, setPrices] = useState([] as DataPoint[]);
+    const [yearlyPrices, setYearlyPrices] = useState([] as DataPoint[]);
     const [monthlyPrices, setMonthlyPrices] = useState([] as DataPoint[]);
     const [currentPrices, setCurrentPrices] = useState([] as DataPoint[]);
 
@@ -46,7 +46,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
 
                 data.push({ date: date, price: price, marketcap: marketcap, totalvolume: totalvolume });
             }
-            setPrices(data);
+            setYearlyPrices(data);
         });
 
         const lastMonthDate = new Date();
@@ -125,9 +125,18 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
           second: '2-digit',
           hour12: true, 
         });
-      };
+    };
 
-    const Chart: React.FC<any> = ({data}) => {
+    const formatTime = (dateString: string): string => {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true, 
+        });
+    };
+
+    const Chart: React.FC<any> = ({data, period}) => {
         return (
             <ResponsiveContainer width="100%" height={365}>
                 <AreaChart
@@ -140,7 +149,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
                             <stop offset="85%" stopColor="#9353D3" stopOpacity={0} />
                         </linearGradient>
                     </defs>
-                    <XAxis dataKey="date" tickFormatter={formatDate} />
+                    <XAxis dataKey="date" tickFormatter={period === "day" ? formatTime : formatDate}  />
                     <YAxis domain={['auto', 0.35]} tickCount={10} />  
                     <Tooltip offset={8} content={<CustomTooltip />} />
                     <Area
@@ -162,6 +171,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
                         <div className="flex gap-2 items-center">
                             <span className="text-xl text-white">{adaInfo.symbol.toUpperCase()}</span>
                             <span className="text-xl text-white">{formatNumber(adaPriceData.eur, 5)} €</span>
+                            <span className="pulsating-dot"></span>
                         </div>
                         { adaPriceData.eur_24h_change < 0 &&
                             <span className="text-danger">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
@@ -185,25 +195,25 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
                     <Tab key="1D" title="1D">
                         <div>
                             <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
-                            <Chart data={currentPrices} />
+                            <Chart data={currentPrices} period={"day"} />
                         </div>
                     </Tab>
                     <Tab key="7D" title="7D">
                         <div>
                             <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
-                            <Chart data={monthlyPrices.slice(monthlyPrices.length - 7 * 24, monthlyPrices.length)} />
+                            <Chart data={monthlyPrices.slice(monthlyPrices.length - 7 * 24, monthlyPrices.length)} period={"week"} />
                         </div>
                     </Tab>
                     <Tab key="1M" title="1M">
                         <div>
                             <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
-                            <Chart data={monthlyPrices} />
+                            <Chart data={monthlyPrices} period={"month"} />
                         </div>
                     </Tab>
                     <Tab key="1Y" title="1Y">
                         <div>
                             <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
-                            <Chart data={prices} />
+                            <Chart data={yearlyPrices} period={"year"} />
                         </div>
                     </Tab>
                 </Tabs>
