@@ -1,5 +1,5 @@
 import express, { Request, Response} from 'express';
-import { estimateFees, getTxDetails, getTxHistory, searchTx, submitTx } from '../utils/transaction';
+import { estimateFees, getFullTxHistory, getTxDetails, getTxHistory, searchTx, submitTx } from '../utils/transaction';
 const routes = express.Router();
 
 routes.get('/:id', async (req: Request, res: Response) => {
@@ -23,6 +23,14 @@ routes.get('/:id', async (req: Request, res: Response) => {
           currentPage: txs.currentPage, 
           transactions: txs.transactions  
         }));
+      }
+    } else {
+      let txs = JSON.parse(await getFullTxHistory(req.params.id));
+      
+      if(txs.error){
+        res.status(500).send(JSON.stringify({ error: txs.error }));
+      } else {  
+        res.status(200).send(JSON.stringify({ transactions: txs.transactions }));
       }
     }
 });

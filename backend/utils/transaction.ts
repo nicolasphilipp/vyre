@@ -5,6 +5,16 @@ const loveLaceToAda = 1000000;
 
 // TODO use Dtos instead of passing normal parameters
 
+async function getFullTxHistory(walletId: string) {
+    try {
+        let wallet = await walletServer.getShelleyWallet(walletId);
+        let transactions = await wallet.getTransactions();
+        return JSON.stringify({ transactions: transactions });
+    } catch(e) {
+        return JSON.stringify({ error: e });
+    }
+}
+
 async function getTxHistory(walletId: string, resultCount: number, page: number) {
     try {
         let wallet = await walletServer.getShelleyWallet(walletId);
@@ -107,4 +117,4 @@ async function submitTx(senderId: string, receiverAddress: string, amount: numbe
     }
 }
 
-export { getTxHistory, getTxDetails, estimateFees, submitTx, searchTx };
+export { getFullTxHistory, getTxHistory, getTxDetails, estimateFees, submitTx, searchTx };
