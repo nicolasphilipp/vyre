@@ -1,8 +1,7 @@
 'use client';
 
 import "./overview.css";
-import CreateWallet from "@/components/CreateWallet";
-import { AccordionItem, Avatar, Button, Card, CardBody, CardFooter, CardHeader, Divider, Link, ScrollShadow, Snippet, Tooltip, Image, Progress } from '@nextui-org/react';
+import { Button, Divider, Link, ScrollShadow, Snippet, Tooltip } from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
@@ -11,9 +10,7 @@ import { Address } from "@/model/Address";
 import { DangerIcon } from "@/components/icons/DangerIcon";
 import { AdaData, AdaInfo } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
-import { cutText, formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent } from "@/services/TextFormatService";
-import { EditIcon } from "@/components/icons/EditIcon";
-import { RemoveIcon } from "@/components/icons/RemoveIcon";
+import { formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent } from "@/services/TextFormatService";
 import EditWalletModal from "@/components/EditWalletModal";
 import RemoveWalletModal from "@/components/RemoveWalletModal";
 import { QRCodeSVG } from "qrcode.react";
@@ -22,24 +19,18 @@ import { TransactionIcon } from "@/components/icons/TransactionIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
 import React from "react";
 import { setActiveItem } from "@/services/NavbarHelperService";
-import TransactionHistoryEntry from "@/components/TransactionHistoryEntry";
+import TxHistoryEntry from "@/components/TxHistoryEntry";
 import { LightningIcon } from "@/components/icons/LightningIcon";
 import { IncreaseIcon } from "@/components/icons/IncreaseIcon";
 import { SwapIcon } from "@/components/icons/SwapIcon";
-import { SendIcon } from "@/components/icons/SendIcon";
 import SendAdaModal from "@/components/SendAdaModal";
 import { queryPool } from "@/services/StakeService";
-import { StakePool, StakePoolData } from "@/model/StakePool";
+import { StakePoolData } from "@/model/StakePool";
 import { Transaction, TransactionListDto } from "@/model/Transaction";
 import { getTxHistory, searchTxHistory } from "@/services/TxService";
-import TransactionListAccordionEntry from "@/components/TransactionListAccordionEntry";
-import TransactionListDetailEntry from "@/components/TransactionListDetailEntry";
-import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import StakePoolCard from "@/components/StakePoolCard";
 import { adaPrice, loveLaceToAda } from "@/Constants";
-import { PieChartIcon } from "@/components/icons/PieChartIcon";
 import { TreasureIcon } from "@/components/icons/TreasureIcon";
-import { AreaChart } from "@tremor/react";
 import AdaPriceChart from "@/components/AdaPriceChart";
 import { getCoinInfo, getCoinPriceData } from "@/services/CoinDataService";
 
@@ -286,35 +277,9 @@ export default function Home() {
               <ScrollShadow hideScrollBar size={20}>
                 {
                   selectedWallet.assets.total.map((asset, i) => 
-                    <div key={"assetList" + i}>
-                      <div key={"asset" + 0} aria-label={"asset" + 0} className="flex justify-between">
-                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                        <span>N/A €</span>
-                      </div>
-                      <div key={"asset" + 1} aria-label={"asset" + 1} className="flex justify-between">
-                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                        <span>N/A €</span>
-                      </div>
-                      <div key={"asset" + 2} aria-label={"asset" + 2} className="flex justify-between">
-                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                        <span>N/A €</span>
-                      </div>
-                      <div key={"asset" + 3} aria-label={"asset" + 3} className="flex justify-between">
-                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                        <span>N/A €</span>
-                      </div>
-                      <div key={"asset" + 4} aria-label={"asset" + 4} className="flex justify-between">
-                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                        <span>N/A €</span>
-                      </div>
-                      <div key={"asset" + 5} aria-label={"asset" + 5} className="flex justify-between">
-                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                        <span>N/A €</span>
-                      </div>
-                      <div key={"asset" + 6} aria-label={"asset" + 6} className="flex justify-between">
-                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                        <span>N/A €</span>
-                      </div>
+                    <div key={"asset" + i} aria-label={"asset" + i} className="flex justify-between">
+                      <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                      <span>N/A €</span>
                     </div>
                   )
                 }
@@ -335,7 +300,7 @@ export default function Home() {
                   <ScrollShadow className="h-52" hideScrollBar size={20}>
                     {
                       transactions && transactions.map((tx, i) => 
-                        <TransactionHistoryEntry key={"transaction" + i} aria-label={"transaction" + i} transaction={tx} />
+                        <TxHistoryEntry key={"transaction" + i} aria-label={"transaction" + i} transaction={tx} />
                       )
                     }
                   </ScrollShadow>

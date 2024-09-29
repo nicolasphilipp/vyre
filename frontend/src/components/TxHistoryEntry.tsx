@@ -4,12 +4,13 @@ import { DangerIcon } from "./icons/DangerIcon";
 import { formatNumber, parseDate } from "@/services/TextFormatService";
 import { Transaction } from "@/model/Transaction";
 import { loveLaceToAda } from "@/Constants";
+import React from "react";
 
 interface ValueProps {
   transaction: Transaction;
 }
 
-const TransactionHistoryEntry: React.FC<ValueProps> = ({ transaction }) => {
+const TxHistoryEntry: React.FC<ValueProps> = ({ transaction }) => {
   const isLoveLace = transaction.amount.unit === "lovelace";
 
   return (
@@ -63,4 +64,4 @@ const TransactionHistoryEntry: React.FC<ValueProps> = ({ transaction }) => {
   );
 }
 
-export default TransactionHistoryEntry;
+export default TxHistoryEntry;

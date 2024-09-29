@@ -5,8 +5,8 @@ import { LightningIcon } from "@/components/icons/LightningIcon";
 import { SwapIcon } from "@/components/icons/SwapIcon";
 import { TransactionIcon } from "@/components/icons/TransactionIcon";
 import SendAdaModal from "@/components/SendAdaModal";
-import TransactionListAccordionEntry from "@/components/TransactionListAccordionEntry";
-import TransactionListDetailEntry from "@/components/TransactionListDetailEntry";
+import TxListAccordionEntry from "@/components/TxListAccordionEntry";
+import TxListDetailEntry from "@/components/TxListDetailEntry";
 import { Transaction, TransactionListDto } from "@/model/Transaction";
 import { Wallet } from "@/model/Wallet";
 import useWalletStore from "@/model/WalletState";
@@ -17,6 +17,8 @@ import {parseDate, getLocalTimeZone, CalendarDate, today } from "@internationali
 import {useDateFormatter} from "@react-aria/i18n";
 import { getTxHistory, searchTxHistory } from "@/services/TxService";
 import { InsightsIcon } from "@/components/icons/InsightsIcon";
+import React from "react";
+import TxCountChart from "@/components/TxCountChart";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -25,7 +27,7 @@ export default function Home() {
 
   const [receiver, setReceiver] = useState("");
   const [startDate, setStartDate] = useState(parseDate("2019-01-01"));
-  const [endDate, setEndDate] = useState(today("UTC").add({days: 1}));
+  const [endDate, setEndDate] = useState(today("UTC")); // TODO fix bug where transaction that just got submitted does not show up in transactions list
   const [currentPage, setCurrentPage] = useState(1);
   const [oldPage, setOldPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -73,7 +75,8 @@ export default function Home() {
     setCurrentPage(1);
   }, [resultCount, receiver, startDate, endDate]);
 
-  // TODO pass function to sendAdaModal -> that executes searchTxHistory
+  // TODO pass function to sendAdaModal -> that executes searchTxHistory, fix bug where transaction shows not up in history after submitting 
+  // TODO fix chart reload when currentpage changes -> make transaction section a new component -> so currentPage is in this component and not here
 
   return (
     <>
@@ -92,11 +95,25 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words">
+          <div className="col-span-2 row-span-4 p-4 overview-card flex-col break-words">
             <div className="flex gap-1 items-center">
               <span className="section-headline">Insights</span>
               <InsightsIcon className="text-white" width={18} height={18} />
             </div>
+
+            {
+              selectedWallet && selectedWallet.id &&
+                <>
+                  <TxCountChart wallet={selectedWallet} />
+                  <Divider className="mb-3" />
+                </>
+            }
+            {
+              selectedWallet && selectedWallet.id &&
+                <>
+                  <TxCountChart wallet={selectedWallet} />
+                </>
+            }
           </div>
 
           <div className="col-span-3 row-span-4 p-4 overview-card flex-col break-words">
@@ -111,8 +128,8 @@ export default function Home() {
                   <Accordion isCompact showDivider={false} selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys}>
                     {
                       transactions && transactions.map((tx, i) => 
-                        <AccordionItem key={i} aria-label={"Transaction " + (i + 1)} title="" startContent={<TransactionListAccordionEntry transaction={tx} />}>
-                          <TransactionListDetailEntry transaction={tx} />
+                        <AccordionItem key={i} aria-label={"Transaction " + (i + 1)} title="" startContent={<TxListAccordionEntry transaction={tx} />}>
+                          <TxListDetailEntry transaction={tx} />
                           <Divider className="mt-3"/>
                         </AccordionItem>
                       )
@@ -157,13 +174,13 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
+          <div className="col-span-2 row-span-1 p-4 overview-card flex-col break-words">
             <div className="flex gap-0.5 items-center">
               <span className="section-headline">Actions</span>
               <LightningIcon className="text-white" width={16} height={16} />
             </div>
 
-            <div className="flex flex-col gap-4 mt-3">
+            <div className="flex gap-4 mt-3">
               <SendAdaModal wallet={selectedWallet} />
               <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
                 <span className="flex gap-0.5 items-center">
@@ -174,9 +191,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
-            <span>Placeholder</span>
-          </div>
         </div>
       </div>
     </>

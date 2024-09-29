@@ -28,10 +28,16 @@ export async function submitTx(senderId: string, receiver: string, amount: numbe
         .then((res) => res);
 }
 
-export async function getTxHistory(walletId: string, page: number, limit: number) {
-    return fetch(TX_SERVICE_URL + '/' + walletId + "?page=" + page + "&limit=" + limit)
-        .then((res) => res.json())
-        .then((res) => res);
+export async function getTxHistory(walletId: string, page?: number, limit?: number) {
+    if(page && limit) {
+        return fetch(TX_SERVICE_URL + '/' + walletId + "?page=" + page + "&limit=" + limit)
+            .then((res) => res.json())
+            .then((res) => res);
+    } else {
+        return fetch(TX_SERVICE_URL + '/' + walletId)
+            .then((res) => res.json())
+            .then((res) => res);
+    }
 }
 
 export async function searchTxHistory(walletId: string, page: number, limit: number, receiver?: string, startDate?: CalendarDate, endDate?: CalendarDate) {

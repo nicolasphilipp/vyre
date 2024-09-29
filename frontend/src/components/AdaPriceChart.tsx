@@ -1,9 +1,11 @@
 import { AdaData, AdaInfo, HistoricalAdaData } from "@/model/AdaData";
 import { getCoinHistoricPrices } from "@/services/CoinDataService";
 import { convertUnixToDate, formatNumber } from "@/services/TextFormatService";
-import { Tabs, Tab, Image } from "@nextui-org/react";
+import { Tabs, Tab, Image, Chip } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Area, TooltipProps } from "recharts";
+import { ArrowIcon } from "./icons/ArrowIcon";
+import { MinusIcon } from "./icons/MinusIcon";
 
 interface ValueProps {
     adaPriceData: AdaData
@@ -108,7 +110,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
 
     const formatDate = (tickItem: string) => {
         const date = new Date(tickItem);
-        return date.toLocaleDateString('en-GB', {
+        return date.toLocaleDateString('en-US', {
             day: '2-digit',
             month: 'short',   
         }); 
@@ -116,7 +118,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
 
     const formatDateTime = (dateString: string): string => {
         const date = new Date(dateString);
-        return date.toLocaleString('en-GB', {
+        return date.toLocaleString('en-US', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
@@ -129,7 +131,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
 
     const formatTime = (dateString: string): string => {
         const date = new Date(dateString);
-        return date.toLocaleTimeString('en-GB', {
+        return date.toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: true, 
@@ -174,13 +176,19 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
                             <span className="pulsating-dot"></span>
                         </div>
                         { adaPriceData.eur_24h_change < 0 &&
-                            <span className="text-danger">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                            <Chip color="danger" variant="bordered" className="mt-1" startContent={<ArrowIcon width={16} height={16} className="rotate-180" />}>
+                                <span className="text-danger">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                            </Chip>
                         }
                         { adaPriceData.eur_24h_change > 0 &&
-                            <span className="text-success">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                            <Chip color="success" variant="bordered" className="mt-1" startContent={<ArrowIcon width={16} height={16} />}>
+                                <span className="text-success">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                            </Chip>
                         }
                         { adaPriceData.eur_24h_change === 0 &&
-                            <span>{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                            <Chip color="default" variant="bordered" className="mt-1" startContent={<MinusIcon width={16} height={16} />}>
+                                <span>{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                            </Chip>
                         }
                     </div>
                 }

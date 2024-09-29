@@ -2,14 +2,15 @@ import { AccordionItem, Divider, Link, Snippet, Tooltip } from "@nextui-org/reac
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
 import { formatNumber } from "@/services/TextFormatService";
-import TransactionListAccordionEntry from "./TransactionListAccordionEntry";
+import TransactionListAccordionEntry from "./TxListAccordionEntry";
 import { Transaction } from "@/model/Transaction";
+import React from "react";
 
 interface ValueProps {
   transaction: Transaction;
 }
 
-const TransactionListDetailEntry: React.FC<ValueProps> = ({ transaction }) => {
+const TxListDetailEntry: React.FC<ValueProps> = ({ transaction }) => {
 
   return (
     <>
@@ -74,4 +75,4 @@ const TransactionListDetailEntry: React.FC<ValueProps> = ({ transaction }) => {
   );
 }
 
-export default TransactionListDetailEntry;
+export default TxListDetailEntry;
