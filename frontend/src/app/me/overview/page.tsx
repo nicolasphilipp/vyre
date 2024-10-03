@@ -296,8 +296,8 @@ export default function Home() {
                   <span className="section-headline">Recent Transactions</span>
                   <TransactionIcon className="text-white" width={16} height={16} />
                 </div>
-
-                  <ScrollShadow className="h-52" hideScrollBar size={20}>
+                
+                  <ScrollShadow className="h-52 overflow-x-hidden" size={20}>
                     {
                       transactions && transactions.map((tx, i) => 
                         <TxHistoryEntry key={"transaction" + i} aria-label={"transaction" + i} transaction={tx} />
