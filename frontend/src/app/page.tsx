@@ -7,6 +7,7 @@ import { Button, Link, Tooltip } from '@nextui-org/react';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import { redirect } from 'next/navigation';
+import React from 'react';
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   ssr: false,

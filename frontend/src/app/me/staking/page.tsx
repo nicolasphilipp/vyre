@@ -1,12 +1,16 @@
 'use client';
 
+import { ChartLineIcon } from "@/components/icons/ChartLineIcon";
 import { FilterIcon } from "@/components/icons/FilterIcon";
+import { GlobalIcon } from "@/components/icons/GlobalIcon";
+import { SearchIcon } from "@/components/icons/SearchIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
 import StakePoolCard from "@/components/StakePoolCard";
-import { StakePoolData } from "@/model/StakePool";
+import StakePoolList from "@/components/StakePoolList";
+import { StakePoolData, StakePoolListDto } from "@/model/StakePool";
 import { DelegationStatus, Wallet } from "@/model/Wallet";
 import useWalletStore from "@/model/WalletState";
-import { queryPool } from "@/services/StakeService";
+import { getAllPools, queryPool } from "@/services/StakeService";
 import { Input, Pagination, ScrollShadow } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
@@ -19,7 +23,6 @@ export default function Home() {
   const [stakePools, setStakePools] = useState([] as StakePoolData[]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [oldPage, setOldPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
@@ -39,17 +42,25 @@ export default function Home() {
     }
   }, [selected]);
 
-  // query stakepools
-
-  // make browse pool cards smaller, move search filter to browse pools section, make statistics block bigger, dropdown for different metrics
+  useEffect(() => {
+    getAllPools(currentPage, 8, search)
+      .then(res => {
+        console.log(res);
+        
+        let listDto = res as StakePoolListDto;
+        setTotalPages(listDto.totalPages);
+        setStakePools(listDto.pools);
+      });
+  }, [currentPage, search]);
 
   return (
     <>
       <div className="wallet-overview-content">
         <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
-          <div className="col-span-2 row-span-1 p-4 overview-card flex-col break-words justify-between">
-            <div className="flex gap-0.5 items-center">
+          <div className="col-span-2 row-span-2 p-4 overview-card flex-col break-words justify-between">
+            <div className="flex gap-1 items-center">
               <span className="section-headline">Statistics</span>
+              <ChartLineIcon className="text-white" width={20} height={20} />
             </div>
 
 
@@ -58,7 +69,7 @@ export default function Home() {
           <div className="col-span-3 row-span-2 p-4 overview-card flex-col break-words justify-between">
             <div className="flex gap-0.5 items-center">
               <span className="section-headline">Staking Overview</span>
-              <StakingIcon className="text-white" width={16} height={16} />
+              <StakingIcon className="text-white" width={20} height={20} />
             </div>
 
             {
@@ -67,68 +78,23 @@ export default function Home() {
             }
           </div>
 
-          <div className="col-span-2 row-span-1 p-4 overview-card flex-col break-words justify-between">
-            <div className="flex gap-0.5 items-center">
-              <span className="section-headline">Search Filters</span>
-              <FilterIcon className="text-white" width={16} height={16} />
-            </div>
-
-            <div className="flex gap-4">
-              <Input type="text" isClearable variant="bordered" label="Search" placeholder="Type to search..." value={search} onValueChange={setSearch} />
-            </div>
-          </div>
-
-          <div className="col-span-5 row-span-3 p-4 overview-card flex-col break-words">
+          <div className="col-span-5 row-span-3 p-4 overview-card gap-2 flex-col break-words">
             <div className="flex gap-0.5 items-center">
               <span className="section-headline">Browse Pools</span>
+              <GlobalIcon className="text-white" width={20} height={20} />
             </div>
 
-            <div className="flex flex-col justify-between h-full">
-              <div className="w-full" style={{height: "350px"}}>
-                <ScrollShadow className="h-full" size={20}>
-                  <div className="flex justify-between">
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                  </div>
-                  <div className="flex justify-between">
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                  </div>
-                  <div className="flex justify-between">
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                    {
-                      selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                        <StakePoolCard pool={poolData} />
-                    }
-                  </div>
-                </ScrollShadow>
+            <div className="flex flex-col h-full justify-between">
+              <div className="flex flex-col gap-2">
+                <div className="flex w-fit">
+                  <Input type="text" isClearable variant="bordered" label="Search" placeholder="Type to search..." startContent={<SearchIcon className="text-white mb-0.5" width={16} height={16} />} value={search} onValueChange={setSearch} />
+                </div>
+
+                <div className="w-full" style={{height: "250px"}}>
+                  <ScrollShadow className="h-full gap-2 flex flex-col overflow-x-hidden" size={20}>
+                    <StakePoolList stakePools={stakePools} />                    
+                  </ScrollShadow>
+                </div>
               </div>
 
               <div className="flex justify-center">

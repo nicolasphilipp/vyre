@@ -198,7 +198,7 @@ export default function Home() {
               <div className="flex justify-between">
                 <div className="flex gap-1 items-center">
                   <span className="section-headline">Wallet Overview</span>
-                  <TreasureIcon className="text-white" width={18} height={18} />
+                  <TreasureIcon className="text-white" width={20} height={20} />
                 </div>
 
                 <div className="flex flex-col gap-2 items-end">
@@ -294,7 +294,7 @@ export default function Home() {
               <div>
                 <div className="flex gap-1 items-center">
                   <span className="section-headline">Recent Transactions</span>
-                  <TransactionIcon className="text-white" width={16} height={16} />
+                  <TransactionIcon className="text-white" width={20} height={20} />
                 </div>
                 
                   <ScrollShadow className="h-52 overflow-x-hidden" size={20}>
@@ -316,7 +316,7 @@ export default function Home() {
             <div className="col-span-2 row-span-2 p-4 overview-card flex-col break-words">
               <div className="flex gap-0.5 items-center">
                 <span className="section-headline">Staking Overview</span>
-                <StakingIcon className="text-white" width={16} height={16} />
+                <StakingIcon className="text-white" width={20} height={20} />
               </div>
 
               {
@@ -341,7 +341,7 @@ export default function Home() {
             <div className="col-span-1 row-span-2 p-4 overview-card flex-col break-words">
               <div className="flex gap-0.5 items-center">
                 <span className="section-headline">Actions</span>
-                <LightningIcon className="text-white" width={16} height={16} />
+                <LightningIcon className="text-white" width={20} height={20} />
               </div>
               
               <div className="adaAddress">

@@ -85,7 +85,7 @@ export default function Home() {
           <div className="col-span-3 row-span-1 p-4 overview-card flex-col break-words justify-between">
             <div className="flex gap-0.5 items-center">
               <span className="section-headline">Search Filters</span>
-              <FilterIcon className="text-white" width={16} height={16} />
+              <FilterIcon className="text-white" width={20} height={20} />
             </div>
 
             <div className="flex gap-4">
@@ -98,7 +98,7 @@ export default function Home() {
           <div className="col-span-2 row-span-4 p-4 overview-card flex-col break-words">
             <div className="flex gap-1 items-center">
               <span className="section-headline">Insights</span>
-              <InsightsIcon className="text-white" width={18} height={18} />
+              <InsightsIcon className="text-white" width={20} height={20} />
             </div>
 
             {
@@ -119,7 +119,7 @@ export default function Home() {
           <div className="col-span-3 row-span-4 p-4 overview-card flex-col break-words">
             <div className="flex gap-1 items-center">
               <span className="section-headline">Transactions</span>
-              <TransactionIcon className="text-white" width={16} height={16} />
+              <TransactionIcon className="text-white" width={20} height={20} />
             </div>
 
             <div className="flex flex-col justify-between h-full">
@@ -177,7 +177,7 @@ export default function Home() {
           <div className="col-span-2 row-span-1 p-4 overview-card flex-col break-words">
             <div className="flex gap-0.5 items-center">
               <span className="section-headline">Actions</span>
-              <LightningIcon className="text-white" width={16} height={16} />
+              <LightningIcon className="text-white" width={20} height={20} />
             </div>
 
             <div className="flex gap-4 mt-3">

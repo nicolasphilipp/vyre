@@ -1,5 +1,12 @@
 import { EpochTime, UnitBalance } from "./Wallet";
 
+export interface StakePoolListDto {
+    totalResults: number;
+    totalPages: number;
+    currentPage: number;
+    pools: StakePoolData[];
+}
+
 export interface StakePool {
     id: string;
     metrics: PoolMetrics;
