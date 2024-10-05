@@ -1,9 +1,9 @@
 import { AdaData, AdaInfo, HistoricalAdaData } from "@/model/AdaData";
 import { getCoinHistoricPrices } from "@/services/CoinDataService";
 import { convertUnixToDate, formatNumber } from "@/services/TextFormatService";
-import { Tabs, Tab, Image, Chip } from "@nextui-org/react";
+import { Tabs, Tab, Chip } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import { ResponsiveContainer, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Area, TooltipProps } from "recharts";
+import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area, TooltipProps } from "recharts";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { MinusIcon } from "./icons/MinusIcon";
 

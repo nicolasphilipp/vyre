@@ -152,11 +152,11 @@ export default function Home() {
   useEffect(() => {
     setTimeout(() => {
       setInterval(() => {
-        // TODO doesnt work -> wallets length 0 here
-
         for(let i = 0; i < wallets.length; i++) {
           syncWallet(wallets[i].id)
             .then(res => {
+              console.log("synced wallet");
+
               res.wallet.isSelected = wallets[i].isSelected;
               wallets[i] = res.wallet as Wallet;
 
