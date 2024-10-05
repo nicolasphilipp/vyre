@@ -100,18 +100,22 @@ routes.get('/', async (req: Request, res: Response) => {
                     filteredPools.push(strippedPools[i]);
                 }
             }
-    
-            pools = await getResults(limit, page, filteredPools, res);
+
+            res.status(200).send(JSON.stringify({ 
+                totalResults: filteredPools.length, 
+                totalPages: Math.ceil((filteredPools.length / limit)), 
+                currentPage: page, 
+                pools: await getResults(limit, page, filteredPools, res)
+            }));
         } else {
-            pools = await getResults(limit, page, strippedPools, res);
+            res.status(200).send(JSON.stringify({ 
+                totalResults: strippedPools.length, 
+                totalPages: Math.ceil((strippedPools.length / limit)), 
+                currentPage: page, 
+                pools: await getResults(limit, page, strippedPools, res)
+            }));
         }
 
-        res.status(200).send(JSON.stringify({ 
-            totalResults: pools.length, 
-            totalPages: Math.ceil((pools.length / limit)), 
-            currentPage: page, 
-            pools: pools
-        }));
     } else {
         res.status(200).send(JSON.stringify({ pools: strippedPools }));
     }
