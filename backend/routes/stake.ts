@@ -8,8 +8,7 @@ const CEXPLORER_API = "https://js.cexplorer.io/api-static/pool/";
 
 routes.get('/:id', async (req: Request, res: Response) => {
     let filePath = "./resources/pools/" + req.params.id + ".json";
-    let pool = {};
-
+    
     if (!fs.existsSync(filePath)) {
         await fetch(CEXPLORER_API + req.params.id  + ".json")
             .then(res => res.json())
@@ -20,7 +19,7 @@ routes.get('/:id', async (req: Request, res: Response) => {
                     }
                 });
 
-                pool = res.data;
+                res.status(200).send(JSON.stringify({ pool: res.data }));
             })
             .catch(err => {
                 res.status(500).send(JSON.stringify({ error: err }));
@@ -28,7 +27,7 @@ routes.get('/:id', async (req: Request, res: Response) => {
     } else {
         let poolData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
         if(isWithinThreeHours(poolData.time)) {
-            pool = poolData.data;
+            res.status(200).send(JSON.stringify({ pool: poolData.data }));
         } else {
             await fetch(CEXPLORER_API + req.params.id  + ".json")
                 .then(res => res.json())
@@ -39,15 +38,13 @@ routes.get('/:id', async (req: Request, res: Response) => {
                         }
                     });
 
-                    pool = res.data;
+                    res.status(200).send(JSON.stringify({ pool: res.data }));
                 })
                 .catch(err => {
                     res.status(500).send(JSON.stringify({ error: err }));
                 });
         }
     }
-
-    res.status(200).send(JSON.stringify({ pool: pool }));
 });
 
 routes.get('/', async (req: Request, res: Response) => {
@@ -92,7 +89,6 @@ routes.get('/', async (req: Request, res: Response) => {
         let page = parseInt(req.query.page as string);
         let search = req.query.search as string;
 
-        let pools = [];
         if(search) {
             let filteredPools = [];
             for(let i = 0; i < strippedPools.length; i++) {
@@ -115,7 +111,6 @@ routes.get('/', async (req: Request, res: Response) => {
                 pools: await getResults(limit, page, strippedPools, res)
             }));
         }
-
     } else {
         res.status(200).send(JSON.stringify({ pools: strippedPools }));
     }

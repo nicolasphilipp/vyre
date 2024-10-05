@@ -3,7 +3,7 @@ import * as fs from 'fs';
 const routes = express.Router();
 const mnemonicWords = fs.readFileSync('./resources/mnemonic-words.txt', 'utf8').split('\n').map(word => word.trim()).filter(word => word.length > 0);
 
-import { createWallet, getAddresses, getAvailableBalance, getDelegation, getRewardBalance, getTotalBalance, getWallet, removeWallet, renameWallet, restoreWallet } from '../utils/wallet';
+import { createWallet, getAddresses, getWallet, removeWallet, renameWallet, restoreWallet } from '../utils/wallet';
 
 routes.post('/', async (req: Request, res: Response) => {
   if(req.body.passphrase.length < 10 || ![15, 24].includes(req.body.wordcount)) {
@@ -92,29 +92,6 @@ routes.get('/:id/sync', async (req: Request, res: Response) => {
 routes.get('/mnemonic', async (req: Request, res: Response) => {
   let words = { 'words': mnemonicWords };
   res.status(200).send(words);
-});
-
-
-// -------------------------
-
-routes.get('/available', (req: Request, res: Response) => {
-  let balance = getAvailableBalance(req.body.wallet);
-  res.status(200).send(balance);
-});
-
-routes.get('/reward', (req: Request, res: Response) => {
-  let balance = getRewardBalance(req.body.wallet);
-  res.status(200).send(balance);
-});
-
-routes.get('/total', (req: Request, res: Response) => {
-  let balance = getTotalBalance(req.body.wallet);
-  res.status(200).send(balance);
-});
-
-routes.get('/delegation', (req: Request, res: Response) => {
-  let delegationInfo = getDelegation(req.body.wallet);
-  res.status(200).send(delegationInfo);
 });
 
 export default routes;

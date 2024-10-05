@@ -1,8 +1,7 @@
 import { WalletServer, Seed, ShelleyWallet } from 'cardano-wallet-js';
 let walletServer = WalletServer.init('http://localhost:8090/v2');
 
-// TODO refactor so that wallet API is used and not cardano-wallet-js library
-// caching?
+// TODO refactor so that local wallet API is used and not cardano-wallet-js library
 
 async function createWallet(name: string, wordcount: number, passphrase: string){
     try {
@@ -79,21 +78,5 @@ async function getWallet(id: string) {
     }
 }
 
-function getAvailableBalance(wallet: ShelleyWallet){
-    return wallet.getAvailableBalance();
-}
-
-function getRewardBalance(wallet: ShelleyWallet){
-    return wallet.getRewardBalance();
-}
-
-function getTotalBalance(wallet: ShelleyWallet){
-    return wallet.getTotalBalance();
-}
-
-function getDelegation(wallet: ShelleyWallet){
-    return wallet.getDelegation();
-}
-  
-export { createWallet, restoreWallet, removeWallet, renameWallet, getAddresses, getWallet, getAvailableBalance, getRewardBalance, getTotalBalance, getDelegation };
+export { createWallet, restoreWallet, removeWallet, renameWallet, getAddresses, getWallet };
   
