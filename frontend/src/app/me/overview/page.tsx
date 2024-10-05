@@ -121,7 +121,8 @@ export default function Home() {
           });
 
           if(wallets[i].delegation.active.target) {
-            queryPool(wallets[i].delegation.active.target)
+            // TODO wallets[i].delegation.active.target
+            queryPool('pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9')
               .then(res => {
                 console.log(res);
 
@@ -321,7 +322,7 @@ export default function Home() {
 
               {
                 selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                  <StakePoolCard pool={poolData} />
+                  <StakePoolCard pool={poolData} delegate={false} />
               }
               {
                 selectedWallet.delegation.active.status === DelegationStatus.NotDelegating &&

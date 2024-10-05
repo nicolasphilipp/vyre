@@ -1,4 +1,4 @@
-import { Divider, Link, Progress, Snippet, Tooltip, Image } from "@nextui-org/react";
+import { Divider, Link, Progress, Snippet, Tooltip, Image, Button } from "@nextui-org/react";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
 import { cutText, formatNumber, numberToPercent, parseDate } from "@/services/TextFormatService";
@@ -10,12 +10,15 @@ import { StakePool, StakePoolData } from "@/model/StakePool";
 import { loveLaceToAda } from "@/Constants";
 import { useEffect, useState } from "react";
 import React from "react";
+import { ScatterIcon } from "./icons/ScatterIcon";
 
 interface ValueProps {
     pool: StakePoolData;
+    delegate: boolean;
 }
 
-const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
+const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
+    // TODO implement delegate button
 
     function extractTicker(name: string, ticker: boolean): string {
         if(name) {
@@ -51,7 +54,7 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
                         </div>
                     </div>
         
-                    <div>
+                    <div className="flex items-center justify-between my-1">
                         <Snippet 
                             symbol="" 
                             tooltipProps={{
@@ -64,11 +67,17 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool }) => {
                                 pre: "font-sans"
                             }}
                         >
-                        <span>{cutText(pool.pool_id, 25)}</span>
+                            <span>{cutText(pool.pool_id, 15)}</span>
                         </Snippet>
+                        {
+                            delegate &&
+                            <div>
+                                <Button size="sm" color="secondary" variant="ghost" className="text-sm" startContent={<ScatterIcon width={18} height={18} className="-m-1" />}>delegate</Button>   
+                            </div>
+                        }
                     </div>
         
-                    <Divider className="mb-1" />
+                    <Divider className="my-1" />
                         
         
                     <div className="flex gap-4 items-center">

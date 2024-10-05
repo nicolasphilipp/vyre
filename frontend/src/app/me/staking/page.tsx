@@ -31,7 +31,8 @@ export default function Home() {
         setSelectedWallet(wallets[i]);
 
         if(wallets[i].delegation.active.target) {
-          queryPool(wallets[i].delegation.active.target)
+          // TODO wallets[i].delegation.active.target
+          queryPool('pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9')
             .then(res => {
               setPoolData(res.pool);
             });
@@ -66,16 +67,15 @@ export default function Home() {
 
           </div>
 
-          <div className="col-span-3 row-span-2 p-4 overview-card flex-col break-words justify-between">
+          <div className="col-span-3 row-span-2 p-4 overview-card flex-col break-words">
             <div className="flex gap-0.5 items-center">
               <span className="section-headline">Staking Overview</span>
               <StakingIcon className="text-white" width={20} height={20} />
             </div>
 
-            {
-              selectedWallet && selectedWallet.delegation && selectedWallet.delegation.active.status !== DelegationStatus.NotDelegating &&
-                <StakePoolCard pool={poolData} />
-            }
+            <div style={{ width: "300px" }}>
+              <StakePoolCard pool={poolData} delegate={false} />
+            </div>
           </div>
 
           <div className="col-span-5 row-span-3 p-4 overview-card gap-2 flex-col break-words">
@@ -90,9 +90,9 @@ export default function Home() {
                   <Input type="text" isClearable variant="bordered" label="Search" placeholder="Type to search..." startContent={<SearchIcon className="text-white mb-0.5" width={16} height={16} />} value={search} onValueChange={setSearch} />
                 </div>
 
-                <div className="w-full" style={{height: "250px"}}>
+                <div className="w-full" style={{height: "270px"}}>
                   <ScrollShadow className="h-full gap-2 flex flex-col overflow-x-hidden" size={20}>
-                    <StakePoolList stakePools={stakePools} />                    
+                    <StakePoolList stakePools={stakePools} wallet={selectedWallet} />                    
                   </ScrollShadow>
                 </div>
               </div>
