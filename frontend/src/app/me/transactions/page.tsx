@@ -17,7 +17,6 @@ export default function Home() {
   const [selectedWallet, setSelectedWallet] = useState({} as Wallet);
 
   useEffect(() => {
-
     for(let i = 0; i < wallets.length; i++) {
       if(wallets[i].id === selected) {
         setSelectedWallet(wallets[i]);

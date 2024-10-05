@@ -8,7 +8,7 @@ import {parseDate, today } from "@internationalized/date";
 export default function TxSection() {
     const [receiver, setReceiver] = useState("");
     const [startDate, setStartDate] = useState(parseDate("2019-01-01"));
-    const [endDate, setEndDate] = useState(today("UTC")); 
+    const [endDate, setEndDate] = useState(today("UTC").add({days: 1})); 
 
     return (
         <div className="grid h-full w-full gap-4 grid-cols-1 grid-rows-5 rounded-lg"> 

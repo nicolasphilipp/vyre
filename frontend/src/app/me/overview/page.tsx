@@ -149,7 +149,8 @@ export default function Home() {
     }
   }, [selectedWallet]);
 
-  useEffect(() => {
+  // TODO sync wallet every minute 
+  /*useEffect(() => {
     setTimeout(() => {
       setInterval(() => {
         for(let i = 0; i < wallets.length; i++) {
@@ -165,7 +166,7 @@ export default function Home() {
         }
       }, 5000);
     }, 5000);
-  }, []);
+  }, []);*/
 
   return (
     <>

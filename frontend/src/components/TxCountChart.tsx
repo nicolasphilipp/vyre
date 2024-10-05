@@ -1,12 +1,11 @@
-import { AdaData, AdaInfo, HistoricalAdaData } from "@/model/AdaData";
 import { Transaction } from "@/model/Transaction";
 import { Wallet } from "@/model/Wallet";
-import { getCoinHistoricPrices } from "@/services/CoinDataService";
-import { convertUnixToDate, formatNumber } from "@/services/TextFormatService";
 import { getTxHistory } from "@/services/TxService";
-import { Tabs, Tab, Image } from "@nextui-org/react";
+import { Tabs, Tab, Divider, Chip } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import { ResponsiveContainer, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Area, TooltipProps, BarChart, Legend, Bar, Line, ComposedChart } from "recharts";
+import { ResponsiveContainer, XAxis, YAxis, Tooltip, TooltipProps, Bar, Line, ComposedChart, Label } from "recharts";
+import { ArrowIcon } from "./icons/ArrowIcon";
+import { formatNumber } from "@/services/TextFormatService";
 
 interface ValueProps {
     wallet: Wallet;
@@ -16,6 +15,7 @@ interface DataPoint {
     date: string;
     transactions: number;
     totalTransactions: number;
+    change: number;
 }
 
 const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
@@ -32,27 +32,33 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
                 getMonthData(tx);
                 getYearData(tx);
             });
-    }, []);
+    }, [wallet]);
 
     function getMonthData(tx: Transaction[]) {
         let txMap = new Map<string, number>();
-        for(let day of getAllDaysOfCurrentMonth()) {
+        for(let day of getLast30Days()) {
             txMap.set(day, 0);
         }
 
         for(let i = 0; i < tx.length; i++) {
-            let date = formatDate(tx[i].inserted_at.time);
+            if(tx[i].inserted_at) {
+                let date = formatDate(tx[i].inserted_at.time);
 
-            if(txMap.get(date) !== undefined) {
-                txMap.set(date, txMap.get(date)! + 1);
+                if(txMap.get(date) !== undefined) {
+                    txMap.set(date, txMap.get(date)! + 1);
+                }
             }
         }
 
-        let total = countTxUntil(tx, new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+        const date = new Date();
+        date.setDate(new Date().getDate() - 30);
+
+        let total = countTxUntil(tx, date);
         let data: DataPoint[] = [];
         for(let entry of txMap.entries()) {
+            let change = total === 0 ? (entry[1] > 0 ? 1 : 0) : entry[1] / total;
             total += entry[1];
-            data.push({ date: entry[0], transactions: entry[1], totalTransactions: total });
+            data.push({ date: entry[0], transactions: entry[1], totalTransactions: total, change: change });
         }
         setMonthData(data);
     }
@@ -76,8 +82,9 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
         let total = countTxUntil(tx, new Date(new Date().getFullYear(), 0, 1));
         let data: DataPoint[] = [];
         for(let entry of txMap.entries()) {
+            let change = total === 0 ? (entry[1] > 0 ? 1 : 0) : entry[1] / total;
             total += entry[1];
-            data.push({ date: entry[0], transactions: entry[1], totalTransactions: total });
+            data.push({ date: entry[0], transactions: entry[1], totalTransactions: total, change: change });
         }
         setYearData(data);
     }
@@ -85,12 +92,29 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
     function countTxUntil(tx: Transaction[], date: Date): number {
         let count = 0;
         for(let t of tx) {
-            if(new Date(t.inserted_at.time) < date) {
+            if(t.inserted_at && new Date(t.inserted_at.time) < date) {
                 count++;
             }
         }
         return count;
     }
+
+    const getLast30Days = (): string[] => {
+        const today = new Date();
+        const daysArray: string[] = [];
+      
+        for (let i = 30; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(today.getDate() - i);
+      
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+      
+          daysArray.push(`${day}/${month}/${year}`);
+        }
+        return daysArray;
+    };
 
     const getAllDaysOfCurrentMonth = (): string[] => {
         const today = new Date();
@@ -105,16 +129,41 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
           return `${day}-${formattedMonth}-${year}`;
         });
         return daysArray;
-      };
+    };
       
-
+    // TODO change date format (?)
     const CustomTooltip: React.FC<TooltipProps<number, string>> = ({active, payload}) => {
         if (active && payload && payload.length > 0 && payload[0].payload) {
           return (
-            <div className="tooltip-container p-1 text-white flex flex-col">
-              <span>{payload[0].payload.date}</span>
-              <span>new: {payload[0].value}</span>
-              <span>total: {payload[0].payload.totalTransactions}</span>
+            <div className="chart-tooltip text-sm flex flex-col">
+                <div className="flex gap-4 items-center justify-between p-1">
+                    <span className="text-white">{payload[0].payload.date}</span>
+                    <div className="p-0.5">
+                        {
+                            payload[0].payload.change > 0 && 
+                            <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(23, 201, 100, 0.5)", background: "rgba(23, 201, 100, 0.1)" }}>
+                                <span className="text-success font-bold">+{formatNumber(payload[0].payload.change * 100, 2)}%</span>
+                            </Chip>
+                        } 
+                        {
+                            payload[0].payload.change <= 0 &&
+                            <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(63, 63, 70, 0.5)", background: "rgba(63, 63, 70, 0.3)" }}>
+                                <span className="font-bold">{formatNumber(payload[0].payload.change * 100, 2)}%</span>
+                            </Chip>
+                        }
+                    </div>
+                </div>
+                <Divider />
+                <div className="flex flex-col p-1">
+                    <div className="flex justify-between">
+                        <span>New Transactions</span>
+                        <span className="text-white">{payload[0].value}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span>Total Transactions</span>
+                        <span className="text-white">{payload[0].payload.totalTransactions}</span>
+                    </div>
+                </div>
             </div>
           );
         }
@@ -127,7 +176,7 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
         const month = String(date.getMonth() + 1).padStart(2, '0'); 
         const year = date.getFullYear();
       
-        return `${day}-${month}-${year}`;
+        return `${day}/${month}/${year}`;
         /*const date = new Date(tickItem);
         return date.toLocaleDateString('en-GB', {
             day: '2-digit',
@@ -165,16 +214,23 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
         return txCount;
     }
 
-    const Chart: React.FC<any> = ({data}) => {
+    const formatXAxisLabel = () => {
+        return ''; 
+    };
+
+    const Chart: React.FC<any> = ({ data }) => {
         return (
             <ResponsiveContainer width="100%" height={200}>
                 <ComposedChart
                     data={data}
                 >
-                    <XAxis dataKey="date" />
-                    <YAxis />
+                    <XAxis dataKey="date" className="text-sm" tickFormatter={formatXAxisLabel}>
+                        <Label value={data[data.length - 1] && data[data.length - 1].date} offset={0} position="insideBottomRight" />
+                        <Label value={data[0] && data[0].date} offset={0} position="insideBottomLeft" />
+                    </XAxis>
+                    <YAxis className="text-sm" />
                     <Tooltip offset={8} content={<CustomTooltip />} />
-                    <Bar dataKey="transactions" fill="#9353D3" /> 
+                    <Bar dataKey="transactions" fill="#ffffff26" /> 
                     <Line type="basis" dot={false} dataKey="totalTransactions" stroke="#9353D3" strokeWidth={2} />
                 </ComposedChart>
             </ResponsiveContainer>
@@ -183,9 +239,9 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
 
     const CountSection: React.FC<any> = ({txAllTime, txCount, period}) => {
         return (
-            <div className="absolute -translate-y-12 right-6 flex flex-col">
-                <span className="text-xl text-white">{txAllTime} {txAllTime === 1 ? "Transaction" : "Transactions"} (all time)</span>
-                <span className="text-md text-white">{txCount} {txCount === 1 ? "Transaction" : "Transactions"} (this {period})</span>
+            <div className="absolute -translate-y-14 right-6 flex flex-col">
+                <span className="text-md text-white">{txAllTime} {txAllTime === 1 ? "Transaction" : "Transactions"} (all time)</span>
+                <span className="text-sm text-white">{txCount} {txCount === 1 ? "Transaction" : "Transactions"} (last {period})</span>
             </div>
         );
     };
@@ -193,6 +249,7 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
     // TODO also show volume data in this chart -> sent ADA (red), received ADA (green)
     // TODO show how many outgoing and how many incoming
     // TODO add date picker to select timeframe
+    // TODO show volume in second graph
 
     return (
         <div className="mt-2">
