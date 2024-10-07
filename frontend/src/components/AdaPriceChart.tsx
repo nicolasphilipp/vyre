@@ -1,9 +1,9 @@
 import { AdaData, AdaInfo, HistoricalAdaData } from "@/model/AdaData";
 import { getCoinHistoricPrices } from "@/services/CoinDataService";
 import { convertUnixToDate, formatNumber } from "@/services/TextFormatService";
-import { Tabs, Tab, Chip } from "@nextui-org/react";
+import { Tabs, Tab, Chip, Divider } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area, TooltipProps } from "recharts";
+import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area, TooltipProps, Label } from "recharts";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { MinusIcon } from "./icons/MinusIcon";
 
@@ -99,9 +99,15 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
     const CustomTooltip: React.FC<TooltipProps<number, string>> = ({active, payload}) => {
         if (active && payload && payload.length > 0 && payload[0].value && payload[0].payload) {
           return (
-            <div className="tooltip-container p-1 text-white flex flex-col">
-              <span>{formatDateTime(payload[0].payload.date)}</span>
-              <span>{formatNumber(payload[0].value, 5)} €</span>
+            <div className="chart-tooltip text-sm text-white flex flex-col">
+                <div className="p-1">
+                    <span>{formatDateTime(payload[0].payload.date)}</span>
+                </div>
+                <Divider />
+                <div className="flex justify-between p-1">
+                    <span>{formatNumber(payload[0].value, 5)} €</span>
+                    <span>ADA</span>
+                </div>
             </div>
           );
         }
@@ -110,7 +116,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
 
     const formatDate = (tickItem: string) => {
         const date = new Date(tickItem);
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString('en-GB', {
             day: '2-digit',
             month: 'short',   
         }); 
@@ -118,32 +124,35 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
 
     const formatDateTime = (dateString: string): string => {
         const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
+        return date.toLocaleString('en-GB', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
           hour: '2-digit',
           minute: '2-digit',
-          second: '2-digit',
           hour12: true, 
         });
     };
 
     const formatTime = (dateString: string): string => {
         const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', {
+        return date.toLocaleTimeString('en-GB', {
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true, 
+            hour12: true
         });
+    };
+
+    const formatXAxisLabel = () => {
+        return ''; 
     };
 
     const Chart: React.FC<any> = ({data, period}) => {
         return (
-            <ResponsiveContainer width="100%" height={365}>
+            <ResponsiveContainer width="100%" height={360}>
                 <AreaChart
                     data={data}
-                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
                 >
                     <defs>
                         <linearGradient id="fadeGradient" x1="0" y1="0" x2="0" y2="1">
@@ -151,8 +160,17 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
                             <stop offset="85%" stopColor="#9353D3" stopOpacity={0} />
                         </linearGradient>
                     </defs>
-                    <XAxis dataKey="date" tickFormatter={period === "day" ? formatTime : formatDate}  />
-                    <YAxis domain={['auto', 0.35]} tickCount={10} />  
+                    <XAxis dataKey="date" className="text-sm" tickFormatter={formatXAxisLabel} minTickGap={40}>
+                        {
+                            data[data.length - 1] &&
+                            <Label value={period === "day" ? formatTime(data[data.length - 1].date) : formatDate(data[data.length - 1].date)} offset={0} position="insideBottomRight" />
+                        }
+                        {
+                            data[0] &&
+                            <Label value={period === "day" ? formatTime(data[0].date) : formatDate(data[0].date)} offset={0} position="insideBottomLeft" />
+                        }
+                    </XAxis>
+                    <YAxis className="text-sm" domain={['auto', 0.35]} tickCount={10} />  
                     <Tooltip offset={8} content={<CustomTooltip />} />
                     <Area
                         type="monotone"
@@ -171,25 +189,24 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
                 { adaPriceData.eur && adaInfo.symbol &&
                     <div className="absolute top-4 right-6 flex flex-col items-end">
                         <div className="flex gap-2.5 items-center">
-                            <span className="text-xl text-white">{adaInfo.symbol.toUpperCase()}</span>
+                            { adaPriceData.eur_24h_change < 0 &&
+                                <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(243, 18, 96, 0.5)", background: "rgba(243, 18, 96, 0.1)" }}>
+                                    <span className="text-danger font-bold">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                                </Chip>
+                            }
+                            { adaPriceData.eur_24h_change > 0 &&
+                                <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(23, 201, 100, 0.5)", background: "rgba(23, 201, 100, 0.1)" }}>
+                                    <span className="text-success font-bold">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                                </Chip>
+                            }
+                            { adaPriceData.eur_24h_change === 0 &&
+                                <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(63, 63, 70, 0.5)", background: "rgba(63, 63, 70, 0.3)" }}>
+                                    <span className="font-bold">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                                </Chip>
+                            }                                
                             <span className="text-xl text-white">{formatNumber(adaPriceData.eur, 5)} €</span>
                             <span className="pulsating-dot"></span>
                         </div>
-                        { adaPriceData.eur_24h_change < 0 &&
-                            <Chip color="danger" variant="bordered" className="mt-1" startContent={<ArrowIcon width={16} height={16} className="rotate-180" />}>
-                                <span className="text-danger">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
-                            </Chip>
-                        }
-                        { adaPriceData.eur_24h_change > 0 &&
-                            <Chip color="success" variant="bordered" className="mt-1" startContent={<ArrowIcon width={16} height={16} />}>
-                                <span className="text-success">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
-                            </Chip>
-                        }
-                        { adaPriceData.eur_24h_change === 0 &&
-                            <Chip color="default" variant="bordered" className="mt-1" startContent={<MinusIcon width={16} height={16} />}>
-                                <span>{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
-                            </Chip>
-                        }
                     </div>
                 }
             </div>

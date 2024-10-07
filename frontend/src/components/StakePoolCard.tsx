@@ -35,8 +35,8 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
     <>
         {
             pool &&
-            <div className="overview-highlight-card p-2 mt-2 text-sm">
-                <div className="flex flex-col">
+            <div className="overview-highlight-card mt-2 text-sm">
+                <div className="flex flex-col p-2">
                     <Link color='secondary' className='wallet-nav-link absolute top-2 right-2' href={pool.url} isExternal>
                         <ExternalLinkIcon width={18} height={18} />
                     </Link>
@@ -54,7 +54,7 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
                         </div>
                     </div>
         
-                    <div className="flex items-center justify-between my-1">
+                    <div className="flex items-center justify-between mt-1">
                         <Snippet 
                             symbol="" 
                             tooltipProps={{
@@ -76,10 +76,9 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
                             </div>
                         }
                     </div>
-        
-                    <Divider className="my-1" />
-                        
-        
+                </div>
+                <Divider />
+                <div className="flex flex-col p-2">
                     <div className="flex gap-4 items-center">
                         <span>Saturation</span>
                         <div className="flex gap-2 items-center w-full">
@@ -127,8 +126,9 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
                         </div>
                         <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({pool.tax_ratio}%)</span>
                     </div>
-                    <Divider className="my-1"/>
-                            
+                </div>
+                <Divider />
+                <div className="flex flex-col p-2">           
                     <div className="flex justify-between">
                         <span>APY</span>
                         <span>~{pool.roa_short}%</span>
