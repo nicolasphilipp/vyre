@@ -87,17 +87,17 @@ export default function Home() {
   useEffect(() => {
     getCoinPriceData("cardano")
       .then(res => {
-        console.log(res);
+        console.log("prices: ", res);
 
         setAdaData(res.data as AdaData);
       });
     
-    getCoinInfo("cardano")
+    /*getCoinInfo("cardano")
       .then(res => {
         console.log(res);
 
         setAdaInfo(res.data as AdaInfo);
-      });
+      });*/
   }, []);
  
   useEffect(() => {
@@ -289,7 +289,7 @@ export default function Home() {
             </div>
                     
             <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words">
-              <AdaPriceChart adaPriceData={adaData} adaInfo={adaInfo} />
+              <AdaPriceChart adaPriceData={adaData} />
             </div>
 
             <div className="col-span-2 row-span-2 p-4 overview-card flex-col gap-2 break-words justify-between">

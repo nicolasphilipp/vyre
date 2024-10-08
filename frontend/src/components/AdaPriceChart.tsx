@@ -9,7 +9,6 @@ import { MinusIcon } from "./icons/MinusIcon";
 
 interface ValueProps {
     adaPriceData: AdaData
-    adaInfo: AdaInfo
 }
 
 interface DataPoint {
@@ -19,26 +18,21 @@ interface DataPoint {
     totalvolume: number;
 }
 
-const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
+const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
     const [yearlyPrices, setYearlyPrices] = useState([] as DataPoint[]);
     const [monthlyPrices, setMonthlyPrices] = useState([] as DataPoint[]);
     const [currentPrices, setCurrentPrices] = useState([] as DataPoint[]);
 
     useEffect(() => {
         // TODO update periodically
-        const currentTimestamp = Math.floor(Date.now() / 1000);
-        const currentDate = new Date();
 
-        const lastYearDate = new Date();
-        lastYearDate.setFullYear(currentDate.getFullYear() - 1);
-        const lastYearTimestamp = Math.floor(lastYearDate.getTime() / 1000);
 
         // query yearly for daily data
-        getCoinHistoricPrices("cardano", lastYearTimestamp, currentTimestamp)
+        getCoinHistoricPrices("cardano", "yearly", "eur")
           .then(res => {
-            console.log(res);
-            
+            console.log("yearly: ", res);
             let historicData = res.data as HistoricalAdaData;
+
             let data: DataPoint[] = [];
             for(let i = 0; i < historicData.prices.length; i++) {
                 let date = convertUnixToDate(historicData.prices[i][0] / 1000);
@@ -51,12 +45,8 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
             setYearlyPrices(data);
         });
 
-        const lastMonthDate = new Date();
-        lastMonthDate.setMonth(currentDate.getMonth() - 1);
-        const lastMonthTimestamp = Math.floor(lastMonthDate.getTime() / 1000);
-
         // query monthly for hourly data
-        getCoinHistoricPrices("cardano", lastMonthTimestamp, currentTimestamp)
+        getCoinHistoricPrices("cardano", "monthly", "eur")
           .then(res => {
             console.log("monthly: ", res);
             let historicData = res.data as HistoricalAdaData;
@@ -73,27 +63,23 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
             setMonthlyPrices(data);
         });
 
-        const lastDayDate = new Date();
-        lastDayDate.setDate(currentDate.getDate() - 1);
-        const lastDayTimestamp = Math.floor(lastDayDate.getTime() / 1000);
-
         // query daily for current 5 min data
-        getCoinHistoricPrices("cardano", lastDayTimestamp, currentTimestamp)
-        .then(res => {
-          console.log("daily: ", res);
-          let historicData = res.data as HistoricalAdaData;
-          
-          let data: DataPoint[] = [];
-          for(let i = 0; i < historicData.prices.length; i++) {
-              let date = convertUnixToDate(historicData.prices[i][0] / 1000);
-              let price = historicData.prices[i][1];
-              let marketcap = historicData.market_caps[i][1];
-              let totalvolume = historicData.total_volumes[i][1];
+        getCoinHistoricPrices("cardano", "daily", "eur")
+            .then(res => {
+                console.log("daily: ", res);
+                let historicData = res.data as HistoricalAdaData;
+                
+                let data: DataPoint[] = [];
+                for(let i = 0; i < historicData.prices.length; i++) {
+                    let date = convertUnixToDate(historicData.prices[i][0] / 1000);
+                    let price = historicData.prices[i][1];
+                    let marketcap = historicData.market_caps[i][1];
+                    let totalvolume = historicData.total_volumes[i][1];
 
-              data.push({ date: date, price: price, marketcap: marketcap, totalvolume: totalvolume });
-          }
-          setCurrentPrices(data);
-      });
+                    data.push({ date: date, price: price, marketcap: marketcap, totalvolume: totalvolume });
+                }
+                setCurrentPrices(data);
+            });
     }, []);
 
     const CustomTooltip: React.FC<TooltipProps<number, string>> = ({active, payload}) => {
@@ -183,10 +169,10 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
         );
     };
 
-    const PriceSection: React.FC<any> = ({adaPriceData, adaInfo}) => {
+    const PriceSection: React.FC<any> = ({adaPriceData}) => {
         return (
             <div>
-                { adaPriceData.eur && adaInfo.symbol &&
+                { adaPriceData.eur &&
                     <div className="absolute top-4 right-6 flex flex-col items-end">
                         <div className="flex gap-2.5 items-center">
                             { adaPriceData.eur_24h_change < 0 &&
@@ -219,25 +205,25 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData, adaInfo }) => {
                 <Tabs key="chart-tabs" color="secondary" aria-label="Tabs colors" radius="md" placement="top" classNames={{base: "font-bold", wrapper: "w-full"}}>
                     <Tab key="1D" title="1D">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
+                            <PriceSection adaPriceData={adaPriceData} />
                             <Chart data={currentPrices} period={"day"} />
                         </div>
                     </Tab>
                     <Tab key="7D" title="7D">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
+                            <PriceSection adaPriceData={adaPriceData} />
                             <Chart data={monthlyPrices.slice(monthlyPrices.length - 7 * 24, monthlyPrices.length)} period={"week"} />
                         </div>
                     </Tab>
                     <Tab key="1M" title="1M">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
+                            <PriceSection adaPriceData={adaPriceData} />
                             <Chart data={monthlyPrices} period={"month"} />
                         </div>
                     </Tab>
                     <Tab key="1Y" title="1Y">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} adaInfo={adaInfo} />
+                            <PriceSection adaPriceData={adaPriceData} />
                             <Chart data={yearlyPrices} period={"year"} />
                         </div>
                     </Tab>

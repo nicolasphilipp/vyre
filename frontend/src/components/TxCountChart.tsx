@@ -66,13 +66,13 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
     function getYearData(tx: Transaction[]) {
         let txMap = new Map<string, number>();
         let yearToday = new Date().getFullYear().toString().slice(-2)
-        for(let month of ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']) {
+        for(let month of ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']) {
             txMap.set(month + ' ' + yearToday, 0);
         }
 
         for(let i = 0; i < tx.length; i++) {
             let date = new Date(tx[i].inserted_at.time);
-            let key = date.toLocaleString('en-US', { month: 'short' }).toUpperCase() + ' ' + date.getFullYear().toString().slice(-2);
+            let key = date.toLocaleString('en-US', { month: "long" }) + ' ' + date.getFullYear().toString().slice(-2);
 
             if(txMap.get(key) !== undefined) {
                 txMap.set(key, txMap.get(key)! + 1);
@@ -135,7 +135,7 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
     const CustomTooltip: React.FC<TooltipProps<number, string>> = ({active, payload}) => {
         if (active && payload && payload.length > 0 && payload[0].payload) {
           return (
-            <div className="chart-tooltip text-sm flex flex-col">
+            <div className="chart-tooltip text-sm flex flex-col min-w-40">
                 <div className="flex gap-4 items-center justify-between p-1">
                     <span className="text-white">{payload[0].payload.date}</span>
                     <div className="p-0.5">
