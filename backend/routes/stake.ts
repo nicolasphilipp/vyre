@@ -1,7 +1,7 @@
 import express, { Request, Response} from 'express';
 import { getPool, getResults } from '../utils/stake';
 import * as fs from 'fs';
-import { isWithinThreeHours } from '../utils/helper';
+import { isWithinTime } from '../utils/helper';
 const routes = express.Router();
 
 const CEXPLORER_API = "https://js.cexplorer.io/api-static/pool/";
@@ -26,7 +26,7 @@ routes.get('/:id', async (req: Request, res: Response) => {
             });
     } else {
         let poolData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        if(isWithinThreeHours(poolData.time)) {
+        if(isWithinTime(poolData.time, 3 * 60 * 60 * 1000)) {
             res.status(200).send(JSON.stringify({ pool: poolData.data }));
         } else {
             await fetch(CEXPLORER_API + req.params.id  + ".json")
@@ -51,7 +51,7 @@ routes.get('/', async (req: Request, res: Response) => {
     let jsonPools = JSON.parse(fs.readFileSync("./resources/pools.json", 'utf-8'));
     let allPools = [];
 
-    if(isWithinThreeHours(jsonPools.time)) {
+    if(isWithinTime(jsonPools.time, 3 * 60 * 60 * 1000)) {
         for(let i = 0; i < jsonPools.data.length; i++) {
             if(jsonPools.data[i]) {
                 allPools.push(jsonPools.data[i]);

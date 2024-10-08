@@ -9,12 +9,11 @@ export function getYesterdaysDate(): string {
     return `${day}-${month}-${year}`;
 }
 
-export function isWithinThreeHours(timestamp: string): boolean {
-    const threeHoursInMs = 3 * 60 * 60 * 1000; 
+export function isWithinTime(timestamp: string, timeInMs: number): boolean {
     const currentTime = new Date(); 
     const targetTime = new Date(timestamp);
   
     const timeDifference = Math.abs(currentTime.getTime() - targetTime.getTime());
-    return timeDifference <= threeHoursInMs;
+    return timeDifference <= timeInMs;
   }
   

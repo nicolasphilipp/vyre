@@ -1,5 +1,5 @@
 import { WalletServer } from 'cardano-wallet-js';
-import { isWithinThreeHours } from './helper';
+import { isWithinTime } from './helper';
 import * as fs from 'fs';
 import { Response } from 'express';
 
@@ -31,7 +31,7 @@ async function getResults (limit: number, page: number, pools: any[], res: Respo
         if(pools[i]) {
             let poolData = JSON.parse(fs.readFileSync("./resources/pools/" + pools[i].pool_id + ".json", 'utf-8'));
 
-            if(isWithinThreeHours(poolData.time)) {
+            if(isWithinTime(poolData.time, 3 * 60 * 60 * 1000)) {
                 results.push(poolData.data);
             } else {
                 await fetch(CEXPLORER_API + pools[i].pool_id  + ".json")
