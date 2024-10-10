@@ -156,7 +156,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
                             <Label value={period === "day" ? formatTime(data[0].date) : formatDate(data[0].date)} offset={0} position="insideBottomLeft" />
                         }
                     </XAxis>
-                    <YAxis className="text-sm" domain={['auto', 0.35]} tickCount={10} />  
+                    <YAxis className="text-sm" domain={['auto']} tickCount={10} />  
                     <Tooltip offset={8} content={<CustomTooltip />} />
                     <Area
                         type="monotone"
@@ -169,6 +169,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
         );
     };
 
+    // TODO adjust percent change when period changes
     const PriceSection: React.FC<any> = ({adaPriceData}) => {
         return (
             <div>

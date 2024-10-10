@@ -516,6 +516,14 @@ body {
   color: #17c964;
 }
 
+.sync-icon {
+  color: white;
+}
+
+.sync-icon:hover {
+  color: #9353d3;
+}
+
 .transaction-date-container {
   width: 45px;
   height: fit-content;

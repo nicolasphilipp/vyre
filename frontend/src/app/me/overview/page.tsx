@@ -1,7 +1,7 @@
 'use client';
 
 import "./overview.css";
-import { Button, Divider, Link, ScrollShadow, Snippet, Tooltip } from '@nextui-org/react';
+import { Button, Divider, Link, ScrollShadow, Snippet, Spinner, Tooltip } from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
@@ -33,6 +33,8 @@ import { adaPrice, loveLaceToAda } from "@/Constants";
 import { TreasureIcon } from "@/components/icons/TreasureIcon";
 import AdaPriceChart from "@/components/AdaPriceChart";
 import { getCoinInfo, getCoinPriceData } from "@/services/CoinDataService";
+import { SuccessIcon } from "@/components/icons/SuccessIcon";
+import { CheckmarkIcon } from "@/components/icons/CheckmarkIcon";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -83,6 +85,27 @@ export default function Home() {
     */
     return data;
   };
+
+  function sync() {
+    document.getElementById("syncIcon")?.classList.add("hidden");
+    document.getElementById("spinnerIcon")?.classList.remove("hidden");
+
+    syncWallet(selectedWallet.id)
+      .then(res => {
+        res.wallet.isSelected = selectedWallet.isSelected;
+        update(selectedWallet.id, res.wallet as Wallet);
+
+        setTimeout(() => {
+          document.getElementById("spinnerIcon")?.classList.add("hidden");
+          document.getElementById("successIcon")?.classList.remove("hidden");
+        }, 2000);
+
+        setTimeout(() => {
+          document.getElementById("successIcon")?.classList.add("hidden");
+          document.getElementById("syncIcon")?.classList.remove("hidden");
+        }, 5000);
+      });
+  }
 
   useEffect(() => {
     getCoinPriceData("cardano")
@@ -204,7 +227,12 @@ export default function Home() {
                 </div>
 
                 <div className="flex flex-col gap-2 items-end">
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
+                    <div>
+                      <a id="syncIcon" className="sync-icon flex items-center justify-center cursor-pointer" onClick={sync} aria-label="Sync wallet"><SwapIcon width={20} height={20} /></a>
+                      <Spinner id="spinnerIcon" size="sm" color="secondary" className="hidden" />
+                      <CheckmarkIcon id="successIcon" className="hidden" width={20} height={20} />
+                    </div>
                     <EditWalletModal id={selectedWallet.id} value={selectedWallet.name} />
                     <RemoveWalletModal wallet={selectedWallet} />
                   </div>
