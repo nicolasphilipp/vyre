@@ -11,6 +11,7 @@ import { InsightsIcon } from "@/components/icons/InsightsIcon";
 import React from "react";
 import TxCountChart from "@/components/TxCountChart";
 import TxSection from "@/components/TxSection";
+import TxTurnoverChart from "@/components/TxTurnoverChart";
 
 export default function Home() {
   const { wallets, selected } = useWalletStore();
@@ -40,19 +41,21 @@ export default function Home() {
               <InsightsIcon className="text-white" width={20} height={20} />
             </div>
 
-            {
-              selectedWallet && selectedWallet.id &&
-                <>
-                  <TxCountChart wallet={selectedWallet} />
-                  <Divider className="mb-3" />
-                </>
-            }
-            {
-              selectedWallet && selectedWallet.id &&
-                <>
-                  <TxCountChart wallet={selectedWallet} />
-                </>
-            }
+            <div className="flex flex-col justify-between">
+              {
+                selectedWallet && selectedWallet.id &&
+                  <>
+                    <TxCountChart wallet={selectedWallet} />
+                  </>
+              }
+              <Divider className="mb-3" />
+              {
+                selectedWallet && selectedWallet.id &&
+                  <>
+                    <TxTurnoverChart wallet={selectedWallet} />
+                  </>
+              }
+            </div>
           </div>
 
           <div className="col-span-2 row-span-1 p-4 overview-card flex-col break-words">

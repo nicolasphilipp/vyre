@@ -16,6 +16,7 @@ export interface Wallet {
     addressesApi: Api;
     address_pool_gap: number;
     isSelected: boolean;
+    lastSynced: string;
 }
 
 export interface Balance {

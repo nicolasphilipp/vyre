@@ -93,6 +93,7 @@ export default function Home() {
     syncWallet(selectedWallet.id)
       .then(res => {
         res.wallet.isSelected = selectedWallet.isSelected;
+        res.wallet.lastSynced = new Date().toUTCString();
         update(selectedWallet.id, res.wallet as Wallet);
 
         setTimeout(() => {
@@ -138,6 +139,7 @@ export default function Home() {
         syncWallet(wallets[i].id)
           .then(res => {
             res.wallet.isSelected = wallets[i].isSelected;
+            res.wallet.lastSynced = new Date().toUTCString();
             wallets[i] = res.wallet as Wallet;
 
             update(wallets[i].id, wallets[i]);
@@ -182,6 +184,7 @@ export default function Home() {
               console.log("synced wallet");
 
               res.wallet.isSelected = wallets[i].isSelected;
+              res.wallet.lastSynced = new Date().toUTCString();
               wallets[i] = res.wallet as Wallet;
 
               update(wallets[i].id, wallets[i]);
@@ -233,6 +236,7 @@ export default function Home() {
                       <Spinner id="spinnerIcon" size="sm" color="secondary" className="hidden text-white" />
                       <CheckmarkIcon id="successIcon" className="hidden text-white" width={24} height={24} />
                     </div>
+                    
                     <EditWalletModal id={selectedWallet.id} value={selectedWallet.name} />
                     <RemoveWalletModal wallet={selectedWallet} />
                   </div>

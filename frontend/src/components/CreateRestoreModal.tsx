@@ -346,6 +346,7 @@ export default function CreateRestoreModal() {
               reject(res.error);
             } else {
               res.wallet.isSelected = true;
+              res.wallet.lastSynced = new Date().toUTCString();
               setSelected(res.wallet.id);
               add(res.wallet);
 
@@ -385,6 +386,7 @@ export default function CreateRestoreModal() {
               reject(res.error);
             } else {
               res.wallet.isSelected = true;
+              res.wallet.lastSynced = new Date().toUTCString();
               setSelected(res.wallet.id);
               add(res.wallet);
 

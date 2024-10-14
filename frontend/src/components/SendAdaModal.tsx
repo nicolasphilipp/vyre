@@ -136,6 +136,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                     syncWallet(wallet.id)
                         .then(res => {
                             res.wallet.isSelected = wallet.isSelected;
+                            res.wallet.lastSynced = new Date().toUTCString();
                             wallet = res.wallet as Wallet;
                             
                             update(wallet.id, wallet);
