@@ -1,6 +1,6 @@
 import { AdaData, AdaInfo, HistoricalAdaData } from "@/model/AdaData";
 import { getCoinHistoricPrices } from "@/services/CoinDataService";
-import { convertUnixToDate, formatNumber } from "@/services/TextFormatService";
+import { convertUnixToDate, formatNumber, numberToPercent } from "@/services/TextFormatService";
 import { Tabs, Tab, Chip, Divider } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area, TooltipProps, Label } from "recharts";
@@ -24,10 +24,6 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
     const [currentPrices, setCurrentPrices] = useState([] as DataPoint[]);
 
     useEffect(() => {
-        // TODO update periodically
-
-
-        // query yearly for daily data
         getCoinHistoricPrices("cardano", "yearly", "eur")
           .then(res => {
             console.log("yearly: ", res);
@@ -45,7 +41,6 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
             setYearlyPrices(data);
         });
 
-        // query monthly for hourly data
         getCoinHistoricPrices("cardano", "monthly", "eur")
           .then(res => {
             console.log("monthly: ", res);
@@ -63,7 +58,6 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
             setMonthlyPrices(data);
         });
 
-        // query daily for current 5 min data
         getCoinHistoricPrices("cardano", "daily", "eur")
             .then(res => {
                 console.log("daily: ", res);
@@ -169,26 +163,32 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
         );
     };
 
-    // TODO adjust percent change when period changes
-    const PriceSection: React.FC<any> = ({adaPriceData}) => {
+    const calcPercentChange = (current: number, previous: number) => {
+        if(previous === 0) {
+            return 0;
+        }
+        return (current - previous) / previous;
+    }
+
+    const PriceSection: React.FC<any> = ({adaPriceData, previousPrice}) => {
         return (
             <div>
-                { adaPriceData.eur &&
+                { adaPriceData.eur && previousPrice &&
                     <div className="absolute top-4 right-6 flex flex-col items-end">
                         <div className="flex gap-2.5 items-center">
                             { adaPriceData.eur_24h_change < 0 &&
                                 <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(243, 18, 96, 0.5)", background: "rgba(243, 18, 96, 0.1)" }}>
-                                    <span className="text-danger font-bold">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                                    <span className="text-danger font-bold">{numberToPercent(calcPercentChange(adaPriceData.eur, previousPrice.price), 2)}</span>
                                 </Chip>
                             }
                             { adaPriceData.eur_24h_change > 0 &&
                                 <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(23, 201, 100, 0.5)", background: "rgba(23, 201, 100, 0.1)" }}>
-                                    <span className="text-success font-bold">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                                    <span className="text-success font-bold">+{numberToPercent(calcPercentChange(adaPriceData.eur, previousPrice.price), 2)}</span>
                                 </Chip>
                             }
                             { adaPriceData.eur_24h_change === 0 &&
                                 <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(63, 63, 70, 0.5)", background: "rgba(63, 63, 70, 0.3)" }}>
-                                    <span className="font-bold">{formatNumber(adaPriceData.eur_24h_change, 2)}%</span>
+                                    <span className="font-bold">0.00%</span>
                                 </Chip>
                             }                                
                             <span className="text-xl text-white">{formatNumber(adaPriceData.eur, 5)} €</span>
@@ -206,25 +206,25 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
                 <Tabs key="chart-tabs" color="secondary" aria-label="Tabs colors" radius="md" placement="top" classNames={{base: "font-bold", wrapper: "w-full"}}>
                     <Tab key="1D" title="1D">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} />
+                            <PriceSection adaPriceData={adaPriceData} previousPrice={currentPrices[0]} />
                             <Chart data={currentPrices} period={"day"} />
                         </div>
                     </Tab>
                     <Tab key="7D" title="7D">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} />
+                            <PriceSection adaPriceData={adaPriceData} previousPrice={monthlyPrices.slice(monthlyPrices.length - 7 * 24, monthlyPrices.length)[0]} />
                             <Chart data={monthlyPrices.slice(monthlyPrices.length - 7 * 24, monthlyPrices.length)} period={"week"} />
                         </div>
                     </Tab>
                     <Tab key="1M" title="1M">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} />
+                            <PriceSection adaPriceData={adaPriceData} previousPrice={monthlyPrices[0]} />
                             <Chart data={monthlyPrices} period={"month"} />
                         </div>
                     </Tab>
                     <Tab key="1Y" title="1Y">
                         <div>
-                            <PriceSection adaPriceData={adaPriceData} />
+                            <PriceSection adaPriceData={adaPriceData} previousPrice={yearlyPrices[0]} />
                             <Chart data={yearlyPrices} period={"year"} />
                         </div>
                     </Tab>

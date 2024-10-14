@@ -230,8 +230,8 @@ export default function Home() {
                   <div className="flex gap-2 items-center">
                     <div>
                       <a id="syncIcon" className="sync-icon flex items-center justify-center cursor-pointer" onClick={sync} aria-label="Sync wallet"><SwapIcon width={20} height={20} /></a>
-                      <Spinner id="spinnerIcon" size="sm" color="secondary" className="hidden" />
-                      <CheckmarkIcon id="successIcon" className="hidden" width={20} height={20} />
+                      <Spinner id="spinnerIcon" size="sm" color="secondary" className="hidden text-white" />
+                      <CheckmarkIcon id="successIcon" className="hidden text-white" width={24} height={24} />
                     </div>
                     <EditWalletModal id={selectedWallet.id} value={selectedWallet.name} />
                     <RemoveWalletModal wallet={selectedWallet} />
