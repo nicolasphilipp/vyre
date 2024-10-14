@@ -19,7 +19,23 @@ export default function TxSection() {
                 </div>
 
                 <div className="flex gap-4">
-                    <Input type="text" isClearable variant="bordered" label="Receiver Address" placeholder="addr_xxxxx..." value={receiver} onValueChange={setReceiver} />
+                    <Input type="text" isClearable variant="bordered" label="Receiver Address" placeholder="addr_xxxxx..." value={receiver} onValueChange={setReceiver} /> 
+                    <div className="flex w-full gap-4">
+                        <Input type="number" variant="bordered" label="Min" placeholder="0.00" 
+                            startContent={
+                                <div className="pointer-events-none flex items-center">
+                                    <span className="text-sm">₳</span>
+                                </div>
+                            }
+                        />
+                        <Input type="number" variant="bordered" label="Max" placeholder="0.00" 
+                            startContent={
+                                <div className="pointer-events-none flex items-center">
+                                    <span className="text-sm">₳</span>
+                                </div>
+                            }
+                        />
+                    </div>
                     <DatePicker label="Start Date" variant="bordered" calendarProps={{ color: "secondary" }} value={startDate} onChange={setStartDate} classNames={{ popoverContent: "dark" }} />
                     <DatePicker label="End Date" variant="bordered" calendarProps={{ color: "secondary" }} value={endDate} onChange={setEndDate} classNames={{ popoverContent: "dark" }} />
                 </div>

@@ -23,7 +23,7 @@ const TxHistoryEntry: React.FC<ValueProps> = ({ transaction }) => {
                 <span>{transaction.inserted_at && parseDate(transaction.inserted_at.time)}</span>
               </div>
               <div className="flex w-full justify-between">
-                <span>+{formatNumber(isLoveLace ? transaction.amount.quantity / loveLaceToAda : transaction.amount.quantity, 2)} {isLoveLace ? "ADA" : transaction.amount.unit}</span>
+                <span>{formatNumber(isLoveLace ? transaction.amount.quantity / loveLaceToAda : transaction.amount.quantity, 2)} {isLoveLace ? "ADA" : transaction.amount.unit}</span>
                 <ArrowIcon width={20} height={20} className="rotate-45" />
               </div>
             </div>

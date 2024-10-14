@@ -65,7 +65,7 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
 
     function getYearData(tx: Transaction[]) {
         let txMap = new Map<string, number>();
-        let yearToday = new Date().getFullYear().toString().slice(-2)
+        let yearToday = new Date().getFullYear().toString();
         for(let month of ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']) {
             txMap.set(month + ' ' + yearToday, 0);
         }
@@ -73,7 +73,7 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
         for(let i = 0; i < tx.length; i++) {
             if(tx[i].inserted_at) {
                 let date = new Date(tx[i].inserted_at.time);
-                let key = date.toLocaleString('en-US', { month: "long" }) + ' ' + date.getFullYear().toString().slice(-2);
+                let key = date.toLocaleString('en-US', { month: "long" }) + ' ' + date.getFullYear().toString();
     
                 if(txMap.get(key) !== undefined) {
                     txMap.set(key, txMap.get(key)! + 1);
