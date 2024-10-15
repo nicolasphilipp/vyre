@@ -11,15 +11,15 @@ routes.get('/:id', async (req: Request, res: Response) => {
     
     if (!fs.existsSync(filePath)) {
         await fetch(CEXPLORER_API + req.params.id  + ".json")
-            .then(res => res.json())
-            .then(res => {
-                fs.writeFile('./resources/pools/' + req.params.id + ".json", JSON.stringify(res), function(err) {
+            .then(response => response.json())
+            .then(response => {
+                fs.writeFile('./resources/pools/' + req.params.id + ".json", JSON.stringify(response), function(err) {
                     if(err) {
                         console.log(err);
                     }
                 });
 
-                res.status(200).send(JSON.stringify({ pool: res.data }));
+                res.status(200).send(JSON.stringify({ pool: response.data }));
             })
             .catch(err => {
                 res.status(500).send(JSON.stringify({ error: err }));
@@ -30,15 +30,15 @@ routes.get('/:id', async (req: Request, res: Response) => {
             res.status(200).send(JSON.stringify({ pool: poolData.data }));
         } else {
             await fetch(CEXPLORER_API + req.params.id  + ".json")
-                .then(res => res.json())
-                .then(res => {
-                    fs.writeFile('./resources/pools/' + req.params.id + ".json", JSON.stringify(res), function(err) {
+                .then(response => response.json())
+                .then(response => {
+                    fs.writeFile('./resources/pools/' + req.params.id + ".json", JSON.stringify(response), function(err) {
                         if(err) {
                             console.log(err);
                         }
                     });
 
-                    res.status(200).send(JSON.stringify({ pool: res.data }));
+                    res.status(200).send(JSON.stringify({ pool: response.data }));
                 })
                 .catch(err => {
                     res.status(500).send(JSON.stringify({ error: err }));
