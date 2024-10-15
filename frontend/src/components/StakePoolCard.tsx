@@ -1,7 +1,7 @@
 import { Divider, Link, Progress, Snippet, Tooltip, Image, Button } from "@nextui-org/react";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
-import { cutText, formatNumber, numberToPercent, parseDate } from "@/services/TextFormatService";
+import { cutText, extractTicker, formatNumber, numberToPercent, parseDate } from "@/services/TextFormatService";
 import { Transaction } from "@/model/Transaction";
 import { DelegationStatus } from "@/model/Wallet";
 import { setActiveItem } from "@/services/NavbarHelperService";
@@ -19,17 +19,6 @@ interface ValueProps {
 
 const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
     // TODO implement delegate button
-
-    function extractTicker(name: string, ticker: boolean): string {
-        if(name) {
-            if(ticker) {
-                return name.slice(0, name.indexOf("]") + 1);
-            } else {
-                return name.slice(name.indexOf("]") + 1);
-            }
-        } 
-        return "";
-    }
 
   return (
     <>

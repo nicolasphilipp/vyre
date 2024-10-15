@@ -56,3 +56,14 @@ export function parseDate(dateString: string): string {
 export function convertUnixToDate(unixTimestamp: number): string {
     return new Date(unixTimestamp * 1000).toUTCString();
 }
+
+export function extractTicker(name: string, ticker: boolean): string {
+    if(name) {
+        if(ticker) {
+            return name.slice(0, name.indexOf("]") + 1);
+        } else {
+            return name.slice(name.indexOf("]") + 1);
+        }
+    } 
+    return "";
+}
