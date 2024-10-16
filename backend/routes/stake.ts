@@ -1,5 +1,5 @@
 import express, { Request, Response} from 'express';
-import { getPool, getResults } from '../utils/stake';
+import { estimateDelegationFees, getPool, getResults, startDelegation, stopDelegation } from '../utils/stake';
 import * as fs from 'fs';
 import { isWithinTime } from '../utils/helper';
 const routes = express.Router();
@@ -113,6 +113,48 @@ routes.get('/', async (req: Request, res: Response) => {
         }
     } else {
         res.status(200).send(JSON.stringify({ pools: strippedPools }));
+    }
+});
+
+routes.post('/start', async (req: Request, res: Response) => {
+    if(req.body.passphrase.length < 10 || req.body.walletId.length !== 40) {
+        res.sendStatus(400);
+        return;
+    }
+    
+    let tx = JSON.parse(await startDelegation(req.body.walletId, req.body.poolId, req.body.passphrase));
+    if(tx.error){
+        res.status(500).send(JSON.stringify({ error: tx.error }));
+    } else {  
+        res.status(200).send(JSON.stringify({ startTx: tx }));
+    }
+});
+
+routes.post('/stop', async (req: Request, res: Response) => {
+    if(req.body.passphrase.length < 10 || req.body.walletId.length !== 40) {
+        res.sendStatus(400);
+        return;
+    }
+    
+    let tx = JSON.parse(await stopDelegation(req.body.walletId, req.body.passphrase));
+    if(tx.error){
+        res.status(500).send(JSON.stringify({ error: tx.error }));
+    } else {  
+        res.status(200).send(JSON.stringify({ stopTx: tx }));
+    }
+});
+
+routes.post('/estimate', async (req: Request, res: Response) => {
+    if(req.body.walletId.length !== 40) {
+        res.sendStatus(400);
+        return;
+    }
+    
+    let fee = JSON.parse(await estimateDelegationFees(req.body.walletId));
+    if(fee.error){
+        res.status(500).send(JSON.stringify({ error: fee.error }));
+    } else {  
+        res.status(200).send(JSON.stringify({ fee: fee }));
     }
 });
 

@@ -24,7 +24,7 @@ async function getPool(stake: number, poolId: string) {
     }
 }
 
-async function getResults (limit: number, page: number, pools: any[], res: Response) {
+async function getResults(limit: number, page: number, pools: any[], res: Response) {
     let results = [];
     let index = (limit * (page - 1 >= 0 ? page - 1 : 0));
     for(let i = index; i < index + limit; i++) {
@@ -54,5 +54,35 @@ async function getResults (limit: number, page: number, pools: any[], res: Respo
     return results;
 }
 
-export { getPool, getResults };
+async function startDelegation(walletId: string, poolId: string, passphrase: string) {
+    try {
+        let wallet = await walletServer.getShelleyWallet(walletId);
+        let tx = await wallet.delegate(poolId, passphrase);
+        return JSON.stringify({ startTx: tx });
+    } catch(e) {
+        return JSON.stringify({ error: e });
+    }
+}
+
+async function stopDelegation(walletId: string, passphrase: string) {
+    try {
+        let wallet = await walletServer.getShelleyWallet(walletId);
+        let tx = await wallet.stopDelegation(passphrase);
+        return JSON.stringify({ stopTx: tx });
+    } catch(e) {
+        return JSON.stringify({ error: e });
+    }
+}
+
+async function estimateDelegationFees(walletId: string) {
+    try {
+        let wallet = await walletServer.getShelleyWallet(walletId);
+        let fee = await wallet.estimateDelegationFee();
+        return JSON.stringify({ fee: fee });
+    } catch(e) {
+        return JSON.stringify({ error: e });
+    }
+}
+
+export { getPool, getResults, stopDelegation, startDelegation, estimateDelegationFees };
 
