@@ -176,17 +176,17 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
                 { adaPriceData.eur && previousPrice &&
                     <div className="absolute top-4 right-6 flex flex-col items-end">
                         <div className="flex gap-2.5 items-center">
-                            { adaPriceData.eur_24h_change < 0 &&
+                            { calcPercentChange(adaPriceData.eur, previousPrice.price) < 0 &&
                                 <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(243, 18, 96, 0.5)", background: "rgba(243, 18, 96, 0.1)" }}>
                                     <span className="text-danger font-bold">{numberToPercent(calcPercentChange(adaPriceData.eur, previousPrice.price), 2)}</span>
                                 </Chip>
                             }
-                            { adaPriceData.eur_24h_change > 0 &&
+                            { calcPercentChange(adaPriceData.eur, previousPrice.price) > 0 &&
                                 <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(23, 201, 100, 0.5)", background: "rgba(23, 201, 100, 0.1)" }}>
                                     <span className="text-success font-bold">+{numberToPercent(calcPercentChange(adaPriceData.eur, previousPrice.price), 2)}</span>
                                 </Chip>
                             }
-                            { adaPriceData.eur_24h_change === 0 &&
+                            { calcPercentChange(adaPriceData.eur, previousPrice.price) === 0 &&
                                 <Chip variant="flat" radius="sm" size="sm" style={{ border: "1px solid rgba(63, 63, 70, 0.5)", background: "rgba(63, 63, 70, 0.3)" }}>
                                     <span className="font-bold">0.00%</span>
                                 </Chip>

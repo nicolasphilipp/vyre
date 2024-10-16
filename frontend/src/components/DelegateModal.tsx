@@ -3,9 +3,10 @@ import { Wallet } from "@/model/Wallet";
 import { ScatterIcon } from "./icons/ScatterIcon";
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
 import { startDelegation } from "@/services/StakeService";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EyeFilledIcon } from "./icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
+import toast from "react-hot-toast";
 
 interface ValueProps {
     wallet: Wallet;
@@ -19,6 +20,9 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(!isVisible);
 
+    const [submit, setSubmit] = useState(false);
+    const firstRender = useRef(true);
+
     function setPassphraseTouched(inputPass: string): void { 
         setPassTouched(true);
         setPassphrase(inputPass);
@@ -28,16 +32,43 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
         setPassTouched(false);
         setPassphrase("");
         setIsVisible(false);
-      }
+    }
+
+    function submitInput(): void {
+        setSubmit(!submit);
+    }     
 
     useEffect(() => {
+        if(firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+
         if(wallet && pool && passphrase) {
-            /*
-            startDelegation(wallet.id, pool.pool_id, passphrase)
-                .then(res => res.json());
-            */
-        }        
-    }, []);
+            toast.promise(new Promise((resolve, reject) =>  {
+                startDelegation(wallet.id, pool.pool_id, passphrase)
+                    .then(res => {
+                        if(res.error){
+                            reject(res.error);
+                        } else {
+                            let tx = res.startTx;
+                            console.log("startTx", tx);
+                            
+                            // TODO doesnt work right now because pool data is not from preview testnet
+
+                            resetForm();
+                            onClose();
+                            resolve("");
+                        }
+                    })
+            }),
+            {
+                loading: 'Delegating to pool...',
+                success: 'Successfully delegated to pool.',
+                error: 'Error delegating to pool.',
+            });    
+        } 
+    }, [submit]);
 
     // TODO add estimated delegation fee
     // show useful information like blocks produced last few epochs, blocks estimated this epoch
@@ -78,7 +109,7 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                                 <Button color="danger" variant="light" onPress={onClose}>
                                     Close
                                 </Button>
-                                <Button color="secondary" className='text-white' isDisabled={!passTouched || passphrase.length < 10}>
+                                <Button color="secondary" className='text-white' onPress={submitInput} isDisabled={!passTouched || passphrase.length < 10}>
                                     Delegate
                                 </Button>
                             </ModalFooter>

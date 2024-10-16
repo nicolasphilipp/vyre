@@ -27,7 +27,7 @@ const StakePoolList: React.FC<ValueProps> = ({ stakePools, wallet }) => {
         <div key={chunkIndex} className="flex gap-4 justify-center">
           { chunk.map((pool: StakePoolData, index: number) => (
               <div style={{ width: "300px" }}>
-                <StakePoolCard key={index} pool={pool} delegate={'pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9' !== pool.pool_id} />
+                <StakePoolCard key={index} pool={pool} delegate={'pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9' !== pool.pool_id} wallet={wallet} />
               </div>
             ))
           }
