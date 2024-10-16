@@ -31,6 +31,10 @@ const TxList: React.FC<ValueProps> = ({ receiver, startDate, endDate }) => {
   };
 
   useEffect(() => {
+    setSelectedKeys(new Set(["-1"]));
+  }, [selectedWallet]);
+
+  useEffect(() => {
     if(oldPage !== currentPage){
       setSelectedKeys(new Set(["-1"]));
       setOldPage(currentPage);
