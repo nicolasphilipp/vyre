@@ -3,7 +3,7 @@ import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
 import { cutText, extractTicker, formatNumber, numberToPercent, parseDate } from "@/services/TextFormatService";
 import { Transaction } from "@/model/Transaction";
-import { DelegationStatus } from "@/model/Wallet";
+import { DelegationStatus, Wallet } from "@/model/Wallet";
 import { setActiveItem } from "@/services/NavbarHelperService";
 import { ExternalLinkIcon } from "./icons/ExternalLinkIcon";
 import { StakePool, StakePoolData } from "@/model/StakePool";
@@ -11,13 +11,16 @@ import { loveLaceToAda } from "@/Constants";
 import { useEffect, useState } from "react";
 import React from "react";
 import { ScatterIcon } from "./icons/ScatterIcon";
+import { startDelegation } from "@/services/StakeService";
+import DelegateModal from "./DelegateModal";
 
 interface ValueProps {
+    wallet: Wallet;
     pool: StakePoolData;
     delegate: boolean;
 }
 
-const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
+const StakePoolCard: React.FC<ValueProps> = ({ wallet, pool, delegate }) => {
     // TODO implement delegate button
 
   return (
@@ -60,9 +63,7 @@ const StakePoolCard: React.FC<ValueProps> = ({ pool, delegate }) => {
                         </Snippet>
                         {
                             delegate &&
-                            <div>
-                                <Button size="sm" color="secondary" variant="ghost" className="text-sm" startContent={<ScatterIcon width={18} height={18} className="-m-1" />}>delegate</Button>   
-                            </div>
+                            <DelegateModal wallet={wallet} pool={pool} />
                         }
                     </div>
                 </div>

@@ -36,6 +36,7 @@ import { getCoinInfo, getCoinPriceData } from "@/services/CoinDataService";
 import { SuccessIcon } from "@/components/icons/SuccessIcon";
 import { CheckmarkIcon } from "@/components/icons/CheckmarkIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
+import StopDelegateModal from "@/components/StopDelegateModal";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();

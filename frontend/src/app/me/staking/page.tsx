@@ -5,17 +5,19 @@ import { DangerIcon } from "@/components/icons/DangerIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import { FilterIcon } from "@/components/icons/FilterIcon";
 import { GlobalIcon } from "@/components/icons/GlobalIcon";
+import { ScatterIcon } from "@/components/icons/ScatterIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
 import StakePoolCard from "@/components/StakePoolCard";
 import StakePoolList from "@/components/StakePoolList";
+import StopDelegateModal from "@/components/StopDelegateModal";
 import { loveLaceToAda } from "@/Constants";
 import { StakePoolData, StakePoolListDto } from "@/model/StakePool";
 import { DelegationStatus, Wallet } from "@/model/Wallet";
 import useWalletStore from "@/model/WalletState";
 import { getAllPools, queryPool } from "@/services/StakeService";
 import { cutText, extractTicker, formatNumber, numberToPercent } from "@/services/TextFormatService";
-import { Input, Pagination, ScrollShadow, Image, Snippet, Divider, Link, Progress, Tooltip } from "@nextui-org/react";
+import { Input, Pagination, ScrollShadow, Image, Snippet, Divider, Link, Progress, Tooltip, Button } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
 export default function Home() {
@@ -199,6 +201,10 @@ export default function Home() {
                   </div>
                 </div>
                 
+                <div className="absolute bottom-4 left-4">
+                  <StopDelegateModal wallet={selectedWallet} pool={poolData} />
+                </div>
+
                 <Link color='secondary' className='wallet-nav-link absolute bottom-2 right-2' href={poolData.url} isExternal>
                   <div className="flex gap-0.5 items-center">
                     <span>view on cexplorer.io</span> 
