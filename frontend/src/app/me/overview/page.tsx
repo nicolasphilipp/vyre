@@ -37,6 +37,8 @@ import { SuccessIcon } from "@/components/icons/SuccessIcon";
 import { CheckmarkIcon } from "@/components/icons/CheckmarkIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import StopDelegateModal from "@/components/StopDelegateModal";
+import { getNetworkInformation } from "@/services/NetworkService";
+import { NetworkInformation } from "@/model/NetworkInformation";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -45,10 +47,18 @@ export default function Home() {
   const [transactions, setTransactions] = useState([] as Transaction[]);
   const [address, setAddress] = useState({} as Address);
   const [poolData, setPoolData] = useState({} as StakePoolData);
+  const [network, setNetwork] = useState({} as NetworkInformation);
 
   const [adaData, setAdaData] = useState({} as AdaData);
   const [adaInfo, setAdaInfo] = useState({} as AdaInfo);
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
+
+  useEffect(() => {
+    getNetworkInformation()
+      .then(res => {
+        setNetwork(res.information as NetworkInformation);
+      });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -108,6 +118,11 @@ export default function Home() {
           document.getElementById("syncIcon")?.classList.remove("hidden");
         }, 5000);
       });
+  
+    getNetworkInformation()
+      .then(res => {
+        setNetwork(res.information as NetworkInformation);
+      });  
   }
 
   useEffect(() => {
@@ -310,16 +325,26 @@ export default function Home() {
               </div>
 
               <Divider className="my-3" />
-              <ScrollShadow hideScrollBar size={20}>
-                {
-                  selectedWallet.assets.total.map((asset, i) => 
-                    <div key={"asset" + i} aria-label={"asset" + i} className="flex justify-between">
-                      <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
-                      <span>N/A €</span>
-                    </div>
-                  )
-                }
-              </ScrollShadow>
+
+              <div className="flex flex-col justify-between h-full">
+                <ScrollShadow hideScrollBar size={20}>
+                  {
+                    selectedWallet.assets.total.map((asset, i) => 
+                      <div key={"asset" + i} aria-label={"asset" + i} className="flex justify-between">
+                        <span>{hexToAsciiString(asset.asset_name)} ({asset.quantity})</span>
+                        <span>N/A €</span>
+                      </div>
+                    )
+                  }
+                </ScrollShadow>
+              
+                <div className="flex flex-col gap-3">
+                  <Divider />
+                  <div className="flex justify-end">
+                    <span>Epoch: {network.network_tip && network.network_tip.epoch_number} / Slot: {network.network_tip && network.network_tip.slot_number}</span>
+                  </div>
+                </div>
+              </div>
             </div>
                     
             <div className="col-span-2 row-span-3 p-4 overview-card flex-col break-words">
