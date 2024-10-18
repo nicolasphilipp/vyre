@@ -1,7 +1,7 @@
 import { Divider, Link, Progress, Snippet, Tooltip, Image, Button } from "@nextui-org/react";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
-import { cutText, extractTicker, formatNumber, numberToPercent, parseDate } from "@/services/TextFormatService";
+import { cutText, extractTicker, formatNumber, numberToPercent } from "@/services/TextFormatService";
 import { Transaction } from "@/model/Transaction";
 import { DelegationStatus, Wallet } from "@/model/Wallet";
 import { setActiveItem } from "@/services/NavbarHelperService";

@@ -1,7 +1,7 @@
 import { Tooltip } from "@nextui-org/react";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
-import { formatNumber, parseDate } from "@/services/TextFormatService";
+import { formatDate, formatNumber } from "@/services/TextFormatService";
 import { Transaction } from "@/model/Transaction";
 import { loveLaceToAda } from "@/Constants";
 import React from "react";
@@ -20,7 +20,7 @@ const TxListAccordionEntry: React.FC<ValueProps> = ({ transaction }) => {
           <div className="flex justify-between items-center mt-2 text-success">
             <div className="transaction-row">
               <div className="transaction-date-container">
-                <span>{transaction.inserted_at && parseDate(transaction.inserted_at.time)}</span>
+                <span>{transaction.inserted_at && formatDate(transaction.inserted_at.time)}</span>
               </div>
               <div className="flex w-full justify-between">
                 <span>{formatNumber(isLoveLace ? transaction.amount.quantity / loveLaceToAda : transaction.amount.quantity, 6)} {isLoveLace ? "ADA" : transaction.amount.unit}</span>
@@ -34,7 +34,7 @@ const TxListAccordionEntry: React.FC<ValueProps> = ({ transaction }) => {
           <div className="flex justify-between items-center mt-2 text-danger">
             <div className="transaction-row">
               <div className="transaction-date-container">
-                <span>{transaction.inserted_at && parseDate(transaction.inserted_at.time)}</span>
+                <span>{transaction.inserted_at && formatDate(transaction.inserted_at.time)}</span>
               </div>
               <div className="flex w-full justify-between">
                 <div className="flex flex-col">

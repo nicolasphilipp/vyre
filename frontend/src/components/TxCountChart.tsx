@@ -5,7 +5,7 @@ import { Tabs, Tab, Divider, Chip } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, TooltipProps, Bar, Line, ComposedChart, Label } from "recharts";
 import { ArrowIcon } from "./icons/ArrowIcon";
-import { formatNumber } from "@/services/TextFormatService";
+import { formatDate, formatNumber } from "@/services/TextFormatService";
 
 interface ValueProps {
     wallet: Wallet;
@@ -108,12 +108,7 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
         for (let i = 30; i >= 0; i--) {
           const date = new Date();
           date.setDate(today.getDate() - i);
-      
-          const day = String(date.getDate()).padStart(2, '0');
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const year = date.getFullYear();
-      
-          daysArray.push(`${day}/${month}/${year}`);
+          daysArray.push(formatDate(date.toString()));
         }
         return daysArray;
     };
@@ -133,7 +128,6 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
         return daysArray;
     };
       
-    // TODO change date format (?)
     const CustomTooltip: React.FC<TooltipProps<number, string>> = ({active, payload}) => {
         if (active && payload && payload.length > 0 && payload[0].payload) {
           return (
@@ -170,42 +164,6 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
           );
         }
         return null;
-    };
-
-    const formatDate = (tickItem: string) => {
-        const date = new Date(tickItem);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); 
-        const year = date.getFullYear();
-      
-        return `${day}/${month}/${year}`;
-        /*const date = new Date(tickItem);
-        return date.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',   
-        });*/
-    };
-
-    const formatDateTime = (dateString: string): string => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true, 
-        });
-    };
-
-    const formatTime = (dateString: string): string => {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true, 
-        });
     };
 
     function getTxCount(data: DataPoint[]): number {

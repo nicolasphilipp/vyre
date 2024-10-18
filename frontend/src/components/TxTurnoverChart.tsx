@@ -4,8 +4,7 @@ import { getTxHistory } from "@/services/TxService";
 import { Tabs, Tab, Divider, Chip } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, TooltipProps, Bar, Line, ComposedChart, Label } from "recharts";
-import { ArrowIcon } from "./icons/ArrowIcon";
-import { formatNumber } from "@/services/TextFormatService";
+import { formatDate, formatNumber } from "@/services/TextFormatService";
 import { loveLaceToAda } from "@/Constants";
 
 interface ValueProps {
@@ -102,12 +101,7 @@ const TxTurnoverChart: React.FC<ValueProps> = ({ wallet }) => {
         for (let i = 30; i >= 0; i--) {
           const date = new Date();
           date.setDate(today.getDate() - i);
-      
-          const day = String(date.getDate()).padStart(2, '0');
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const year = date.getFullYear();
-      
-          daysArray.push(`${day}/${month}/${year}`);
+          daysArray.push(formatDate(date.toString()));
         }
         return daysArray;
     };
@@ -154,17 +148,6 @@ const TxTurnoverChart: React.FC<ValueProps> = ({ wallet }) => {
         return null;
     };
 
-    // TODO move all format dates to textformatservice and use consistent dates and not other formats every time
-
-    const formatDate = (tickItem: string) => {
-        const date = new Date(tickItem);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); 
-        const year = date.getFullYear();
-      
-        return `${day}/${month}/${year}`;
-    };
-
     const formatXAxisLabel = () => {
         return ''; 
     };
@@ -185,15 +168,6 @@ const TxTurnoverChart: React.FC<ValueProps> = ({ wallet }) => {
                     <Bar dataKey="outgoing" fill="#f31260" /> 
                 </ComposedChart>
             </ResponsiveContainer>
-        );
-    };
-
-    const CountSection: React.FC<any> = ({txAllTime, txCount, period}) => {
-        return (
-            <div className="absolute -translate-y-14 right-6 flex flex-col">
-                <span className="text-md text-white">{txAllTime} {txAllTime === 1 ? "Transaction" : "Transactions"} (all time)</span>
-                <span className="text-sm text-white">{txCount} {txCount === 1 ? "Transaction" : "Transactions"} (last {period})</span>
-            </div>
         );
     };
 

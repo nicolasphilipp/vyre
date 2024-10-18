@@ -525,7 +525,6 @@ body {
 }
 
 .transaction-date-container {
-  width: 45px;
   height: fit-content;
   color: rgb(180, 180, 180);
   background: rgba(50, 50, 50, 0.5);

@@ -1,6 +1,6 @@
 import { AdaData, AdaInfo, HistoricalAdaData } from "@/model/AdaData";
 import { getCoinHistoricPrices } from "@/services/CoinDataService";
-import { convertUnixToDate, formatNumber, numberToPercent } from "@/services/TextFormatService";
+import { convertUnixToDate, formatDayMonth, formatNumber, formatTime, numberToPercent, parseDateTime } from "@/services/TextFormatService";
 import { Tabs, Tab, Chip, Divider } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area, TooltipProps, Label } from "recharts";
@@ -81,7 +81,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
           return (
             <div className="chart-tooltip text-sm text-white flex flex-col">
                 <div className="p-1">
-                    <span>{formatDateTime(payload[0].payload.date)}</span>
+                    <span>{parseDateTime(payload[0].payload.date)}</span>
                 </div>
                 <Divider />
                 <div className="flex justify-between p-1">
@@ -92,35 +92,6 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
           );
         }
         return null;
-    };
-
-    const formatDate = (tickItem: string) => {
-        const date = new Date(tickItem);
-        return date.toLocaleDateString('en-US', {
-            day: '2-digit',
-            month: 'short',   
-        }); 
-    };
-
-    const formatDateTime = (dateString: string): string => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true, 
-        });
-    };
-
-    const formatTime = (dateString: string): string => {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
     };
 
     const formatXAxisLabel = () => {
@@ -143,11 +114,11 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
                     <XAxis dataKey="date" className="text-sm" tickFormatter={formatXAxisLabel} minTickGap={40}>
                         {
                             data[data.length - 1] &&
-                            <Label value={period === "day" ? formatTime(data[data.length - 1].date) : formatDate(data[data.length - 1].date)} offset={0} position="insideBottomRight" />
+                            <Label value={period === "day" ? formatTime(data[data.length - 1].date) : formatDayMonth(data[data.length - 1].date)} offset={0} position="insideBottomRight" />
                         }
                         {
                             data[0] &&
-                            <Label value={period === "day" ? formatTime(data[0].date) : formatDate(data[0].date)} offset={0} position="insideBottomLeft" />
+                            <Label value={period === "day" ? formatTime(data[0].date) : formatDayMonth(data[0].date)} offset={0} position="insideBottomLeft" />
                         }
                     </XAxis>
                     <YAxis className="text-sm" domain={['auto']} tickCount={10} />  
