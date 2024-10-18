@@ -96,7 +96,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
 
     const formatDate = (tickItem: string) => {
         const date = new Date(tickItem);
-        return date.toLocaleDateString('en-GB', {
+        return date.toLocaleDateString('en-US', {
             day: '2-digit',
             month: 'short',   
         }); 
@@ -104,7 +104,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
 
     const formatDateTime = (dateString: string): string => {
         const date = new Date(dateString);
-        return date.toLocaleString('en-GB', {
+        return date.toLocaleString('en-US', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
@@ -116,7 +116,7 @@ const AdaPriceChart: React.FC<ValueProps> = ({ adaPriceData }) => {
 
     const formatTime = (dateString: string): string => {
         const date = new Date(dateString);
-        return date.toLocaleTimeString('en-GB', {
+        return date.toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: true

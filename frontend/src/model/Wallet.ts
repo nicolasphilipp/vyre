@@ -44,6 +44,7 @@ export interface ActiveDelegation {
 export interface NextDelegation {
     status: DelegationStatus;
     target: string;
+    voting: string;
     changes_at: EpochTime;
 }
 

@@ -16,7 +16,7 @@ import { StakePoolData, StakePoolListDto } from "@/model/StakePool";
 import { DelegationStatus, Wallet } from "@/model/Wallet";
 import useWalletStore from "@/model/WalletState";
 import { getAllPools, queryPool } from "@/services/StakeService";
-import { cutText, extractTicker, formatNumber, numberToPercent } from "@/services/TextFormatService";
+import { cutText, extractTicker, formatNumber, numberToPercent, parseDateTime } from "@/services/TextFormatService";
 import { Input, Pagination, ScrollShadow, Image, Snippet, Divider, Link, Progress, Tooltip, Button } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
@@ -38,6 +38,12 @@ export default function Home() {
 
         if(wallets[i].delegation.active.target) {
           // TODO wallets[i].delegation.active.target
+          queryPool('pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9')
+            .then(res => {
+              setPoolData(res.pool);
+            });
+        } else if(wallets[i].delegation.next[0].target) { 
+          // TODO wallets[i].delegation.next[0].target
           queryPool('pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9')
             .then(res => {
               setPoolData(res.pool);
@@ -80,13 +86,22 @@ export default function Home() {
             </div>
 
             {
-              poolData && !poolData.name &&
+              selectedWallet.delegation && selectedWallet.delegation.active.status === DelegationStatus.NotDelegating && (!selectedWallet.delegation.next[0] 
+                || selectedWallet.delegation.next[0].status === DelegationStatus.NotDelegating) &&
               <div className="flex flex-col justify-center items-center w-full h-full">
                 <span>You are currently not staking to a pool.</span>
                 <span>Start by choosing a stake pool to delegate your ADA.</span>
                 <div className="h-full absolute top-0 right-0 p-4 flex flex-col justify-between items-end">
                   <span className="text-center">You can earn up to ~3% APY on <br></br> your ADA by staking to a stake pool.</span>
                 </div>
+              </div>
+            }
+            {
+              selectedWallet.delegation && selectedWallet.delegation.active.status === DelegationStatus.NotDelegating && selectedWallet.delegation.next[0] 
+                && selectedWallet.delegation.next[0].status !== DelegationStatus.NotDelegating &&
+              <div className="absolute flex flex-col items-center right-2 top-2">
+                <span>Your delegation starts in epoch {selectedWallet.delegation.next[0].changes_at.epoch_number}.</span>
+                <span>The epoch starts at {parseDateTime(selectedWallet.delegation.next[0].changes_at.epoch_start_time)}</span>
               </div>
             }
             {

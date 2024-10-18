@@ -10,7 +10,7 @@ import { Address } from "@/model/Address";
 import { DangerIcon } from "@/components/icons/DangerIcon";
 import { AdaData, AdaInfo } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
-import { cutText, extractTicker, formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent } from "@/services/TextFormatService";
+import { cutText, extractTicker, formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent, parseDateTime } from "@/services/TextFormatService";
 import EditWalletModal from "@/components/EditWalletModal";
 import RemoveWalletModal from "@/components/RemoveWalletModal";
 import { QRCodeSVG } from "qrcode.react";
@@ -339,7 +339,6 @@ export default function Home() {
                 </ScrollShadow>
               
                 <div className="flex flex-col gap-3">
-                  <Divider />
                   <div className="flex justify-end">
                     <span>Epoch: {network.network_tip && network.network_tip.epoch_number} / Slot: {network.network_tip && network.network_tip.slot_number}</span>
                   </div>
@@ -498,7 +497,8 @@ export default function Home() {
                 </div>
               }
               {
-                selectedWallet.delegation.active.status === DelegationStatus.NotDelegating &&
+                selectedWallet.delegation.active.status === DelegationStatus.NotDelegating && (!selectedWallet.delegation.next[0] 
+                  || selectedWallet.delegation.next[0].status === DelegationStatus.NotDelegating) &&
                 <div className="flex justify-center items-center w-full h-full">
                   <span>You are currently not staking to a pool.</span>
                   <div className="h-full absolute top-0 right-0 p-4 flex flex-col justify-between items-end">
@@ -508,6 +508,14 @@ export default function Home() {
                       <ArrowIcon width={16} height={16} className='mb-0.5 rotate-45' />
                     </Link>
                   </div>
+                </div>
+              }
+              {
+                selectedWallet.delegation.active.status === DelegationStatus.NotDelegating && selectedWallet.delegation.next[0] 
+                  && selectedWallet.delegation.next[0].status !== DelegationStatus.NotDelegating &&
+                <div className="flex flex-col justify-center items-center w-full h-full">
+                  <span>Your delegation starts in epoch {selectedWallet.delegation.next[0].changes_at.epoch_number}.</span>
+                  <span>The epoch starts at {parseDateTime(selectedWallet.delegation.next[0].changes_at.epoch_start_time)}</span>
                 </div>
               }
             </div>

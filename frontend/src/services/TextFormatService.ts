@@ -33,7 +33,7 @@ export function cutText(input: string, visibleCharacters: number): string {
 }
 
 export function hexToAsciiString(hexString: string): string {
-     if (hexString.length % 2 !== 0) {
+    if (hexString.length % 2 !== 0) {
         throw new Error("Invalid hex string. Length must be even.");
     }
 
@@ -44,13 +44,25 @@ export function hexToAsciiString(hexString: string): string {
         asciiString += String.fromCharCode(decimalValue);
     }
     return asciiString;
-  }
+}
 
 export function parseDate(dateString: string): string {
     const date = new Date(dateString);
     const day = date.getUTCDate().toString().padStart(2, '0');  
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
     return `${day}.${month}.`;
+}
+
+export function parseDateTime(dateTimeString: string): string {
+    const date = new Date(dateTimeString);
+    return date.toLocaleString('en-US', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, 
+    });
 }
 
 export function convertUnixToDate(unixTimestamp: number): string {

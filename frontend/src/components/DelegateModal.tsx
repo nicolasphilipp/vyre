@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { EyeFilledIcon } from "./icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
 import toast from "react-hot-toast";
+import { syncWallet } from "@/services/WalletService";
+import useWalletStore from "@/model/WalletState";
 
 interface ValueProps {
     wallet: Wallet;
@@ -14,6 +16,7 @@ interface ValueProps {
 }
 
 const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
+    const { update } = useWalletStore();
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const [passphrase, setPassphrase] = useState("");
     const [passTouched, setPassTouched] = useState(false);
@@ -46,7 +49,8 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
 
         if(wallet && pool && passphrase) {
             toast.promise(new Promise((resolve, reject) =>  {
-                startDelegation(wallet.id, pool.pool_id, passphrase)
+                // TODO use pool.pool_id
+                startDelegation(wallet.id, "3867a09729a1f954762eea035a82e2d9d3a14f1fa791a022ef0da242", passphrase)
                     .then(res => {
                         if(res.error){
                             reject(res.error);
@@ -54,7 +58,14 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                             let tx = res.startTx;
                             console.log("startTx", tx);
                             
-                            // TODO doesnt work right now because pool data is not from preview testnet
+                            syncWallet(wallet.id)
+                                .then(res => {
+                                    res.wallet.isSelected = wallet.isSelected;
+                                    res.wallet.lastSynced = new Date().toUTCString();
+                                    wallet = res.wallet as Wallet;
+
+                                    update(wallet.id, wallet);
+                                });
 
                             resetForm();
                             onClose();

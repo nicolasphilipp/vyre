@@ -154,6 +154,8 @@ const TxTurnoverChart: React.FC<ValueProps> = ({ wallet }) => {
         return null;
     };
 
+    // TODO move all format dates to textformatservice and use consistent dates and not other formats every time
+
     const formatDate = (tickItem: string) => {
         const date = new Date(tickItem);
         const day = String(date.getDate()).padStart(2, '0');
