@@ -41,7 +41,7 @@ async function getTxHistory(walletId: string, resultCount: number, page: number)
     }
 }
 
-async function searchTx(walletId: string, resultCount: number, page: number, receiverId?: string, start?: Date, end?: Date) {
+async function searchTx(walletId: string, resultCount: number, page: number, minAmount?: string, maxAmount?: string, receiverId?: string, start?: Date, end?: Date) {
     try {
         let wallet = await walletServer.getShelleyWallet(walletId);
         let transactions = await wallet.getTransactions(start, end);
@@ -49,13 +49,23 @@ async function searchTx(walletId: string, resultCount: number, page: number, rec
 
         for(let i = 0; i < transactions.length; i++) {
             if(transactions[i].inserted_at) {
-                if(receiverId) {
-                    if(transactions[i].outputs[0].address.startsWith(receiverId)) {
-                        allResults.push(transactions[i]);
+                if (receiverId) {
+                    if (!transactions[i].outputs[0].address.startsWith(receiverId)) {
+                        continue;  
                     }
-                } else {
-                    allResults.push(transactions[i]);
                 }
+                if (minAmount) {
+                    if (parseFloat(transactions[i].amount.quantity) / loveLaceToAda < parseFloat(minAmount)) {
+                        continue;  
+                    }
+                }
+                if (maxAmount) {
+                    if (parseFloat(transactions[i].amount.quantity) / loveLaceToAda > parseFloat(maxAmount)) {
+                        continue; 
+                    }
+                }
+                
+                allResults.push(transactions[i]);
             }
         }
 

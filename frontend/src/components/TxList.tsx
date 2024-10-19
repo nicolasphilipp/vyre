@@ -8,12 +8,14 @@ import { Wallet } from "@/model/Wallet";
 import { searchTxHistory } from "@/services/TxService";
 
 interface ValueProps {
+  minAmount: string;
+  maxAmount: string;
   receiver: string;
   startDate: CalendarDate;
   endDate: CalendarDate;
 }
 
-const TxList: React.FC<ValueProps> = ({ receiver, startDate, endDate }) => {
+const TxList: React.FC<ValueProps> = ({ minAmount, maxAmount, receiver, startDate, endDate }) => {
   const { wallets, selected } = useWalletStore();
   const [selectedWallet, setSelectedWallet] = useState({} as Wallet);
   const [transactions, setTransactions] = useState([] as Transaction[]);
@@ -41,23 +43,23 @@ const TxList: React.FC<ValueProps> = ({ receiver, startDate, endDate }) => {
     }
     
     if(selectedWallet && selectedWallet.id) {
-      searchTxHistory(selectedWallet.id, currentPage, parseInt(resultCount), receiver, startDate, endDate)
+      searchTxHistory(selectedWallet.id, currentPage, parseInt(resultCount), minAmount, maxAmount, receiver, startDate, endDate)
         .then(res => {
-            console.log(res);
+          console.log(res);
 
-            let listDto = res as TransactionListDto;
-            setTotalPages(listDto.totalPages);
-            setTransactions(listDto.transactions);
-          }); 
+          let listDto = res as TransactionListDto;
+          setTotalPages(listDto.totalPages);
+          setTransactions(listDto.transactions);
+        }); 
     }
-  }, [selectedWallet, currentPage, resultCount, receiver, startDate, endDate]);
+  }, [selectedWallet, currentPage, resultCount, minAmount, maxAmount, receiver, startDate, endDate]);
 
   useEffect(() => {
     if(!resultCount) {
       setResultCount("5");
     }
     setCurrentPage(1);
-  }, [resultCount, receiver, startDate, endDate]);
+  }, [resultCount, minAmount, maxAmount, receiver, startDate, endDate]);
 
   useEffect(() => {
     setCurrentPage(1);

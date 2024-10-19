@@ -40,14 +40,14 @@ export async function getTxHistory(walletId: string, page?: number, limit?: numb
     }
 }
 
-export async function searchTxHistory(walletId: string, page: number, limit: number, receiver?: string, startDate?: CalendarDate, endDate?: CalendarDate) {
+export async function searchTxHistory(walletId: string, page: number, limit: number, minAmount?: string, maxAmount?: string, receiver?: string, startDate?: CalendarDate, endDate?: CalendarDate) {
     return fetch(TX_SERVICE_URL + '/' + walletId + "/search?page=" + page + "&limit=" + limit, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ receiver: receiver, startDate: startDate?.toString(), endDate: endDate?.toString() })
+        body: JSON.stringify({ minAmount: minAmount, maxAmount: maxAmount, receiver: receiver, startDate: startDate?.toString(), endDate: endDate?.toString() })
     })
         .then((res) => res.json())
         .then((res) => res);

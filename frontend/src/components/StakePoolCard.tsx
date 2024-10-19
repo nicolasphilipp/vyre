@@ -13,6 +13,7 @@ import React from "react";
 import { ScatterIcon } from "./icons/ScatterIcon";
 import { startDelegation } from "@/services/StakeService";
 import DelegateModal from "./DelegateModal";
+import { HelpIcon } from "./icons/HelpIcon";
 
 interface ValueProps {
     wallet: Wallet;
@@ -21,7 +22,6 @@ interface ValueProps {
 }
 
 const StakePoolCard: React.FC<ValueProps> = ({ wallet, pool, delegate }) => {
-    // TODO implement delegate button
 
   return (
     <>
@@ -118,10 +118,13 @@ const StakePoolCard: React.FC<ValueProps> = ({ wallet, pool, delegate }) => {
                     </div>
                 </div>
                 <Divider />
-                <div className="flex flex-col p-2">           
-                    <div className="flex justify-between">
+                <div className="flex justify-between items-center p-2"> 
+                    <div className="flex justify-between flex-1">
                         <span>APY</span>
                         <span>~{pool.roa_short}%</span>
+                    </div>     
+                    <div className="flex justify-end flex-1">
+                        <Button size="sm" color="secondary" variant="ghost" className="text-sm" endContent={<HelpIcon width={18} height={18} className="-m-1" />}>more info</Button> 
                     </div>
                 </div>
             </div>

@@ -6,28 +6,11 @@ import { useState } from "react";
 import {parseDate, today } from "@internationalized/date";
   
 export default function TxSection() {
+    const [minAmount, setMinAmount] = useState("");
+    const [maxAmount, setMaxAmount] = useState("");
     const [receiver, setReceiver] = useState("");
     const [startDate, setStartDate] = useState(parseDate("2019-01-01"));
     const [endDate, setEndDate] = useState(today("UTC").add({days: 0})); 
-
-    /*
-    <div className="flex w-full gap-4">
-                        <Input type="number" variant="bordered" label="Min" placeholder="0.00" 
-                            startContent={
-                                <div className="pointer-events-none flex items-center">
-                                    <span className="text-sm">₳</span>
-                                </div>
-                            }
-                        />
-                        <Input type="number" variant="bordered" label="Max" placeholder="0.00" 
-                            startContent={
-                                <div className="pointer-events-none flex items-center">
-                                    <span className="text-sm">₳</span>
-                                </div>
-                            }
-                        />
-                    </div>
-    */
 
     return (    
         <div className="grid h-full w-full gap-4 grid-cols-1 grid-rows-5 rounded-lg"> 
@@ -38,6 +21,22 @@ export default function TxSection() {
                 </div>
 
                 <div className="flex gap-4">
+                    <div className="flex w-full gap-4">
+                        <Input type="number" isClearable variant="bordered" label="Min Amount" placeholder="0.00" className="min-w-28" value={minAmount} onValueChange={setMinAmount}
+                            startContent={
+                                <div className="pointer-events-none flex items-center">
+                                    <span className="text-sm">₳</span>
+                                </div>
+                            }
+                        />
+                        <Input type="number" isClearable variant="bordered" label="Max Amount" placeholder="0.00" className="min-w-28" value={maxAmount} onValueChange={setMaxAmount}
+                            startContent={
+                                <div className="pointer-events-none flex items-center">
+                                    <span className="text-sm">₳</span>
+                                </div>
+                            }
+                        />
+                    </div>
                     <Input type="text" isClearable variant="bordered" label="Receiver Address" placeholder="addr_xxxxx..." value={receiver} onValueChange={setReceiver} /> 
                     <DatePicker label="Start Date" variant="bordered" calendarProps={{ color: "secondary" }} value={startDate} onChange={setStartDate} classNames={{ popoverContent: "dark" }} />
                     <DatePicker label="End Date" variant="bordered" calendarProps={{ color: "secondary" }} value={endDate} onChange={setEndDate} classNames={{ popoverContent: "dark" }} />
@@ -50,7 +49,7 @@ export default function TxSection() {
                     <TransactionIcon className="text-white" width={20} height={20} />
                 </div>
 
-                <TxList receiver={receiver} startDate={startDate} endDate={endDate} />
+                <TxList minAmount={minAmount} maxAmount={maxAmount} receiver={receiver} startDate={startDate} endDate={endDate} />
             </div>
         </div>
     );
