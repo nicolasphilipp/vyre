@@ -150,11 +150,11 @@ routes.post('/estimate', async (req: Request, res: Response) => {
         return;
     }
     
-    let fee = JSON.parse(await estimateDelegationFees(req.body.walletId));
-    if(fee.error){
-        res.status(500).send(JSON.stringify({ error: fee.error }));
+    let delFee = JSON.parse(await estimateDelegationFees(req.body.walletId));
+    if(delFee.error){
+        res.status(500).send(JSON.stringify({ error: delFee.error }));
     } else {  
-        res.status(200).send(JSON.stringify({ fee: fee }));
+        res.status(200).send(JSON.stringify({ fee: delFee.fee }));
     }
 });
 

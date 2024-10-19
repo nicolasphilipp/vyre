@@ -1,14 +1,18 @@
 import { StakePoolData } from "@/model/StakePool";
-import { Wallet } from "@/model/Wallet";
+import { StakeFee, Wallet } from "@/model/Wallet";
 import { ScatterIcon } from "./icons/ScatterIcon";
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
-import { startDelegation } from "@/services/StakeService";
+import { Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Progress, Snippet, Tooltip, useDisclosure, Image } from "@nextui-org/react";
+import { estimateDelegation, startDelegation } from "@/services/StakeService";
 import { useEffect, useRef, useState } from "react";
 import { EyeFilledIcon } from "./icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
 import toast from "react-hot-toast";
 import { syncWallet } from "@/services/WalletService";
 import useWalletStore from "@/model/WalletState";
+import { cutText, formatNumber, numberToPercent } from "@/services/TextFormatService";
+import { loveLaceToAda } from "@/Constants";
+import { DangerIcon } from "./icons/DangerIcon";
+import { ArrowIcon } from "./icons/ArrowIcon";
 
 interface ValueProps {
     wallet: Wallet;
@@ -18,6 +22,8 @@ interface ValueProps {
 const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
     const { update } = useWalletStore();
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+    const [fee, setFee] = useState({} as StakeFee);
     const [passphrase, setPassphrase] = useState("");
     const [passTouched, setPassTouched] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
@@ -40,6 +46,15 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
     function submitInput(): void {
         setSubmit(!submit);
     }     
+
+    useEffect(() => {
+        estimateDelegation(wallet.id)
+            .then(res => {
+                console.log(res.fee);
+                // TODO fee will be queried for all 8 pools, but is the same everytime
+                setFee(res.fee as StakeFee);
+            });
+    }, []);
 
     useEffect(() => {
         if(firstRender.current) {
@@ -81,9 +96,6 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
         } 
     }, [submit]);
 
-    // TODO add estimated delegation fee
-    // show useful information like blocks produced last few epochs, blocks estimated this epoch
-
     return(
         <>
             <Button size="sm" color="secondary" variant="ghost" className="text-sm" onClick={onOpen} startContent={<ScatterIcon width={18} height={18} className="-m-1" />}>delegate</Button> 
@@ -92,29 +104,167 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1 text-white">Delegate to {pool.name}</ModalHeader>
-                            <ModalBody className='text-base'>
-                                <Input
-                                    aria-label='Passphrase'
-                                    isRequired
-                                    label="Passphrase"
-                                    variant="bordered"
-                                    placeholder="Enter your passphrase"
-                                    endContent={<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
-                                        {isVisible ? (
-                                            <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                                        ) : (
-                                            <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                                        )}
-                                        </button>
-                                    }
-                                    type={isVisible ? "text" : "password"}
-                                    className="max-w-xs"
-                                    value={passphrase}
-                                    onValueChange={setPassphraseTouched}
-                                    isInvalid={passTouched && passphrase.length < 10}
-                                    errorMessage="Passphrase must be atleast 10 characters long"
-                                    classNames={{input: "text-white"}}
-                                />
+                            <ModalBody className='text-sm'>
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex justify-between items-center">
+                                        <Snippet 
+                                            symbol="" 
+                                            tooltipProps={{
+                                            className: "dark"
+                                            }}
+                                            codeString={pool.pool_id}
+                                            size="md"
+                                            classNames={{
+                                            base: "p-0 bg-transparent text-inherit",
+                                            pre: "font-sans"
+                                            }}
+                                        >
+                                            <span>{cutText(pool.pool_id, 20)}</span>
+                                        </Snippet>
+                                        <div>
+                                            <Image
+                                                alt={pool.name}
+                                                height={35}
+                                                radius="sm"
+                                                src={pool.img}
+                                                width={35}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <Divider />
+
+                                    <div className="flex gap-3 justify-between">
+                                        <div className="flex flex-col flex-1">
+                                            <div className="flex justify-between">
+                                                <span>Blocks this Epoch</span>
+                                                <span>{pool.blocks_epoch}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span>Projected Blocks</span>
+                                                <span>{pool.blocks_est_epoch}</span>
+                                            </div>
+                                        </div>
+                                        <Divider orientation="vertical" className="h-12" />
+                                        <div className="flex flex-col flex-1">
+                                            <div className="flex justify-between">
+                                                <span>Blocks Lifetime</span>
+                                                <span>{pool.blocks_lifetime}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex gap-4 items-center">
+                                            <span>Saturation</span>
+                                            <div className="flex gap-2 items-center w-full">
+                                                <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(pool.saturation, 2))} />
+                                                <span>{numberToPercent(pool.saturation, 2)}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Active Stake</span>
+                                            <span>₳ {formatNumber(parseFloat(pool.stake_active) / loveLaceToAda, 2)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Live Stake</span>
+                                            <span>₳ {formatNumber(parseFloat(pool.stake) / loveLaceToAda, 2)}</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div className="flex justify-between">
+                                        <div>
+                                            <span>Recent APY</span>
+                                            <Tooltip
+                                                color="warning"
+                                                className='tooltip-container text-white'
+                                                content={
+                                                    <div className="px-1 py-2">
+                                                        <div className="text-small font-bold text-success">Information</div>
+                                                        <div className="text-tiny flex flex-col">
+                                                            <span>The estimated return if you would stake for 1 year.</span>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            >
+                                                <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                            </Tooltip>
+                                        </div>
+                                        <span>~{pool.roa_short}%</span>
+                                    </div>
+
+                                    <Divider />
+                                                
+                                    <div className="flex flex-col">
+                                        <div className="flex justify-between">
+                                            <div>
+                                                <span>Transaction Fees</span>
+                                                <Tooltip
+                                                    color="warning"
+                                                    className='tooltip-container text-white'
+                                                    content={
+                                                        <div className="px-1 py-2">
+                                                            <div className="text-small font-bold text-success">Information</div>
+                                                            <div className="text-tiny flex flex-col">
+                                                                <span>Fees that will occur for the transaction to start staking.</span>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                >
+                                                    <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                                </Tooltip>
+                                            </div>
+                                            <span className="text-danger">₳ {fee.estimated_max && fee.estimated_max.quantity / loveLaceToAda} (<ArrowIcon width={16} height={16} className='mb-0.5 -mx-0.5 rotate-180 inline' />)</span>
+                                        </div>
+
+                                        <div className="flex justify-between">
+                                            <div>
+                                                <span>Fees </span>
+                                                <Tooltip
+                                                    color="warning"
+                                                    className='tooltip-container text-white'
+                                                    content={
+                                                        <div className="px-1 py-2">
+                                                        <div className="text-small font-bold text-success">Information</div>
+                                                        <div className="text-tiny flex flex-col">
+                                                            <span>The fees consist of a fixed fee and a variable fee (margin).</span>
+                                                            <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
+                                                            <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                                                        </div>
+                                                        </div>
+                                                    }
+                                                >
+                                                    <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                                </Tooltip>
+                                            </div>
+                                            <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({pool.tax_ratio}%)</span>
+                                        </div>
+                                    </div>
+
+                                    <Input
+                                        aria-label='Passphrase'
+                                        isRequired
+                                        label="Passphrase"
+                                        variant="bordered"
+                                        placeholder="Enter your passphrase"
+                                        endContent={<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                                            {isVisible ? (
+                                                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                            ) : (
+                                                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                            )}
+                                            </button>
+                                        }
+                                        type={isVisible ? "text" : "password"}
+                                        className="max-w-xs"
+                                        value={passphrase}
+                                        onValueChange={setPassphraseTouched}
+                                        isInvalid={passTouched && passphrase.length < 10}
+                                        errorMessage="Passphrase must be atleast 10 characters long"
+                                        classNames={{input: "text-white"}}
+                                    />
+                                </div>    
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>

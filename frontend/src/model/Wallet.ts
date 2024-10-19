@@ -95,3 +95,10 @@ export interface Api {
 export interface Configuration {
     basePath: string;
 }
+
+export interface StakeFee {
+    deposit: UnitBalance;
+    estimated_max: UnitBalance;
+    estimated_min: UnitBalance;
+    minimum_coins: [];
+}
