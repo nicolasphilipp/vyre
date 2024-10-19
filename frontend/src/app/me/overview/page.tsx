@@ -1,7 +1,7 @@
 'use client';
 
 import "./overview.css";
-import { Button, Divider, Link, ScrollShadow, Snippet, Spinner, Tooltip, Image, Progress } from '@nextui-org/react';
+import { Button, Divider, Link, ScrollShadow, Snippet, Spinner, Tooltip, Image, Progress, Chip } from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
@@ -37,7 +37,7 @@ import { SuccessIcon } from "@/components/icons/SuccessIcon";
 import { CheckmarkIcon } from "@/components/icons/CheckmarkIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import StopDelegateModal from "@/components/StopDelegateModal";
-import { getNetworkInformation } from "@/services/NetworkService";
+import { getNetworkInformation, getRemainingEpochTime } from "@/services/NetworkService";
 import { NetworkInformation } from "@/model/NetworkInformation";
 
 export default function Home() {
@@ -340,7 +340,9 @@ export default function Home() {
               
                 <div className="flex flex-col gap-3">
                   <div className="flex justify-end">
-                    <span>Epoch: {network.network_tip && network.network_tip.epoch_number} / Slot: {network.network_tip && network.network_tip.slot_number}</span>
+                    <Chip variant="flat" radius="sm" size="md" style={{ border: "1px solid rgba(63, 63, 70, 0.5)", background: "rgba(63, 63, 70, 0.3)" }}>
+                      <span>Epoch: {network.network_tip && network.network_tip.epoch_number} - Slot: {network.network_tip && network.network_tip.slot_number} / 86400 ({network.network_tip && getRemainingEpochTime(network.network_tip.slot_number)})</span>
+                    </Chip>
                   </div>
                 </div>
               </div>
