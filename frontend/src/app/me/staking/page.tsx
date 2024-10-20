@@ -9,6 +9,7 @@ import { GlobalIcon } from "@/components/icons/GlobalIcon";
 import { ScatterIcon } from "@/components/icons/ScatterIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
+import PoolHistoryChart from "@/components/PoolHistoryChart";
 import PoolSocials from "@/components/PoolSocials";
 import StakePoolCard from "@/components/StakePoolCard";
 import StakePoolList from "@/components/StakePoolList";
@@ -379,7 +380,7 @@ export default function Home() {
                             <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
                           </Tooltip>
                         </div>
-                        <span>₳ {formatNumber(parseFloat(selectedPool.tax_fix) / loveLaceToAda, 2)} ({selectedPool.tax_ratio}%)</span>
+                        <span>₳ {formatNumber(parseFloat(selectedPool.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(selectedPool.tax_ratio), 2)}%)</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Delegators</span>
@@ -453,7 +454,7 @@ export default function Home() {
                 <Divider orientation="vertical" />
 
                 <div className="flex-1"> 
-                  <span>PLACEHOLDER</span>
+                  <PoolHistoryChart stats={selectedPool.stats} />
                 </div>
               </div>
             }
