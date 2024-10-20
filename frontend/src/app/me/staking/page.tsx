@@ -17,7 +17,7 @@ import { DelegationStatus, Wallet } from "@/model/Wallet";
 import useWalletStore from "@/model/WalletState";
 import { getAllPools, queryPool } from "@/services/StakeService";
 import { cutText, extractTicker, formatNumber, numberToPercent, parseDateTime } from "@/services/TextFormatService";
-import { Input, Pagination, ScrollShadow, Image, Snippet, Divider, Link, Progress, Tooltip, Button } from "@nextui-org/react";
+import { Input, Pagination, ScrollShadow, Image, Snippet, Divider, Link, Progress, Tooltip, Button, Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
 export default function Home() {
@@ -30,6 +30,25 @@ export default function Home() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const [currentBreadCrumb, setCurrentBreadCrumb] = React.useState("Browse Pools");
+  const [selectedPool, setSelectedPool] = React.useState({} as StakePoolData);
+
+  useEffect(() => {
+    if(currentBreadCrumb === "Browse Pools") {
+      setSelectedPool({} as StakePoolData);
+    }
+  }, [currentBreadCrumb]);
+
+  function changeSelectedPool(pool: StakePoolData) {
+    setSelectedPool(pool);
+  }
+
+  useEffect(() => {
+    if(selectedPool.pool_id) {
+      setCurrentBreadCrumb(selectedPool.pool_id);
+    }
+  }, [selectedPool]);
 
   useEffect(() => {
     for(let i = 0; i < wallets.length; i++) {
@@ -231,36 +250,177 @@ export default function Home() {
           </div>
 
           <div className="col-span-5 row-span-3 p-4 overview-card gap-2 flex-col break-words">
-            <div className="flex gap-0.5 items-center">
-              <span className="section-headline">Browse Pools</span>
-              <GlobalIcon className="text-white" width={20} height={20} />
+            <div className="flex gap-4 items-center">
+              <Breadcrumbs onAction={(key) => setCurrentBreadCrumb(key as string)}>
+                <BreadcrumbItem key={"Browse Pools"} isCurrent={currentBreadCrumb === "Browse Pools"}>
+                  <div className="flex gap-0.5 items-center">
+                    <span className="text-xl">Browse Pools</span>
+                    <GlobalIcon width={20} height={20} />
+                  </div>
+                </BreadcrumbItem>
+                
+                {
+                  selectedPool && selectedPool.pool_id && 
+                  <BreadcrumbItem key={selectedPool.pool_id} isCurrent={currentBreadCrumb === selectedPool.pool_id}>{selectedPool.name}</BreadcrumbItem>
+                }
+              </Breadcrumbs>
             </div>
 
-            <div className="flex flex-col h-full justify-between">
-              <div className="flex flex-col gap-2">
-                <div className="flex w-fit">
-                  <Input type="text" isClearable variant="bordered" label="Search" placeholder="Type to search..." startContent={<SearchIcon className="text-white mb-0.5" width={16} height={16} />} value={search} onValueChange={setSearch} />
+            {
+              selectedPool && !selectedPool.pool_id && 
+              <div className="flex flex-col h-full justify-between">
+                <div className="flex flex-col gap-2">
+                  <div className="flex w-fit">
+                    <Input type="text" isClearable variant="bordered" label="Search" placeholder="Type to search..." startContent={<SearchIcon className="text-white mb-0.5" width={16} height={16} />} value={search} onValueChange={setSearch} />
+                  </div>
+
+                  <div className="w-full" style={{height: "270px"}}>
+                    <ScrollShadow className="h-full gap-2 flex flex-col overflow-x-hidden" size={20}>
+                      <StakePoolList stakePools={stakePools} wallet={selectedWallet} setSelectedPool={changeSelectedPool} />                    
+                    </ScrollShadow>
+                  </div>
                 </div>
 
-                <div className="w-full" style={{height: "270px"}}>
-                  <ScrollShadow className="h-full gap-2 flex flex-col overflow-x-hidden" size={20}>
-                    <StakePoolList stakePools={stakePools} wallet={selectedWallet} />                    
-                  </ScrollShadow>
+                <div className="flex justify-center">
+                  <Pagination 
+                    total={totalPages} 
+                    variant="faded" 
+                    color="secondary" 
+                    showControls 
+                    page={currentPage}
+                    onChange={setCurrentPage}
+                  />
                 </div>
               </div>
+            }
+            {
+              selectedPool && selectedPool.pool_id && 
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <div className="flex gap-3 items-center">
+                    <Image
+                      alt={selectedPool.name}
+                      height={50}
+                      radius="sm"
+                      src={selectedPool.img}
+                      width={50}
+                    />
+                    <div className="flex items-end justify-between w-full">
+                      <div className="flex flex-col">
+                        <span>{extractTicker(selectedPool.name, true)}</span>
+                        <span>{extractTicker(selectedPool.name, false)}</span>
+                      </div>
+                      <div>
+                        <Snippet 
+                          symbol="" 
+                          tooltipProps={{
+                            className: "dark"
+                          }}
+                          codeString={selectedPool.pool_id}
+                          size="md"
+                          classNames={{
+                            base: "p-0 bg-transparent text-inherit",
+                            pre: "font-sans"
+                          }}
+                        >
+                          <span>{selectedPool.pool_id}</span>
+                        </Snippet>
+                      </div>
+                    </div>
+                  </div>
+                  <Divider className="mb-2 mt-3" />
+                  <div className="flex gap-3 justify-between h-full">
+                    <div className="flex-1">
+                      <div className="flex gap-4 items-center">
+                        <span>Saturation</span>
+                        <div className="flex gap-2 items-center w-full">
+                          <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(selectedPool.saturation, 2))} />
+                          <span>{numberToPercent(selectedPool.saturation, 2)}</span>
+                        </div>
+                      </div>
 
-              <div className="flex justify-center">
-                <Pagination 
-                  total={totalPages} 
-                  variant="faded" 
-                  color="secondary" 
-                  showControls 
-                  page={currentPage}
-                  onChange={setCurrentPage}
-                />
+                      <div className="flex justify-between">
+                        <div>
+                          <span>Pledge </span>
+                          <Tooltip
+                            color="warning"
+                            className='tooltip-container text-white'
+                            content={
+                              <div className="px-1 py-2">
+                                <div className="text-small font-bold text-success">Information</div>
+                                <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
+                              </div>
+                            }
+                          >
+                            <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
+                          </Tooltip>
+                        </div>
+                        <span>₳ {formatNumber(parseFloat(selectedPool.pledge) / loveLaceToAda, 2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <div>
+                          <span>Fees </span>
+                          <Tooltip
+                            color="warning"
+                            className='tooltip-container text-white'
+                            content={
+                              <div className="px-1 py-2">
+                                <div className="text-small font-bold text-success">Information</div>
+                                <div className="text-tiny flex flex-col">
+                                  <span>The fees consist of a fixed fee and a variable fee (margin).</span>
+                                    <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
+                                    <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                                </div>
+                              </div>
+                            }
+                          >
+                            <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
+                          </Tooltip>
+                        </div>
+                        <span>₳ {formatNumber(parseFloat(selectedPool.tax_fix) / loveLaceToAda, 2)} ({selectedPool.tax_ratio}%)</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span>Delegators</span>
+                        <span>{selectedPool.delegators}</span>
+                      </div>
+                    </div>
+                    <Divider orientation="vertical" className="max-h-36" />
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <span>Blocks Lifetime</span>
+                        <span>{selectedPool.blocks_lifetime}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Blocks this Epoch</span>
+                        <span>{selectedPool.blocks_epoch}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Projected Blocks</span>
+                        <span>{selectedPool.blocks_est_epoch}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Recent APY</span>
+                        <span>~{selectedPool.roa_short}%</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Link color='secondary' className='wallet-nav-link absolute bottom-2 right-2' href={selectedPool.url} isExternal>
+                    <div className="flex gap-0.5 items-center">
+                      <span>view on cexplorer.io</span> 
+                      <ExternalLinkIcon width={18} height={18} />
+                    </div>
+                  </Link>
+                </div>
+
+                <Divider orientation="vertical" />
+
+                <div className="flex-1"> 
+                  <span>Placeholder</span>
+                </div>
               </div>
-            </div>
-
+            }
           </div>
         </div>
       </div>
