@@ -115,7 +115,7 @@ const StakePoolCard: React.FC<ValueProps> = ({ wallet, pool, delegate, setSelect
                                     <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
                                 </Tooltip>
                             </div>
-                            <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({pool.tax_ratio}%)</span>
+                            <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(pool.tax_ratio), 2)}%)</span>
                         </div>
                     </div>
                     <Divider />

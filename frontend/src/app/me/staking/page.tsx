@@ -1,5 +1,6 @@
 'use client';
 
+import DelegateModal from "@/components/DelegateModal";
 import { ChartLineIcon } from "@/components/icons/ChartLineIcon";
 import { DangerIcon } from "@/components/icons/DangerIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
@@ -8,6 +9,7 @@ import { GlobalIcon } from "@/components/icons/GlobalIcon";
 import { ScatterIcon } from "@/components/icons/ScatterIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
+import PoolSocials from "@/components/PoolSocials";
 import StakePoolCard from "@/components/StakePoolCard";
 import StakePoolList from "@/components/StakePoolList";
 import StopDelegateModal from "@/components/StopDelegateModal";
@@ -206,7 +208,7 @@ export default function Home() {
                           <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
                         </Tooltip>
                       </div>
-                      <span>₳ {formatNumber(parseFloat(poolData.tax_fix) / loveLaceToAda, 2)} ({poolData.tax_ratio}%)</span>
+                      <span>₳ {formatNumber(parseFloat(poolData.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(poolData.tax_ratio), 2)}%)</span>
                     </div>
                     
                     <div className="flex justify-between">
@@ -305,7 +307,7 @@ export default function Home() {
                       src={selectedPool.img}
                       width={50}
                     />
-                    <div className="flex items-end justify-between w-full">
+                    <div className="flex items-center justify-between w-full">
                       <div className="flex flex-col">
                         <span>{extractTicker(selectedPool.name, true)}</span>
                         <span>{extractTicker(selectedPool.name, false)}</span>
@@ -323,13 +325,13 @@ export default function Home() {
                             pre: "font-sans"
                           }}
                         >
-                          <span>{selectedPool.pool_id}</span>
+                          <span>{cutText(selectedPool.pool_id, 30)}</span>
                         </Snippet>
                       </div>
                     </div>
                   </div>
                   <Divider className="mb-2 mt-3" />
-                  <div className="flex gap-3 justify-between h-full">
+                  <div className="flex gap-3 justify-between">
                     <div className="flex-1">
                       <div className="flex gap-4 items-center">
                         <span>Saturation</span>
@@ -379,13 +381,28 @@ export default function Home() {
                         </div>
                         <span>₳ {formatNumber(parseFloat(selectedPool.tax_fix) / loveLaceToAda, 2)} ({selectedPool.tax_ratio}%)</span>
                       </div>
-                      
                       <div className="flex justify-between">
                         <span>Delegators</span>
                         <span>{selectedPool.delegators}</span>
                       </div>
+                      <div className="flex justify-between">
+                        <span>Active Stake</span>
+                        <span>₳ {formatNumber(parseFloat(selectedPool.stake_active) / loveLaceToAda, 2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Live Stake</span>
+                        <span>₳ {formatNumber(parseFloat(selectedPool.stake) / loveLaceToAda, 2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Website</span>
+                        <Link color='secondary' href={String(selectedPool.handles.homepage).substring(1, selectedPool.handles.homepage.length - 1)} isExternal>
+                          <span>{String(selectedPool.handles.homepage).substring(1, selectedPool.handles.homepage.length - 1)}</span> 
+                        </Link>
+                      </div>   
                     </div>
-                    <Divider orientation="vertical" className="max-h-36" />
+
+                    <Divider orientation="vertical" className="min-h-44 max-h-44" />
+
                     <div className="flex-1">
                       <div className="flex justify-between">
                         <span>Blocks Lifetime</span>
@@ -403,7 +420,26 @@ export default function Home() {
                         <span>Recent APY</span>
                         <span>~{selectedPool.roa_short}%</span>
                       </div>
+                      <div className="flex justify-between">
+                        <span>Lifetime APY</span>
+                        <span>~{selectedPool.roa_lifetime}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Luck Lifetime</span>
+                        <span>{numberToPercent(parseFloat(selectedPool.luck_lifetime), 2)}</span>
+                      </div>
                     </div>
+                  </div>
+
+                  {
+                    'pool1qqqqqdk4zhsjuxxd8jyvwncf5eucfskz0xjjj64fdmlgj735lr9' !== selectedPool.pool_id && // wallet.delegation.active.target
+                    <div>
+                      <DelegateModal wallet={selectedWallet} pool={selectedPool} />
+                    </div>
+                  }
+
+                  <div className="absolute bottom-4 left-4">
+                    <PoolSocials pool={selectedPool} />
                   </div>
                   
                   <Link color='secondary' className='wallet-nav-link absolute bottom-2 right-2' href={selectedPool.url} isExternal>
@@ -417,7 +453,7 @@ export default function Home() {
                 <Divider orientation="vertical" />
 
                 <div className="flex-1"> 
-                  <span>Placeholder</span>
+                  <span>PLACEHOLDER</span>
                 </div>
               </div>
             }

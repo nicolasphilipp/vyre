@@ -468,7 +468,7 @@ export default function Home() {
                             <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
                           </Tooltip>
                         </div>
-                        <span>₳ {formatNumber(parseFloat(poolData.tax_fix) / loveLaceToAda, 2)} ({poolData.tax_ratio}%)</span>
+                        <span>₳ {formatNumber(parseFloat(poolData.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(poolData.tax_ratio), 2)}%)</span>
                       </div>
                       
                       <div className="flex justify-between">
