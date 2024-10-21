@@ -69,7 +69,7 @@ const PoolSocials: React.FC<ValueProps> = ({ pool }) => {
                     }
                     {
                         pool.handles.youtube_handle &&
-                        <Link className="text-white" href={"https://www.youtube.com/@" + pool.handles.youtube_handle} isExternal>
+                        <Link className="text-white" href={"https://www.youtube.com/" + pool.handles.youtube_handle} isExternal>
                             <YouTubeLogoIcon width={18} height={18} />
                         </Link>
                     }

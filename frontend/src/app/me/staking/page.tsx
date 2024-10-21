@@ -1,14 +1,29 @@
 'use client';
 
 import DelegateModal from "@/components/DelegateModal";
+import { ActiveStakeIcon } from "@/components/icons/ActiveStakeIcon";
+import { BoxesIcon } from "@/components/icons/BoxesIcon";
+import { BoxIcon } from "@/components/icons/BoxIcon";
 import { ChartLineIcon } from "@/components/icons/ChartLineIcon";
 import { DangerIcon } from "@/components/icons/DangerIcon";
+import { DelegatorIcon } from "@/components/icons/DelegatorIcon";
+import { DiscordLogoIcon } from "@/components/icons/DiscordLogoIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import { FilterIcon } from "@/components/icons/FilterIcon";
+import { FireIcon } from "@/components/icons/FireIcon";
 import { GlobalIcon } from "@/components/icons/GlobalIcon";
+import { HandCoinIcon } from "@/components/icons/HandCoinIcon";
+import { LiveStakeIcon } from "@/components/icons/LiveStakeIcon";
+import { LuckIcon } from "@/components/icons/LuckIcon";
+import { PledgeIcon } from "@/components/icons/PledgeIcon";
+import { ProjectedBoxIcon } from "@/components/icons/ProjectedBoxIcon";
+import { RecentApyIcon } from "@/components/icons/RecentApyIcon";
+import { RocketIcon } from "@/components/icons/RocketIcon";
+import { SaturationIcon } from "@/components/icons/SaturationIcon";
 import { ScatterIcon } from "@/components/icons/ScatterIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
+import { WebsiteIcon } from "@/components/icons/WebsiteIcon";
 import PoolHistoryChart from "@/components/PoolHistoryChart";
 import PoolSocials from "@/components/PoolSocials";
 import StakePoolCard from "@/components/StakePoolCard";
@@ -164,7 +179,10 @@ export default function Home() {
                 <div className="flex gap-3 justify-between h-full">
                   <div className="flex-1">
                     <div className="flex gap-4 items-center">
-                      <span>Saturation</span>
+                      <div className="flex gap-0.5 items-center">
+                        <SaturationIcon width={18} height={18} />
+                        <span>Saturation</span>
+                      </div>
                       <div className="flex gap-2 items-center w-full">
                         <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(poolData.saturation, 2))} />
                         <span>{numberToPercent(poolData.saturation, 2)}</span>
@@ -173,67 +191,88 @@ export default function Home() {
 
                     <div className="flex justify-between">
                       <div>
-                        <span>Pledge </span>
-                        <Tooltip
-                          color="warning"
-                          className='tooltip-container text-white'
-                          content={
-                            <div className="px-1 py-2">
-                              <div className="text-small font-bold text-success">Information</div>
-                              <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
-                            </div>
-                          }
-                        >
-                          <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                        </Tooltip>
+                        <div className="flex gap-0.5 items-center">
+                          <PledgeIcon width={20} height={20} />
+                          <span>Pledge </span>
+                          <Tooltip
+                            color="warning"
+                            className='tooltip-container text-white'
+                            content={
+                              <div className="px-1 py-2">
+                                <div className="text-small font-bold text-success">Information</div>
+                                <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
+                              </div>
+                            }
+                          >
+                            <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                          </Tooltip>
+                        </div>
                       </div>
                       <span>₳ {formatNumber(parseFloat(poolData.pledge) / loveLaceToAda, 2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <div>
-                        <span>Fees </span>
-                        <Tooltip
-                          color="warning"
-                          className='tooltip-container text-white'
-                          content={
-                            <div className="px-1 py-2">
-                              <div className="text-small font-bold text-success">Information</div>
-                              <div className="text-tiny flex flex-col">
-                                <span>The fees consist of a fixed fee and a variable fee (margin).</span>
-                                  <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
-                                  <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                        <div className="flex gap-0.5 items-center">
+                          <HandCoinIcon width={20} height={20} />
+                          <span>Fees </span>
+                          <Tooltip
+                            color="warning"
+                            className='tooltip-container text-white'
+                            content={
+                              <div className="px-1 py-2">
+                                <div className="text-small font-bold text-success">Information</div>
+                                <div className="text-tiny flex flex-col">
+                                  <span>The fees consist of a fixed fee and a variable fee (margin).</span>
+                                    <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
+                                    <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                                </div>
                               </div>
-                            </div>
-                          }
-                        >
-                          <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                        </Tooltip>
+                            }
+                          >
+                            <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                          </Tooltip>
+                        </div>
                       </div>
                       <span>₳ {formatNumber(parseFloat(poolData.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(poolData.tax_ratio), 2)}%)</span>
                     </div>
                     
                     <div className="flex justify-between">
-                      <span>Delegators</span>
+                      <div className="flex gap-1 items-center">
+                        <DelegatorIcon width={20} height={20} />
+                        <span>Delegators</span>
+                      </div>
                       <span>{poolData.delegators}</span>
                     </div>
                   </div>
                   <Divider orientation="vertical" className="max-h-36" />
                   <div className="flex-1">
                     <div className="flex justify-between">
-                      <span>Blocks Lifetime</span>
+                      <div className="flex gap-0.5 items-center">
+                        <BoxesIcon width={20} height={20} />
+                        <span>Blocks Lifetime</span>
+                      </div>
                       <span>{poolData.blocks_lifetime}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Blocks this Epoch</span>
+                      <div className="flex gap-0.5 items-center">
+                        <BoxIcon width={20} height={20} />
+                        <span>Blocks this Epoch</span>
+                      </div>
                       <span>{poolData.blocks_epoch}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Projected Blocks</span>
+                      <div className="flex gap-0.5 items-center">
+                        <ProjectedBoxIcon width={20} height={20} />
+                        <span>Projected Blocks</span>
+                      </div>
                       <span>{poolData.blocks_est_epoch}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Recent APY</span>
-                      <span>~{poolData.roa_short}%</span>
+                      <div className="flex gap-0.5 items-center">
+                        <RecentApyIcon width={20} height={20} />
+                        <span>Recent APY</span>
+                      </div>
+                      <span>~{formatNumber(parseFloat(poolData.roa_short), 2)}%</span>
                     </div>
                   </div>
                 </div>
@@ -335,7 +374,10 @@ export default function Home() {
                   <div className="flex gap-3 justify-between">
                     <div className="flex-1">
                       <div className="flex gap-4 items-center">
-                        <span>Saturation</span>
+                        <div className="flex gap-0.5 items-center">
+                          <SaturationIcon width={18} height={18} />
+                          <span>Saturation</span>
+                        </div>
                         <div className="flex gap-2 items-center w-full">
                           <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(selectedPool.saturation, 2))} />
                           <span>{numberToPercent(selectedPool.saturation, 2)}</span>
@@ -344,58 +386,76 @@ export default function Home() {
 
                       <div className="flex justify-between">
                         <div>
-                          <span>Pledge </span>
-                          <Tooltip
-                            color="warning"
-                            className='tooltip-container text-white'
-                            content={
-                              <div className="px-1 py-2">
-                                <div className="text-small font-bold text-success">Information</div>
-                                <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
-                              </div>
-                            }
-                          >
-                            <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                          </Tooltip>
+                          <div className="flex gap-0.5 items-center">
+                            <PledgeIcon width={20} height={20} />
+                            <span>Pledge </span>
+                            <Tooltip
+                              color="warning"
+                              className='tooltip-container text-white'
+                              content={
+                                <div className="px-1 py-2">
+                                  <div className="text-small font-bold text-success">Information</div>
+                                  <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
+                                </div>
+                              }
+                            >
+                              <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                            </Tooltip>
+                          </div>
                         </div>
                         <span>₳ {formatNumber(parseFloat(selectedPool.pledge) / loveLaceToAda, 2)}</span>
                       </div>
                       <div className="flex justify-between">
                         <div>
-                          <span>Fees </span>
-                          <Tooltip
-                            color="warning"
-                            className='tooltip-container text-white'
-                            content={
-                              <div className="px-1 py-2">
-                                <div className="text-small font-bold text-success">Information</div>
-                                <div className="text-tiny flex flex-col">
-                                  <span>The fees consist of a fixed fee and a variable fee (margin).</span>
-                                    <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
-                                    <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                          <div className="flex gap-0.5 items-center">
+                            <HandCoinIcon width={20} height={20} />
+                            <span>Fees </span>
+                            <Tooltip
+                              color="warning"
+                              className='tooltip-container text-white'
+                              content={
+                                <div className="px-1 py-2">
+                                  <div className="text-small font-bold text-success">Information</div>
+                                  <div className="text-tiny flex flex-col">
+                                    <span>The fees consist of a fixed fee and a variable fee (margin).</span>
+                                      <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
+                                      <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                                  </div>
                                 </div>
-                              </div>
-                            }
-                          >
-                            <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                          </Tooltip>
+                              }
+                            >
+                              <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                            </Tooltip>
+                          </div>
                         </div>
                         <span>₳ {formatNumber(parseFloat(selectedPool.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(selectedPool.tax_ratio), 2)}%)</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Delegators</span>
+                        <div className="flex gap-1 items-center">
+                          <DelegatorIcon width={20} height={20} />
+                          <span>Delegators</span>
+                        </div>
                         <span>{selectedPool.delegators}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Active Stake</span>
+                        <div className="flex gap-1 items-center">
+                          <ActiveStakeIcon width={20} height={20} />
+                          <span>Active Stake</span>
+                        </div>
                         <span>₳ {formatNumber(parseFloat(selectedPool.stake_active) / loveLaceToAda, 2)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Live Stake</span>
+                        <div className="flex gap-1 items-center">
+                          <LiveStakeIcon width={20} height={20} />
+                          <span>Live Stake</span>
+                        </div>
                         <span>₳ {formatNumber(parseFloat(selectedPool.stake) / loveLaceToAda, 2)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Website</span>
+                        <div className="flex gap-0.5 items-center">
+                          <WebsiteIcon width={20} height={20} />
+                          <span>Website</span>
+                        </div>
                         <Link color='secondary' href={String(selectedPool.handles.homepage).substring(1, selectedPool.handles.homepage.length - 1)} isExternal>
                           <span>{String(selectedPool.handles.homepage).substring(1, selectedPool.handles.homepage.length - 1)}</span> 
                         </Link>
@@ -406,27 +466,45 @@ export default function Home() {
 
                     <div className="flex-1">
                       <div className="flex justify-between">
-                        <span>Blocks Lifetime</span>
+                        <div className="flex gap-0.5 items-center">
+                          <BoxesIcon width={20} height={20} />
+                          <span>Blocks Lifetime</span>
+                        </div>
                         <span>{selectedPool.blocks_lifetime}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Blocks this Epoch</span>
+                        <div className="flex gap-0.5 items-center">
+                          <BoxIcon width={20} height={20} />
+                          <span>Blocks this Epoch</span>
+                        </div>
                         <span>{selectedPool.blocks_epoch}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Projected Blocks</span>
+                        <div className="flex gap-0.5 items-center">
+                          <ProjectedBoxIcon width={20} height={20} />
+                          <span>Projected Blocks</span>
+                        </div>
                         <span>{selectedPool.blocks_est_epoch}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Recent APY</span>
-                        <span>~{selectedPool.roa_short}%</span>
+                        <div className="flex gap-0.5 items-center">
+                          <RecentApyIcon width={20} height={20} />
+                          <span>Recent APY</span>
+                        </div>
+                        <span>~{formatNumber(parseFloat(poolData.roa_short), 2)}%</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Lifetime APY</span>
+                        <div className="flex gap-0.5 items-center">
+                          <RocketIcon width={20} height={20} />
+                          <span>Lifetime APY</span>
+                        </div>
                         <span>~{selectedPool.roa_lifetime}%</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Luck Lifetime</span>
+                        <div className="flex gap-0.5 items-center">
+                          <LuckIcon width={20} height={20} />
+                          <span>Luck Lifetime</span>
+                        </div>
                         <span>{numberToPercent(parseFloat(selectedPool.luck_lifetime), 2)}</span>
                       </div>
                     </div>

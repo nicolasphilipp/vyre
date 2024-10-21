@@ -13,6 +13,16 @@ import { cutText, formatNumber, numberToPercent } from "@/services/TextFormatSer
 import { loveLaceToAda } from "@/Constants";
 import { DangerIcon } from "./icons/DangerIcon";
 import { ArrowIcon } from "./icons/ArrowIcon";
+import { BoxesIcon } from "./icons/BoxesIcon";
+import { BoxIcon } from "./icons/BoxIcon";
+import { RecentApyIcon } from "./icons/RecentApyIcon";
+import { ProjectedBoxIcon } from "./icons/ProjectedBoxIcon";
+import { FireIcon } from "./icons/FireIcon";
+import { SaturationIcon } from "./icons/SaturationIcon";
+import { HandCoinIcon } from "./icons/HandCoinIcon";
+import { ActiveStakeIcon } from "./icons/ActiveStakeIcon";
+import { LiveStakeIcon } from "./icons/LiveStakeIcon";
+import { TransactionFeeIcon } from "./icons/TransactionFeeIcon";
 
 interface ValueProps {
     wallet: Wallet;
@@ -137,18 +147,27 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                                     <div className="flex gap-3 justify-between">
                                         <div className="flex flex-col flex-1">
                                             <div className="flex justify-between">
-                                                <span>Blocks this Epoch</span>
+                                                <div className="flex gap-0.5 items-center">
+                                                    <BoxIcon width={20} height={20} />
+                                                    <span>Blocks this Epoch</span>
+                                                </div>
                                                 <span>{pool.blocks_epoch}</span>
                                             </div>
                                             <div className="flex justify-between">
-                                                <span>Projected Blocks</span>
+                                                <div className="flex gap-0.5 items-center">
+                                                    <ProjectedBoxIcon width={20} height={20} />
+                                                    <span>Projected Blocks</span>
+                                                </div>
                                                 <span>{pool.blocks_est_epoch}</span>
                                             </div>
                                         </div>
                                         <Divider orientation="vertical" className="h-12" />
                                         <div className="flex flex-col flex-1">
                                             <div className="flex justify-between">
-                                                <span>Blocks Lifetime</span>
+                                                <div className="flex gap-0.5 items-center">
+                                                    <BoxesIcon width={20} height={20} />
+                                                    <span>Blocks Lifetime</span>
+                                                </div>
                                                 <span>{pool.blocks_lifetime}</span>
                                             </div>
                                         </div>
@@ -156,18 +175,27 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
 
                                     <div>
                                         <div className="flex gap-4 items-center">
-                                            <span>Saturation</span>
+                                            <div className="flex gap-0.5 items-center">
+                                                <SaturationIcon width={18} height={18} />
+                                                <span>Saturation</span>
+                                            </div>
                                             <div className="flex gap-2 items-center w-full">
                                                 <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(pool.saturation, 2))} />
                                                 <span>{numberToPercent(pool.saturation, 2)}</span>
                                             </div>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Active Stake</span>
+                                            <div className="flex gap-1 items-center">
+                                                <ActiveStakeIcon width={20} height={20} />
+                                                <span>Active Stake</span>
+                                            </div>
                                             <span>₳ {formatNumber(parseFloat(pool.stake_active) / loveLaceToAda, 2)}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Live Stake</span>
+                                            <div className="flex gap-1 items-center">
+                                                <LiveStakeIcon width={20} height={20} />
+                                                <span>Live Stake</span>
+                                            </div>
                                             <span>₳ {formatNumber(parseFloat(pool.stake) / loveLaceToAda, 2)}</span>
                                         </div>
                                     </div>
@@ -175,31 +203,9 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
 
                                     <div className="flex justify-between">
                                         <div>
-                                            <span>Recent APY</span>
-                                            <Tooltip
-                                                color="warning"
-                                                className='tooltip-container text-white'
-                                                content={
-                                                    <div className="px-1 py-2">
-                                                        <div className="text-small font-bold text-success">Information</div>
-                                                        <div className="text-tiny flex flex-col">
-                                                            <span>The estimated return if you would stake for 1 year.</span>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            >
-                                                <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                                            </Tooltip>
-                                        </div>
-                                        <span>~{pool.roa_short}%</span>
-                                    </div>
-
-                                    <Divider />
-                                                
-                                    <div className="flex flex-col">
-                                        <div className="flex justify-between">
-                                            <div>
-                                                <span>Transaction Fees</span>
+                                            <div className="flex gap-0.5 items-center">
+                                                <RecentApyIcon width={20} height={20} />
+                                                <span>Recent APY</span>
                                                 <Tooltip
                                                     color="warning"
                                                     className='tooltip-container text-white'
@@ -207,36 +213,67 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                                                         <div className="px-1 py-2">
                                                             <div className="text-small font-bold text-success">Information</div>
                                                             <div className="text-tiny flex flex-col">
-                                                                <span>Fees that will occur for the transaction to start staking.</span>
+                                                                <span>The estimated return if you would stake for 1 year.</span>
                                                             </div>
                                                         </div>
                                                     }
                                                 >
-                                                    <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                                    <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
                                                 </Tooltip>
+                                            </div>
+                                        </div>
+                                        <span>~{formatNumber(parseFloat(pool.roa_short), 2)}%</span>
+                                    </div>
+
+                                    <Divider />
+                                                
+                                    <div className="flex flex-col">
+                                        <div className="flex justify-between">
+                                            <div>
+                                                <div className="flex gap-0.5 items-center">
+                                                    <TransactionFeeIcon width={20} height={20} />
+                                                    <span>Transaction Fees</span>
+                                                    <Tooltip
+                                                        color="warning"
+                                                        className='tooltip-container text-white'
+                                                        content={
+                                                            <div className="px-1 py-2">
+                                                                <div className="text-small font-bold text-success">Information</div>
+                                                                <div className="text-tiny flex flex-col">
+                                                                    <span>Fees that will occur for the transaction to start staking.</span>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    >
+                                                        <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                                    </Tooltip>
+                                                </div>
                                             </div>
                                             <span className="text-danger">₳ {fee.estimated_max && fee.estimated_max.quantity / loveLaceToAda} (<ArrowIcon width={16} height={16} className='mb-0.5 -mx-0.5 rotate-180 inline' />)</span>
                                         </div>
 
                                         <div className="flex justify-between">
                                             <div>
-                                                <span>Fees </span>
-                                                <Tooltip
-                                                    color="warning"
-                                                    className='tooltip-container text-white'
-                                                    content={
-                                                        <div className="px-1 py-2">
-                                                        <div className="text-small font-bold text-success">Information</div>
-                                                        <div className="text-tiny flex flex-col">
-                                                            <span>The fees consist of a fixed fee and a variable fee (margin).</span>
-                                                            <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
-                                                            <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
-                                                        </div>
-                                                        </div>
-                                                    }
-                                                >
-                                                    <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                                                </Tooltip>
+                                                <div className="flex gap-0.5 items-center">
+                                                    <HandCoinIcon width={20} height={20} />
+                                                    <span>Fees </span>
+                                                    <Tooltip
+                                                        color="warning"
+                                                        className='tooltip-container text-white'
+                                                        content={
+                                                            <div className="px-1 py-2">
+                                                            <div className="text-small font-bold text-success">Information</div>
+                                                            <div className="text-tiny flex flex-col">
+                                                                <span>The fees consist of a fixed fee and a variable fee (margin).</span>
+                                                                <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
+                                                                <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                                                            </div>
+                                                            </div>
+                                                        }
+                                                    >
+                                                        <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                                    </Tooltip>
+                                                </div>
                                             </div>
                                             <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({pool.tax_ratio}%)</span>
                                         </div>

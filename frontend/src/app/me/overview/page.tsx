@@ -39,6 +39,15 @@ import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
 import StopDelegateModal from "@/components/StopDelegateModal";
 import { getNetworkInformation, getRemainingEpochTime } from "@/services/NetworkService";
 import { NetworkInformation } from "@/model/NetworkInformation";
+import { RecentApyIcon } from "@/components/icons/RecentApyIcon";
+import { BoxesIcon } from "@/components/icons/BoxesIcon";
+import { BoxIcon } from "@/components/icons/BoxIcon";
+import { PledgeIcon } from "@/components/icons/PledgeIcon";
+import { DelegatorIcon } from "@/components/icons/DelegatorIcon";
+import { ProjectedBoxIcon } from "@/components/icons/ProjectedBoxIcon";
+import { FireIcon } from "@/components/icons/FireIcon";
+import { SaturationIcon } from "@/components/icons/SaturationIcon";
+import { HandCoinIcon } from "@/components/icons/HandCoinIcon";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -423,7 +432,10 @@ export default function Home() {
                   <div className="flex gap-3 justify-between h-full max-h-28">
                     <div className="flex-1">
                       <div className="flex gap-4 items-center">
-                        <span>Saturation</span>
+                        <div className="flex gap-0.5 items-center">
+                          <SaturationIcon width={18} height={18} />
+                          <span>Saturation</span>
+                        </div>
                         <div className="flex gap-2 items-center w-full">
                           <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(poolData.saturation, 2))} />
                           <span>{numberToPercent(poolData.saturation, 2)}</span>
@@ -432,67 +444,88 @@ export default function Home() {
 
                       <div className="flex justify-between">
                         <div>
-                          <span>Pledge </span>
-                          <Tooltip
-                            color="warning"
-                            className='tooltip-container text-white'
-                            content={
-                              <div className="px-1 py-2">
-                                <div className="text-small font-bold text-success">Information</div>
-                                <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
-                              </div>
-                            }
-                          >
-                            <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                          </Tooltip>
+                          <div className="flex gap-0.5 items-center">
+                            <PledgeIcon width={20} height={20} />
+                            <span>Pledge </span>
+                            <Tooltip
+                              color="warning"
+                              className='tooltip-container text-white'
+                              content={
+                                <div className="px-1 py-2">
+                                  <div className="text-small font-bold text-success">Information</div>
+                                  <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
+                                </div>
+                              }
+                            >
+                              <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                            </Tooltip>
+                          </div>
                         </div>
                         <span>₳ {formatNumber(parseFloat(poolData.pledge) / loveLaceToAda, 2)}</span>
                       </div>
                       <div className="flex justify-between">
                         <div>
-                          <span>Fees </span>
-                          <Tooltip
-                            color="warning"
-                            className='tooltip-container text-white'
-                            content={
-                              <div className="px-1 py-2">
-                                <div className="text-small font-bold text-success">Information</div>
-                                <div className="text-tiny flex flex-col">
-                                  <span>The fees consist of a fixed fee and a variable fee (margin).</span>
-                                    <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
-                                    <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                          <div className="flex gap-0.5 items-center">
+                            <HandCoinIcon width={20} height={20} />
+                            <span>Fees </span>
+                            <Tooltip
+                              color="warning"
+                              className='tooltip-container text-white'
+                              content={
+                                <div className="px-1 py-2">
+                                  <div className="text-small font-bold text-success">Information</div>
+                                  <div className="text-tiny flex flex-col">
+                                    <span>The fees consist of a fixed fee and a variable fee (margin).</span>
+                                      <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
+                                      <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                                  </div>
                                 </div>
-                              </div>
-                            }
-                          >
-                            <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                          </Tooltip>
+                              }
+                            >
+                              <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                            </Tooltip>
+                          </div>
                         </div>
                         <span>₳ {formatNumber(parseFloat(poolData.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(poolData.tax_ratio), 2)}%)</span>
                       </div>
                       
                       <div className="flex justify-between">
-                        <span>Delegators</span>
+                        <div className="flex gap-1 items-center">
+                          <DelegatorIcon width={20} height={20} />
+                          <span>Delegators</span>
+                        </div>
                         <span>{poolData.delegators}</span>
                       </div>
                     </div>
                     <Divider orientation="vertical" />
                     <div className="flex-1">
                       <div className="flex justify-between">
-                        <span>Blocks Lifetime</span>
+                        <div className="flex gap-0.5 items-center">
+                          <BoxesIcon width={20} height={20} />
+                          <span>Blocks Lifetime</span>
+                        </div>
                         <span>{poolData.blocks_lifetime}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Blocks this Epoch</span>
+                        <div className="flex gap-0.5 items-center">
+                          <BoxIcon width={20} height={20} />
+                          <span>Blocks this Epoch</span>
+                        </div>
                         <span>{poolData.blocks_epoch}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Projected Blocks</span>
+                        <div className="flex gap-0.5 items-center">
+                          <ProjectedBoxIcon width={20} height={20} />
+                          <span>Projected Blocks</span>
+                        </div>
                         <span>{poolData.blocks_est_epoch}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Recent APY</span>
-                        <span>~{poolData.roa_short}%</span>
+                        <div className="flex gap-0.5 items-center">
+                          <RecentApyIcon width={20} height={20} />
+                          <span>Recent APY</span>
+                        </div>
+                        <span>~{formatNumber(parseFloat(poolData.roa_short), 2)}%</span>
                       </div>
                     </div>
                   </div>

@@ -14,6 +14,11 @@ import { ScatterIcon } from "./icons/ScatterIcon";
 import { startDelegation } from "@/services/StakeService";
 import DelegateModal from "./DelegateModal";
 import { HelpIcon } from "./icons/HelpIcon";
+import { PledgeIcon } from "./icons/PledgeIcon";
+import { RecentApyIcon } from "./icons/RecentApyIcon";
+import { FireIcon } from "./icons/FireIcon";
+import { SaturationIcon } from "./icons/SaturationIcon";
+import { HandCoinIcon } from "./icons/HandCoinIcon";
 
 interface ValueProps {
     wallet: Wallet;
@@ -71,7 +76,10 @@ const StakePoolCard: React.FC<ValueProps> = ({ wallet, pool, delegate, setSelect
                     <Divider />
                     <div className="flex flex-col p-2">
                         <div className="flex gap-4 items-center">
-                            <span>Saturation</span>
+                            <div className="flex gap-0.5 items-center">
+                                <SaturationIcon width={18} height={18} />
+                                <span>Saturation</span>
+                            </div>
                             <div className="flex gap-2 items-center w-full">
                                 <Progress color="secondary" key={"progress"} aria-label={"progress"} value={parseFloat(numberToPercent(pool.saturation, 2))} />
                                 <span>{numberToPercent(pool.saturation, 2)}</span>
@@ -79,52 +87,61 @@ const StakePoolCard: React.FC<ValueProps> = ({ wallet, pool, delegate, setSelect
                         </div>
                         <div className="flex justify-between">
                             <div>
-                                <span>Pledge </span>
-                                <Tooltip
-                                color="warning"
-                                className='tooltip-container text-white'
-                                content={
-                                    <div className="px-1 py-2">
-                                    <div className="text-small font-bold text-success">Information</div>
-                                    <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
-                                    </div>
-                                }
-                                >
-                                    <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                                </Tooltip>
+                                <div className="flex gap-0.5 items-center">
+                                    <PledgeIcon width={20} height={20} />
+                                    <span>Pledge </span>
+                                    <Tooltip
+                                        color="warning"
+                                        className='tooltip-container text-white'
+                                        content={
+                                            <div className="px-1 py-2">
+                                            <div className="text-small font-bold text-success">Information</div>
+                                            <div className="text-tiny">The pledge is the amount of ADA pledged <br></br> by the operator to the pool.</div>
+                                            </div>
+                                        }
+                                    >
+                                        <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                    </Tooltip>
+                                </div>
                             </div>
                             <span>₳ {formatNumber(parseFloat(pool.pledge) / loveLaceToAda, 2)}</span>
                         </div>
                         <div className="flex justify-between">
                             <div>
-                                <span>Fees </span>
-                                <Tooltip
-                                color="warning"
-                                className='tooltip-container text-white'
-                                content={
-                                    <div className="px-1 py-2">
-                                    <div className="text-small font-bold text-success">Information</div>
-                                    <div className="text-tiny flex flex-col">
-                                        <span>The fees consist of a fixed fee and a variable fee (margin).</span>
-                                        <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
-                                        <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
-                                    </div>
-                                    </div>
-                                }
-                                >
-                                    <span className="absolute mt-0.5"><DangerIcon width={12} height={12} /></span>
-                                </Tooltip>
+                                <div className="flex gap-0.5 items-center">
+                                    <HandCoinIcon width={20} height={20} />
+                                    <span>Fees </span>
+                                    <Tooltip
+                                        color="warning"
+                                        className='tooltip-container text-white'
+                                        content={
+                                            <div className="px-1 py-2">
+                                            <div className="text-small font-bold text-success">Information</div>
+                                            <div className="text-tiny flex flex-col">
+                                                <span>The fees consist of a fixed fee and a variable fee (margin).</span>
+                                                <span className="mt-1">The fixed fee is deducted from the total rewards of the pool <br></br> to cover stake pool operating costs.</span>
+                                                <span className="mt-1">The variable fee is a percentage share of the total rewards <br></br> that the operator receives.</span>
+                                            </div>
+                                            </div>
+                                        }
+                                    >
+                                        <span className="-mt-0.5"><DangerIcon width={12} height={12} /></span>
+                                    </Tooltip>
+                                </div>
                             </div>
                             <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(pool.tax_ratio), 2)}%)</span>
                         </div>
                     </div>
                     <Divider />
-                    <div className="flex justify-between items-center p-2"> 
+                    <div className="flex justify-between items-center p-2 gap-4"> 
                         <div className="flex justify-between flex-1">
-                            <span>APY</span>
-                            <span>~{pool.roa_short}%</span>
+                            <div className="flex gap-0.5 items-center">
+                                <RecentApyIcon width={20} height={20} />
+                                <span>Recent APY</span>
+                            </div>
+                            <span>~{formatNumber(parseFloat(pool.roa_short), 2)}%</span>
                         </div>     
-                        <div className="flex justify-end flex-1">
+                        <div className="flex justify-end">
                             <Button size="sm" color="secondary" variant="ghost" className="text-sm" onClick={() => setSelectedPool(pool)} endContent={<HelpIcon width={18} height={18} className="-m-1" />}>more info</Button> 
                         </div>
                     </div>
