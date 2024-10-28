@@ -185,14 +185,14 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                                             </div>
                                         </div>
                                         <div className="flex justify-between">
-                                            <div className="flex gap-1 items-center">
+                                            <div className="flex gap-0.5 items-center">
                                                 <ActiveStakeIcon width={20} height={20} />
                                                 <span>Active Stake</span>
                                             </div>
                                             <span>₳ {formatNumber(parseFloat(pool.stake_active) / loveLaceToAda, 2)}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <div className="flex gap-1 items-center">
+                                            <div className="flex gap-0.5 items-center">
                                                 <LiveStakeIcon width={20} height={20} />
                                                 <span>Live Stake</span>
                                             </div>
@@ -275,7 +275,7 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                                                     </Tooltip>
                                                 </div>
                                             </div>
-                                            <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({pool.tax_ratio}%)</span>
+                                            <span>₳ {formatNumber(parseFloat(pool.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(pool.tax_ratio), 2)}%)</span>
                                         </div>
                                     </div>
 
