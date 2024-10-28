@@ -431,21 +431,21 @@ export default function Home() {
                         <span>₳ {formatNumber(parseFloat(selectedPool.tax_fix) / loveLaceToAda, 2)} ({formatNumber(parseFloat(selectedPool.tax_ratio), 2)}%)</span>
                       </div>
                       <div className="flex justify-between">
-                        <div className="flex gap-1 items-center">
+                        <div className="flex gap-0.5 items-center">
                           <DelegatorIcon width={20} height={20} />
                           <span>Delegators</span>
                         </div>
                         <span>{selectedPool.delegators}</span>
                       </div>
                       <div className="flex justify-between">
-                        <div className="flex gap-1 items-center">
+                        <div className="flex gap-0.5 items-center">
                           <ActiveStakeIcon width={20} height={20} />
                           <span>Active Stake</span>
                         </div>
                         <span>₳ {formatNumber(parseFloat(selectedPool.stake_active) / loveLaceToAda, 2)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <div className="flex gap-1 items-center">
+                        <div className="flex gap-0.5 items-center">
                           <LiveStakeIcon width={20} height={20} />
                           <span>Live Stake</span>
                         </div>
