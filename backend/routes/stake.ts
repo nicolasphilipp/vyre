@@ -2,6 +2,8 @@ import express, { Request, Response} from 'express';
 import { estimateDelegationFees, getPool, getResults, startDelegation, stopDelegation } from '../utils/stake';
 import * as fs from 'fs';
 import { isWithinTime } from '../utils/helper';
+import { performQuery } from '../utils/dbsync-interface';
+import { getAddresses } from '../utils/wallet';
 const routes = express.Router();
 
 const CEXPLORER_API = "https://js.cexplorer.io/api-static/pool/";
@@ -155,6 +157,43 @@ routes.post('/estimate', async (req: Request, res: Response) => {
         res.status(500).send(JSON.stringify({ error: delFee.error }));
     } else {  
         res.status(200).send(JSON.stringify({ fee: delFee.fee }));
+    }
+});
+
+routes.get('/:id/rewards', async (req: Request, res: Response) => {
+    if(req.params.id.length !== 40){
+      res.sendStatus(400);
+      return;
+    }
+
+    let address = JSON.parse(await getAddresses(req.params.id));
+    if(address.error){
+        res.status(500).send(JSON.stringify({ error: address.error }));
+    } else { 
+        let stakeAddressQuery = `select stake_address.id as stake_address_id, tx_out.address, stake_address.view as stake_address
+                        from tx_out inner join stake_address on tx_out.stake_address_id = stake_address.id
+                        where address = '${address.address.id}';`;
+
+        performQuery(stakeAddressQuery)
+            .then((result) => {
+                let stakeAddr = result.rows[0].stake_address;
+                let query = `select reward.earned_epoch, pool_hash.view as delegated_pool, reward.amount as lovelace
+                                from reward inner join stake_address on reward.addr_id = stake_address.id
+                                inner join pool_hash on reward.pool_id = pool_hash.id
+                                where stake_address.view = '${stakeAddr}'
+                                order by earned_epoch asc;`;
+
+                performQuery(query)
+                    .then((result) => {
+                        res.status(200).send(JSON.stringify({ stakeAddr: stakeAddr, rewards: result.rows }));
+                    })
+                    .catch((error) => {
+                        res.status(500).send(JSON.stringify({ error: 'Error getting staking reward history' }));
+                    });
+            })
+            .catch((error) => {
+                res.status(500).send(JSON.stringify({ error: 'Error getting staking address' }));
+            });            
     }
 });
 
