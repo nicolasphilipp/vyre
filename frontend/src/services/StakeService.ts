@@ -60,3 +60,9 @@ export async function estimateDelegation(walletId: string) {
         .then((res) => res.json())
         .then((res) => res);
 }
+
+export async function getStakeRewards(walletId: string) {
+    return fetch(STAKE_SERVICE_URL + '/' + walletId + '/rewards')
+        .then((res) => res.json())
+        .then((res) => res);
+}

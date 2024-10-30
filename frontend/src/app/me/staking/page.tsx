@@ -7,10 +7,7 @@ import { BoxIcon } from "@/components/icons/BoxIcon";
 import { ChartLineIcon } from "@/components/icons/ChartLineIcon";
 import { DangerIcon } from "@/components/icons/DangerIcon";
 import { DelegatorIcon } from "@/components/icons/DelegatorIcon";
-import { DiscordLogoIcon } from "@/components/icons/DiscordLogoIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
-import { FilterIcon } from "@/components/icons/FilterIcon";
-import { FireIcon } from "@/components/icons/FireIcon";
 import { GlobalIcon } from "@/components/icons/GlobalIcon";
 import { HandCoinIcon } from "@/components/icons/HandCoinIcon";
 import { LiveStakeIcon } from "@/components/icons/LiveStakeIcon";
@@ -20,32 +17,32 @@ import { ProjectedBoxIcon } from "@/components/icons/ProjectedBoxIcon";
 import { RecentApyIcon } from "@/components/icons/RecentApyIcon";
 import { RocketIcon } from "@/components/icons/RocketIcon";
 import { SaturationIcon } from "@/components/icons/SaturationIcon";
-import { ScatterIcon } from "@/components/icons/ScatterIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { StakingIcon } from "@/components/icons/StakingIcon";
 import { WebsiteIcon } from "@/components/icons/WebsiteIcon";
 import PoolHistoryChart from "@/components/PoolHistoryChart";
 import PoolSocials from "@/components/PoolSocials";
-import StakePoolCard from "@/components/StakePoolCard";
 import StakePoolList from "@/components/StakePoolList";
+import StakeStatisticsChart from "@/components/StakeStatisticsChart";
 import StopDelegateModal from "@/components/StopDelegateModal";
 import { loveLaceToAda } from "@/Constants";
+import { RewardData } from "@/model/Reward";
 import { StakePoolData, StakePoolListDto } from "@/model/StakePool";
 import { DelegationStatus, Wallet } from "@/model/Wallet";
 import useWalletStore from "@/model/WalletState";
-import { getAllPools, queryPool } from "@/services/StakeService";
+import { getAllPools, getStakeRewards, queryPool } from "@/services/StakeService";
 import { cutText, extractTicker, formatNumber, numberToPercent, parseDateTime } from "@/services/TextFormatService";
-import { Input, Pagination, ScrollShadow, Image, Snippet, Divider, Link, Progress, Tooltip, Button, Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
+import { Input, Pagination, ScrollShadow, Image, Snippet, Divider, Link, Progress, Tooltip, Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
   const [selectedWallet, setSelectedWallet] = useState({} as Wallet);
-  const [poolData, setPoolData] = useState({} as StakePoolData);
-  const [search, setSearch] = useState("");
 
+  const [poolData, setPoolData] = useState({} as StakePoolData);
   const [stakePools, setStakePools] = useState([] as StakePoolData[]);
 
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -113,7 +110,7 @@ export default function Home() {
               <ChartLineIcon className="text-white" width={20} height={20} />
             </div>
 
-
+            <StakeStatisticsChart wallet={selectedWallet} />
           </div>
 
           <div className="col-span-3 row-span-2 p-4 overview-card flex-col break-words">
