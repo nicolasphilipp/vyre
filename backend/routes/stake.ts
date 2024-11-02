@@ -170,18 +170,19 @@ routes.get('/:id/rewards', async (req: Request, res: Response) => {
     if(address.error){
         res.status(500).send(JSON.stringify({ error: address.error }));
     } else { 
-        let stakeAddressQuery = `select stake_address.id as stake_address_id, tx_out.address, stake_address.view as stake_address
-                        from tx_out inner join stake_address on tx_out.stake_address_id = stake_address.id
-                        where address = '${address.address.id}';`;
+        let stakeAddressQuery = `SELECT stake_address.id AS stake_address_id, tx_out.address, stake_address.view AS stake_address
+                        FROM tx_out INNER JOIN stake_address ON tx_out.stake_address_id = stake_address.id
+                        WHERE tx_out.address = '${address.address.id}';`;
 
         performQuery(stakeAddressQuery)
             .then((result) => {
                 let stakeAddr = result.rows[0].stake_address;
-                let query = `select reward.earned_epoch, pool_hash.view as delegated_pool, reward.amount as lovelace
-                                from reward inner join stake_address on reward.addr_id = stake_address.id
-                                inner join pool_hash on reward.pool_id = pool_hash.id
-                                where stake_address.view = '${stakeAddr}'
-                                order by earned_epoch asc;`;
+                let query = `SELECT reward.earned_epoch, pool_hash.view AS delegated_pool, reward.amount AS amount_reward, epoch_stake.amount AS amount_staked
+                                FROM reward INNER JOIN stake_address ON reward.addr_id = stake_address.id
+                                INNER JOIN pool_hash ON reward.pool_id = pool_hash.id
+                                LEFT JOIN epoch_stake ON reward.earned_epoch = epoch_stake.epoch_no AND stake_address.id = epoch_stake.addr_id
+                                WHERE stake_address.view = '${stakeAddr}'
+                                ORDER BY reward.earned_epoch ASC;`;
 
                 performQuery(query)
                     .then((result) => {
