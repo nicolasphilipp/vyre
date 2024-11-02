@@ -6,5 +6,6 @@ export interface RewardData {
 export interface Reward {
     delegated_pool: string;
     earned_epoch: string;
-    lovelace: string;
+    amount_reward: string;
+    amount_staked: string;
 }

@@ -199,7 +199,7 @@ const TxCountChart: React.FC<ValueProps> = ({ wallet }) => {
 
     const CountSection: React.FC<any> = ({txAllTime, txCount, period}) => {
         return (
-            <div className="absolute -translate-y-14 right-6 flex flex-col">
+            <div className="absolute -translate-y-14 right-6 flex flex-col text-right">
                 <span className="text-md text-white">{txAllTime} {txAllTime === 1 ? "Transaction" : "Transactions"} (all time)</span>
                 <span className="text-sm text-white">{txCount} {txCount === 1 ? "Transaction" : "Transactions"} (last {period})</span>
             </div>

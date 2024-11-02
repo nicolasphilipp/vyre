@@ -1,7 +1,7 @@
 import { Divider } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, TooltipProps, Bar, ComposedChart } from "recharts";
-import { formatNumber } from "@/services/TextFormatService";
+import { formatNumber, numberToPercent } from "@/services/TextFormatService";
 import { RewardData } from "@/model/Reward";
 import { loveLaceToAda } from "@/Constants";
 import { getStakeRewards } from "@/services/StakeService";
@@ -15,16 +15,20 @@ interface DataPoint {
     delegated_pool: string;
     earned_epoch: string;
     amount: number;
+    staked: number;
 }
 
 const StakeStatisticsChart: React.FC<ValueProps> = ({ wallet }) => {
     const [data, setData] = useState([] as DataPoint[]);
     const [totalRewards, setTotalRewards] = useState(0);
+    const [lifetimeROS, setLifetimeROS] = useState(0);
     const [rewardData, setRewardData] = useState({} as RewardData);
 
     useEffect(() => {
         getStakeRewards(wallet.id)
           .then(res => {
+            console.log(res);
+
             setRewardData(res);
           })
     }, [wallet]);
@@ -35,14 +39,24 @@ const StakeStatisticsChart: React.FC<ValueProps> = ({ wallet }) => {
 
         if(rewards) {
             let total = 0;
+            let avg_ros = 0;
+
             for(let i = 0; i < rewards.length; i++) {
-                let amount = parseFloat(rewards[i].lovelace) / loveLaceToAda;
-                tempData.push({ delegated_pool: rewards[i].delegated_pool, earned_epoch: rewards[i].earned_epoch, amount: amount });
+                let amount = parseFloat(rewards[i].amount_reward) / loveLaceToAda;
+                let staked = parseFloat(rewards[i].amount_staked) / loveLaceToAda;
+
+                tempData.push({ delegated_pool: rewards[i].delegated_pool, earned_epoch: rewards[i].earned_epoch, amount: amount, staked: staked });
                 total += amount;
+                avg_ros += (amount / staked);
             }
+            avg_ros /= rewards.length;
+
+            // 365/5 = 73 epochs in one year
+            let ros = (Math.pow(1 + avg_ros / 73, 73) - 1) * 100;
 
             setData(tempData);
             setTotalRewards(total);
+            setLifetimeROS(ros);
         }
     }, [rewardData]);
 
@@ -70,6 +84,15 @@ const StakeStatisticsChart: React.FC<ValueProps> = ({ wallet }) => {
         return 'Epoch ' + label; 
     };
 
+    const StatisticSection: React.FC<any> = ({lifetimeROS, totalRewards}) => {
+        return (
+            <div className="absolute -translate-y-10 right-4 flex flex-col text-right">
+                <span className="text-sm text-white">~{numberToPercent(lifetimeROS, 2)} (Lifetime ROS)</span>
+                <span className="text-sm text-white">₳ {formatNumber(totalRewards, 2)} (Total rewards)</span>
+            </div>
+        );
+    };
+
     const Chart: React.FC<any> = ({ data }) => {
         return (
             <ResponsiveContainer width="100%" height={225}>
@@ -86,10 +109,9 @@ const StakeStatisticsChart: React.FC<ValueProps> = ({ wallet }) => {
         );
     };
 
-    // TODO lifetime ROS (return on stake), breakdown per epoch, total staking rewards
-
     return (
         <div>
+            <StatisticSection lifetimeROS={lifetimeROS} totalRewards={totalRewards} />
             <Chart data={data} />
         </div>
     );
