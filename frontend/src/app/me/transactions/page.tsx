@@ -12,6 +12,8 @@ import React from "react";
 import TxCountChart from "@/components/TxCountChart";
 import TxSection from "@/components/TxSection";
 import TxTurnoverChart from "@/components/TxTurnoverChart";
+import { DownloadIcon } from "@/components/icons/DownloadIcon";
+import { AddressBookIcon } from "@/components/icons/AddressBookIcon";
 
 export default function Home() {
   const { wallets, selected } = useWalletStore();
@@ -64,12 +66,26 @@ export default function Home() {
               <LightningIcon className="text-white" width={20} height={20} />
             </div>
 
-            <div className="flex gap-4 mt-3">
+            <div className="flex gap-4 items-center h-full">
               <SendAdaModal wallet={selectedWallet} />
+              <Button size="md" color="secondary" variant="ghost" aria-label='Address Book'>
+                <span className="flex gap-0.5 items-center">
+                  address book
+                  <AddressBookIcon width={20} height={20} />
+                </span>
+              </Button>
+
               <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
                 <span className="flex gap-0.5 items-center">
-                  Swap ADA
+                  swap ADA
                   <SwapIcon width={16} height={16} />
+                </span>
+              </Button>
+
+              <Button size="md" color="secondary" variant="ghost" aria-label='Address Book'>
+                <span className="flex gap-0.5 items-center">
+                  download txs
+                  <DownloadIcon width={16} height={16} />
                 </span>
               </Button>
             </div>

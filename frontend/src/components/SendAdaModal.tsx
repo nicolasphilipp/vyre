@@ -159,7 +159,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
     <>
         <Button size="md" color="secondary" variant="ghost" aria-label='Send ADA' onPress={onOpen}>
             <span className="flex gap-0.5 items-center">
-                Send ADA
+                send ADA
                 <SendIcon width={16} height={16} />
             </span>
         </Button>

@@ -1,17 +1,21 @@
-import { Button, Link, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
+import { Button, Link, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip } from '@nextui-org/react';
 import { FireIcon } from './icons/FireIcon';
 import { BurgerMenuIcon } from './icons/BurgerMenuIcon';
 import CreateWallet from './CreateWallet';
 import SelectWallet from './SelectWallet';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowIcon } from './icons/ArrowIcon';
 import { TransactionIcon } from './icons/TransactionIcon';
 import { SettingsIcon } from './icons/SettingsIcon';
 import { StakingIcon } from './icons/StakingIcon';
 import React from 'react';
 import { setActiveItem } from '@/services/NavbarHelperService';
+import { NetworkInformation } from '@/model/NetworkInformation';
+import { getNetworkInformation, getRemainingEpochTime } from '@/services/NetworkService';
 
 export default function WalletNavBar() {
+  const [network, setNetwork] = useState({} as NetworkInformation);
+
   useEffect(() => {
     let lastIndex = window.location.href.lastIndexOf("/");
     let currentRoute = window.location.href.substring(lastIndex + 1);
@@ -19,6 +23,14 @@ export default function WalletNavBar() {
     let navLink = document.getElementById(currentRoute);
     navLink?.classList.add("wallet-nav-link-active");
   }, []);
+
+  useEffect(() => {
+    getNetworkInformation()
+      .then(res => {
+        setNetwork(res.information as NetworkInformation);
+      });
+  }, []);
+
 
   return (
     <div className="wallet-nav-container">
@@ -42,7 +54,9 @@ export default function WalletNavBar() {
         </Link>
       </div>
       <div>
-        <CreateWallet />
+        <Chip variant="flat" radius="sm" size="md" style={{ border: "1px solid rgba(63, 63, 70, 0.5)", background: "rgba(63, 63, 70, 0.3)" }}>
+          <span>Epoch: {network.network_tip && network.network_tip.epoch_number} - Slot: {network.network_tip && network.network_tip.slot_number} / 86400 ({network.network_tip && getRemainingEpochTime(network.network_tip.slot_number)})</span>
+        </Chip>
       </div>
     </div>
   );

@@ -48,6 +48,7 @@ import { ProjectedBoxIcon } from "@/components/icons/ProjectedBoxIcon";
 import { FireIcon } from "@/components/icons/FireIcon";
 import { SaturationIcon } from "@/components/icons/SaturationIcon";
 import { HandCoinIcon } from "@/components/icons/HandCoinIcon";
+import CreateRestoreModal from "@/components/CreateRestoreModal";
 
 export default function Home() {
   const { wallets, add, remove, update, selected, setSelected } = useWalletStore();
@@ -56,18 +57,18 @@ export default function Home() {
   const [transactions, setTransactions] = useState([] as Transaction[]);
   const [address, setAddress] = useState({} as Address);
   const [poolData, setPoolData] = useState({} as StakePoolData);
-  const [network, setNetwork] = useState({} as NetworkInformation);
+  //const [network, setNetwork] = useState({} as NetworkInformation);
 
   const [adaData, setAdaData] = useState({} as AdaData);
   const [adaInfo, setAdaInfo] = useState({} as AdaInfo);
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
 
-  useEffect(() => {
+  /*useEffect(() => {
     getNetworkInformation()
       .then(res => {
         setNetwork(res.information as NetworkInformation);
       });
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     const handleResize = () => {
@@ -128,10 +129,10 @@ export default function Home() {
         }, 5000);
       });
   
-    getNetworkInformation()
+    /*getNetworkInformation()
       .then(res => {
         setNetwork(res.information as NetworkInformation);
-      });  
+      });*/  
   }
 
   useEffect(() => {
@@ -268,7 +269,7 @@ export default function Home() {
                   </div>
                   <Button className="absolute translate-y-8" size="sm" color="secondary" variant="ghost" aria-label='Buy ADA'>
                     <span className="flex gap-0.5 items-center">
-                      Buy ADA
+                      buy ADA
                       <IncreaseIcon width={16} height={16} />
                     </span>
                   </Button>
@@ -346,14 +347,6 @@ export default function Home() {
                     )
                   }
                 </ScrollShadow>
-              
-                <div className="flex flex-col gap-3">
-                  <div className="flex justify-end">
-                    <Chip variant="flat" radius="sm" size="md" style={{ border: "1px solid rgba(63, 63, 70, 0.5)", background: "rgba(63, 63, 70, 0.3)" }}>
-                      <span>Epoch: {network.network_tip && network.network_tip.epoch_number} - Slot: {network.network_tip && network.network_tip.slot_number} / 86400 ({network.network_tip && getRemainingEpochTime(network.network_tip.slot_number)})</span>
-                    </Chip>
-                  </div>
-                </div>
               </div>
             </div>
                     
@@ -560,35 +553,42 @@ export default function Home() {
                 <span className="section-headline">Actions</span>
                 <LightningIcon className="text-white" width={20} height={20} />
               </div>
-              
-              <div className="adaAddress">
-                <Snippet 
-                  symbol="" 
-                  tooltipProps={{
-                    className: "dark"
-                  }}
-                  codeString={address?.id}
-                  size="sm"
-                >
-                  {windowWidth > 1450 ? formatAdaAddress(address?.id, 8) : formatAdaAddress(address?.id, 4)}
-                </Snippet>
-              </div>
 
-              <div className="absolute bottom-0 left-0 p-4 w-full">
-                <div className="quickaction-container">
-                  <QRCodeSVG className="qrcode" value={address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
-                  <div className="flex flex-col gap-4 justify-between">
-                    <SendAdaModal wallet={selectedWallet} />
-                    <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
-                      <span className="flex gap-0.5 items-center">
-                        Swap ADA
-                        <SwapIcon width={16} height={16} />
-                      </span>
-                    </Button>
+              <div className="flex flex-col justify-between h-full">
+                <div className="adaAddress">
+                  <Snippet 
+                    symbol="" 
+                    tooltipProps={{
+                      className: "dark"
+                    }}
+                    codeString={address?.id}
+                    size="md"
+                    classNames={{
+                      base: "pr-0 pl-2 py-0.5",
+                      pre: "font-sans"
+                    }}
+                  >
+                    {windowWidth > 1450 ? formatAdaAddress(address?.id, 8) : formatAdaAddress(address?.id, 4)}
+                  </Snippet>
+                </div>
+
+                <CreateRestoreModal />
+
+                <div className="">
+                  <div className="quickaction-container">
+                    <QRCodeSVG className="qrcode" value={address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
+                    <div className="flex flex-col gap-4 justify-between">
+                      <SendAdaModal wallet={selectedWallet} />
+                      <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>
+                        <span className="flex gap-0.5 items-center">
+                          swap ADA
+                          <SwapIcon width={16} height={16} />
+                        </span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div> 
           </div>
         </div>

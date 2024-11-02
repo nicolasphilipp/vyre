@@ -1,14 +1,14 @@
 import useWalletStore from '@/model/WalletState';
 import { createWallet, getMnemonicWords, removeWallet, restoreWallet } from '@/services/WalletService';
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Radio, RadioGroup, Input, Divider, input, Tooltip} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Radio, RadioGroup, Input, Divider, Tooltip} from "@nextui-org/react";
 import { useEffect, useRef, useState } from 'react';
 import {EyeFilledIcon} from "./icons/EyeFilledIcon";
 import {EyeSlashFilledIcon} from "./icons/EyeSlashFilledIcon";
 import { Wallet } from '@/model/Wallet';
 import { ArrowIcon } from './icons/ArrowIcon';
-import { HelpIcon } from './icons/HelpIcon';
 import { DangerIcon } from './icons/DangerIcon';
 import toast from 'react-hot-toast';
+import { LinkPlusIcon } from './icons/PlusIcon';
 
 export default function CreateRestoreModal() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -414,7 +414,12 @@ export default function CreateRestoreModal() {
 
   return (
     <>
-      <Button size="md" color="secondary" variant="ghost" onPress={onOpen} aria-label='Create/Restore wallet'>create/restore wallet</Button>
+      <Button size="md" color="secondary" variant="ghost" onPress={onOpen} aria-label='Create/Restore wallet'>
+        <span className="flex gap-0.5 items-center">
+          create/restore wallet
+          <LinkPlusIcon width={16} height={16} />
+        </span>
+      </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={resetForm} classNames={{ base: "dark", wrapper: "overflow-hidden"}}>
         <ModalContent>
           {(onClose) => (

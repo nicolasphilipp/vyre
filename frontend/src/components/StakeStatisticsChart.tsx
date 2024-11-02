@@ -6,6 +6,8 @@ import { RewardData } from "@/model/Reward";
 import { loveLaceToAda } from "@/Constants";
 import { getStakeRewards } from "@/services/StakeService";
 import { Wallet } from "@/model/Wallet";
+import { SaturationIcon } from "./icons/SaturationIcon";
+import { RocketIcon } from "./icons/RocketIcon";
 
 interface ValueProps {
     wallet: Wallet;
