@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { RemoveIcon } from "./icons/RemoveIcon";
 import toast from "react-hot-toast";
 import useWalletStore from "@/model/WalletState";
-import { syncWallet } from "@/services/WalletService";
+import { getAddress, syncWallet } from "@/services/WalletService";
 import { cutText } from "@/services/TextFormatService";
 import { EyeIcon } from "./icons/EyeIcon";
 import { EyeSlashIcon } from "./icons/EyeSlashIcon";
@@ -59,11 +59,16 @@ const StopDelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                             console.log("stopTx", tx);
                             
                             syncWallet(wallet.id)
-                                .then(res => {
+                                .then(async res => {
                                     res.wallet.isSelected = wallet.isSelected;
                                     res.wallet.lastSynced = new Date().toUTCString();
-                                    wallet = res.wallet as Wallet;
 
+                                    await getAddress(res.wallet.id)
+                                        .then(result => {
+                                            res.wallet.address = result.address;
+                                        });
+
+                                    wallet = res.wallet as Wallet;
                                     update(wallet.id, wallet);
                                 });
 

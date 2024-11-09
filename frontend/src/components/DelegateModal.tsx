@@ -5,7 +5,7 @@ import { Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, Mo
 import { estimateDelegation, startDelegation } from "@/services/StakeService";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { syncWallet } from "@/services/WalletService";
+import { getAddress, syncWallet } from "@/services/WalletService";
 import useWalletStore from "@/model/WalletState";
 import { cutText, formatNumber, numberToPercent } from "@/services/TextFormatService";
 import { loveLaceToAda } from "@/Constants";
@@ -83,11 +83,16 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                             console.log("startTx", tx);
                             
                             syncWallet(wallet.id)
-                                .then(res => {
+                                .then(async res => {
                                     res.wallet.isSelected = wallet.isSelected;
                                     res.wallet.lastSynced = new Date().toUTCString();
-                                    wallet = res.wallet as Wallet;
 
+                                    await getAddress(res.wallet.id)
+                                        .then(result => {
+                                            res.wallet.address = result.address;
+                                        });
+
+                                    wallet = res.wallet as Wallet;
                                     update(wallet.id, wallet);
                                 });
 

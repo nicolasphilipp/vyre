@@ -1,7 +1,10 @@
+import { Address } from "./Address";
+
 export interface Wallet {
     id: string;
     name: string;
     passphrase: Passphrase;
+    address: Address;
     assets: Assets;
     balance: Balance;
     state: State;

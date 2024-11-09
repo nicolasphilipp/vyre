@@ -1,16 +1,15 @@
 'use client';
 
 import "./overview.css";
-import { Button, Divider, Link, ScrollShadow, Snippet, Spinner, Tooltip, Image, Progress, Chip } from '@nextui-org/react';
+import { Button, Divider, Link, ScrollShadow, Snippet, Spinner, Tooltip, Image, Progress } from '@nextui-org/react';
 import useWalletStore from "@/model/WalletState";
 import { getAddress, syncWallet } from '@/services/WalletService';
 import { useEffect, useState } from "react";
 import { DelegationStatus, Wallet } from "@/model/Wallet";
-import { Address } from "@/model/Address";
 import { DangerIcon } from "@/components/icons/DangerIcon";
 import { AdaData, AdaInfo } from "@/model/AdaData";
 import OverviewPieChart from "@/components/OverviewPieChart";
-import { cutText, extractTicker, formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent, parseDateTime } from "@/services/TextFormatService";
+import { extractTicker, formatAdaAddress, formatNumber, hexToAsciiString, numberToPercent, parseDateTime } from "@/services/TextFormatService";
 import EditWalletModal from "@/components/EditWalletModal";
 import RemoveWalletModal from "@/components/RemoveWalletModal";
 import { QRCodeSVG } from "qrcode.react";
@@ -27,25 +26,19 @@ import SendAdaModal from "@/components/SendAdaModal";
 import { queryPool } from "@/services/StakeService";
 import { StakePoolData } from "@/model/StakePool";
 import { Transaction, TransactionListDto } from "@/model/Transaction";
-import { getTxHistory, searchTxHistory } from "@/services/TxService";
-import StakePoolCard from "@/components/StakePoolCard";
+import { getTxHistory } from "@/services/TxService";
 import { adaPrice, loveLaceToAda } from "@/Constants";
 import { TreasureIcon } from "@/components/icons/TreasureIcon";
 import AdaPriceChart from "@/components/AdaPriceChart";
-import { getCoinInfo, getCoinPriceData } from "@/services/CoinDataService";
-import { SuccessIcon } from "@/components/icons/SuccessIcon";
+import { getCoinPriceData } from "@/services/CoinDataService";
 import { CheckmarkIcon } from "@/components/icons/CheckmarkIcon";
 import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
-import StopDelegateModal from "@/components/StopDelegateModal";
-import { getNetworkInformation, getRemainingEpochTime } from "@/services/NetworkService";
-import { NetworkInformation } from "@/model/NetworkInformation";
 import { RecentApyIcon } from "@/components/icons/RecentApyIcon";
 import { BoxesIcon } from "@/components/icons/BoxesIcon";
 import { BoxIcon } from "@/components/icons/BoxIcon";
 import { PledgeIcon } from "@/components/icons/PledgeIcon";
 import { DelegatorIcon } from "@/components/icons/DelegatorIcon";
 import { ProjectedBoxIcon } from "@/components/icons/ProjectedBoxIcon";
-import { FireIcon } from "@/components/icons/FireIcon";
 import { SaturationIcon } from "@/components/icons/SaturationIcon";
 import { HandCoinIcon } from "@/components/icons/HandCoinIcon";
 import CreateRestoreModal from "@/components/CreateRestoreModal";
@@ -55,20 +48,11 @@ export default function Home() {
 
   const [selectedWallet, setSelectedWallet] = useState({} as Wallet);
   const [transactions, setTransactions] = useState([] as Transaction[]);
-  const [address, setAddress] = useState({} as Address);
   const [poolData, setPoolData] = useState({} as StakePoolData);
-  //const [network, setNetwork] = useState({} as NetworkInformation);
 
   const [adaData, setAdaData] = useState({} as AdaData);
   const [adaInfo, setAdaInfo] = useState({} as AdaInfo);
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
-
-  /*useEffect(() => {
-    getNetworkInformation()
-      .then(res => {
-        setNetwork(res.information as NetworkInformation);
-      });
-  }, []);*/
 
   useEffect(() => {
     const handleResize = () => {
@@ -113,11 +97,16 @@ export default function Home() {
     document.getElementById("spinnerIcon")?.classList.remove("hidden");
 
     syncWallet(selectedWallet.id)
-      .then(res => {
+      .then(async res => {
         res.wallet.isSelected = selectedWallet.isSelected;
         res.wallet.lastSynced = new Date().toUTCString();
-        update(selectedWallet.id, res.wallet as Wallet);
 
+        await getAddress(res.wallet.id)
+          .then(result => {
+            res.wallet.address = result.address;
+          });
+              
+        update(selectedWallet.id, res.wallet as Wallet);
         setTimeout(() => {
           document.getElementById("spinnerIcon")?.classList.add("hidden");
           document.getElementById("successIcon")?.classList.remove("hidden");
@@ -128,11 +117,6 @@ export default function Home() {
           document.getElementById("syncIcon")?.classList.remove("hidden");
         }, 5000);
       });
-  
-    /*getNetworkInformation()
-      .then(res => {
-        setNetwork(res.information as NetworkInformation);
-      });*/  
   }
 
   useEffect(() => {
@@ -158,17 +142,17 @@ export default function Home() {
       if(wallets[i].isSelected) {
         activeWallet = wallets[i];
 
-        getAddress(wallets[i].id)
-          .then(res => {
-            setAddress(res.address);
-          });
-
         syncWallet(wallets[i].id)
-          .then(res => {
+          .then(async res => {
             res.wallet.isSelected = wallets[i].isSelected;
             res.wallet.lastSynced = new Date().toUTCString();
-            wallets[i] = res.wallet as Wallet;
 
+            await getAddress(res.wallet.id)
+              .then(result => {
+                res.wallet.address = result.address;
+              });
+
+            wallets[i] = res.wallet as Wallet;
             update(wallets[i].id, wallets[i]);
           });
 
@@ -212,8 +196,13 @@ export default function Home() {
 
               res.wallet.isSelected = wallets[i].isSelected;
               res.wallet.lastSynced = new Date().toUTCString();
-              wallets[i] = res.wallet as Wallet;
 
+              await getAddress(res.wallet.id)
+                .then(result => {
+                  res.wallet.address = result.address;
+                });
+                
+              wallets[i] = res.wallet as Wallet;
               update(wallets[i].id, wallets[i]);
             });
         }
@@ -561,14 +550,14 @@ export default function Home() {
                     tooltipProps={{
                       className: "dark"
                     }}
-                    codeString={address?.id}
+                    codeString={selectedWallet?.address?.id}
                     size="md"
                     classNames={{
                       base: "pr-0 pl-2 py-0.5",
                       pre: "font-sans"
                     }}
                   >
-                    {windowWidth > 1450 ? formatAdaAddress(address?.id, 8) : formatAdaAddress(address?.id, 4)}
+                    {windowWidth > 1450 ? formatAdaAddress(selectedWallet?.address?.id, 8) : formatAdaAddress(selectedWallet?.address?.id, 4)}
                   </Snippet>
                 </div>
 
@@ -576,7 +565,7 @@ export default function Home() {
 
                 <div className="">
                   <div className="quickaction-container">
-                    <QRCodeSVG className="qrcode" value={address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
+                    <QRCodeSVG className="qrcode" value={selectedWallet?.address?.id} includeMargin size={windowWidth <= 1630 ? 70 : 110 } />
                     <div className="flex flex-col gap-4 justify-between">
                       <SendAdaModal wallet={selectedWallet} />
                       <Button size="md" color="secondary" variant="ghost" aria-label='Swap ADA'>

@@ -1,5 +1,5 @@
 import useWalletStore from '@/model/WalletState';
-import { createWallet, getMnemonicWords, restoreWallet } from '@/services/WalletService';
+import { createWallet, getAddress, getMnemonicWords, restoreWallet } from '@/services/WalletService';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Radio, RadioGroup, Input, Divider, Tooltip} from "@nextui-org/react";
 import { useEffect, useRef, useState } from 'react';
 import { Wallet } from '@/model/Wallet';
@@ -341,12 +341,18 @@ export default function CreateRestoreModal() {
     if(!restore) { 
       toast.promise(new Promise((resolve, reject) =>  {
         createWallet(walletName, parseInt(wordcount), passphrase)
-          .then(res => {
+          .then(async res => {
             if(res.error){
               reject(res.error);
             } else {
               res.wallet.isSelected = true;
               res.wallet.lastSynced = new Date().toUTCString();
+
+              await getAddress(res.wallet.id)
+                .then(result => {
+                  res.wallet.address = result.address;
+                });
+
               setSelected(res.wallet.id);
               add(res.wallet);
 
@@ -381,12 +387,18 @@ export default function CreateRestoreModal() {
       // TODO show error if wallet is present on this wallet node -> same multiple wallets possible in later version
       toast.promise(new Promise((resolve, reject) =>  {
         restoreWallet(walletName, mnemonic, passphrase)
-          .then(res => {
+          .then(async res => {
             if(res.error){
               reject(res.error);
             } else {
               res.wallet.isSelected = true;
               res.wallet.lastSynced = new Date().toUTCString();
+
+              await getAddress(res.wallet.id)
+                .then(result => {
+                  res.wallet.address = result.address;
+                });
+
               setSelected(res.wallet.id);
               add(res.wallet);
 
