@@ -249,7 +249,7 @@ export default function Home() {
         <div className="wallet-overview-content">
           <div className="grid h-full w-full gap-4 grid-cols-5 grid-rows-5 rounded-lg"> 
 
-            <div className="col-span-3 row-span-3 p-4 overview-card flex-col break-words" style={{height: "460px"}}>
+            <div className="col-span-3 row-span-3 p-4 overview-card flex-col break-words">
               <div className="flex justify-between">
                 <div className="flex gap-1 items-center">
                   <span className="section-headline">Wallet Overview</span>

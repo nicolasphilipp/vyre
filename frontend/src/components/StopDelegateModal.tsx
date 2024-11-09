@@ -1,16 +1,15 @@
 import { StakePoolData } from "@/model/StakePool";
 import { Wallet } from "@/model/Wallet";
-import { ScatterIcon } from "./icons/ScatterIcon";
 import { Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Snippet, useDisclosure, Image } from "@nextui-org/react";
-import { startDelegation, stopDelegation } from "@/services/StakeService";
+import { stopDelegation } from "@/services/StakeService";
 import { useEffect, useRef, useState } from "react";
-import { EyeFilledIcon } from "./icons/EyeFilledIcon";
-import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
 import { RemoveIcon } from "./icons/RemoveIcon";
 import toast from "react-hot-toast";
 import useWalletStore from "@/model/WalletState";
 import { syncWallet } from "@/services/WalletService";
 import { cutText } from "@/services/TextFormatService";
+import { EyeIcon } from "./icons/EyeIcon";
+import { EyeSlashIcon } from "./icons/EyeSlashIcon";
 
 interface ValueProps {
     wallet: Wallet;
@@ -134,14 +133,14 @@ const StopDelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                                         placeholder="Enter your passphrase"
                                         endContent={<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                                             {isVisible ? (
-                                                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                                <EyeSlashIcon width={25} height={25} className="text-default-400" />
                                             ) : (
-                                                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                                <EyeIcon width={25} height={25} className="text-default-400" />
                                             )}
                                             </button>
                                         }
                                         type={isVisible ? "text" : "password"}
-                                        className="max-w-xs"
+                                        className="mt-2"
                                         value={passphrase}
                                         onValueChange={setPassphraseTouched}
                                         isInvalid={passTouched && passphrase.length < 10}

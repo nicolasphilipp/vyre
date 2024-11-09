@@ -1,14 +1,14 @@
 import useWalletStore from '@/model/WalletState';
-import { createWallet, getMnemonicWords, removeWallet, restoreWallet } from '@/services/WalletService';
+import { createWallet, getMnemonicWords, restoreWallet } from '@/services/WalletService';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Radio, RadioGroup, Input, Divider, Tooltip} from "@nextui-org/react";
 import { useEffect, useRef, useState } from 'react';
-import {EyeFilledIcon} from "./icons/EyeFilledIcon";
-import {EyeSlashFilledIcon} from "./icons/EyeSlashFilledIcon";
 import { Wallet } from '@/model/Wallet';
 import { ArrowIcon } from './icons/ArrowIcon';
 import { DangerIcon } from './icons/DangerIcon';
 import toast from 'react-hot-toast';
 import { LinkPlusIcon } from './icons/PlusIcon';
+import { EyeIcon } from './icons/EyeIcon';
+import { EyeSlashIcon } from './icons/EyeSlashIcon';
 
 export default function CreateRestoreModal() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -436,7 +436,6 @@ export default function CreateRestoreModal() {
                     placeholder="Enter a name"
                     description="The name for the wallet on here (optional)"
                     variant='bordered'
-                    className="max-w-xs"
                     value={name}
                     onValueChange={setName} 
                     classNames={{input: "text-white"}} />
@@ -461,13 +460,12 @@ export default function CreateRestoreModal() {
                     placeholder="Enter a passphrase"
                     endContent={<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                       {isVisible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <EyeSlashIcon width={25} height={25} className="text-default-400" />
                       ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <EyeIcon width={25} height={25} className="text-default-400" />
                       )}
                     </button>}
                     type={isVisible ? "text" : "password"}
-                    className="max-w-xs"
                     value={passphrase}
                     onValueChange={setPassphraseTouched}
                     isInvalid={passTouched && passphrase.length < 10}
@@ -503,7 +501,6 @@ export default function CreateRestoreModal() {
                     placeholder="Enter a name"
                     variant='bordered'
                     description="The name for the wallet on here (optional)"
-                    className="max-w-xs"
                     value={name}
                     onValueChange={setName}
                     classNames={{input: "text-white"}} />
@@ -564,13 +561,12 @@ export default function CreateRestoreModal() {
                     placeholder="Enter a passphrase"
                     endContent={<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                       {isVisible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <EyeSlashIcon width={25} height={25} className="text-default-400" />
                       ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <EyeIcon width={25} height={25} className="text-default-400" />
                       )}
                     </button>}
                     type={isVisible ? "text" : "password"}
-                    className="max-w-xs"
                     value={passphrase}
                     onValueChange={setPassphraseTouched}
                     isInvalid={passTouched && passphrase.length < 10}

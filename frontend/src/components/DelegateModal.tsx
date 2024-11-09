@@ -4,8 +4,6 @@ import { ScatterIcon } from "./icons/ScatterIcon";
 import { Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Progress, Snippet, Tooltip, useDisclosure, Image } from "@nextui-org/react";
 import { estimateDelegation, startDelegation } from "@/services/StakeService";
 import { useEffect, useRef, useState } from "react";
-import { EyeFilledIcon } from "./icons/EyeFilledIcon";
-import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
 import toast from "react-hot-toast";
 import { syncWallet } from "@/services/WalletService";
 import useWalletStore from "@/model/WalletState";
@@ -17,12 +15,13 @@ import { BoxesIcon } from "./icons/BoxesIcon";
 import { BoxIcon } from "./icons/BoxIcon";
 import { RecentApyIcon } from "./icons/RecentApyIcon";
 import { ProjectedBoxIcon } from "./icons/ProjectedBoxIcon";
-import { FireIcon } from "./icons/FireIcon";
 import { SaturationIcon } from "./icons/SaturationIcon";
 import { HandCoinIcon } from "./icons/HandCoinIcon";
 import { ActiveStakeIcon } from "./icons/ActiveStakeIcon";
 import { LiveStakeIcon } from "./icons/LiveStakeIcon";
 import { TransactionFeeIcon } from "./icons/TransactionFeeIcon";
+import { EyeIcon } from "./icons/EyeIcon";
+import { EyeSlashIcon } from "./icons/EyeSlashIcon";
 
 interface ValueProps {
     wallet: Wallet;
@@ -287,14 +286,14 @@ const DelegateModal: React.FC<ValueProps> = ({ wallet, pool }) => {
                                         placeholder="Enter your passphrase"
                                         endContent={<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                                             {isVisible ? (
-                                                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                                <EyeSlashIcon width={25} height={25} className="text-default-400" />
                                             ) : (
-                                                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                                <EyeIcon width={25} height={25} className="text-default-400" />
                                             )}
                                             </button>
                                         }
                                         type={isVisible ? "text" : "password"}
-                                        className="max-w-xs"
+                                        className="mt-2"
                                         value={passphrase}
                                         onValueChange={setPassphraseTouched}
                                         isInvalid={passTouched && passphrase.length < 10}

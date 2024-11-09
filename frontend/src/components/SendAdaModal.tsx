@@ -2,20 +2,19 @@ import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDis
 import { useEffect, useRef, useState } from 'react';
 
 import { SendIcon } from './icons/SendIcon';
-import { EyeFilledIcon } from "./icons/EyeFilledIcon";
-import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
 import { formatNumber } from "@/services/TextFormatService";
 import { Wallet } from "@/model/Wallet";
 import useWalletStore from "@/model/WalletState";
 import { ArrowIcon } from "./icons/ArrowIcon";
 import { DangerIcon } from "./icons/DangerIcon";
-import { Address } from "@/model/Address";
 import { estimateFees, submitTx } from "@/services/TxService";
 import { Transaction, TxFees } from "@/model/Transaction";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { loveLaceToAda } from "@/Constants";
 import { syncWallet } from "@/services/WalletService";
 import React from "react";
+import { EyeIcon } from "./icons/EyeIcon";
+import { EyeSlashIcon } from "./icons/EyeSlashIcon";
 
 interface ValueProps {
     wallet: Wallet;
@@ -177,7 +176,6 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                             label="Receiver"
                             placeholder="Enter the receiving address"
                             variant='bordered'
-                            className="max-w-xs"
                             value={receiver}
                             onValueChange={setReceiveAddressTouched} 
                             isInvalid={isReceiverInvalid()}
@@ -191,7 +189,6 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                             label="Amount"
                             placeholder="0.0000"
                             variant='bordered'
-                            className="max-w-xs"
                             startContent={<><span id="amount" className="text-sm">₳</span></>}
                             value={amount}
                             onValueChange={setAmountInputTouched}
@@ -202,7 +199,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                         <Divider className="my-1" />
 
                         <div className="flex flex-col text-sm mt-1">
-                            <div className="flex justify-between w-9/12">
+                            <div className="flex justify-between">
                                 <span className="flex">
                                     Estimated fees: 
                                     <Tooltip
@@ -220,7 +217,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                                     </span>
                                 <span className="text-danger">₳ {estimatedFees} (<ArrowIcon width={16} height={16} className='mb-0.5 -mx-0.5 rotate-180 inline' />)</span>
                             </div>
-                            <div className="flex justify-between w-9/12">
+                            <div className="flex justify-between">
                                 <span>Balance after execution: </span>
                                 <span>₳ {formatNumber(getResultBalance(), 2)}</span>
                             </div>
@@ -234,13 +231,12 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                             placeholder="Enter your passphrase"
                             endContent={<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                             {isVisible ? (
-                                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                <EyeSlashIcon width={25} height={25} className="text-default-400" />
                             ) : (
-                                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                <EyeIcon width={25} height={25} className="text-default-400" />
                             )}
                             </button>}
                             type={isVisible ? "text" : "password"}
-                            className="max-w-xs"
                             value={passphrase}
                             onValueChange={setPassphraseTouched}
                             isInvalid={passTouched && passphrase.length < 10}
