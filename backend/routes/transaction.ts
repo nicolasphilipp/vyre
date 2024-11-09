@@ -61,8 +61,8 @@ routes.post('/:id/search', async (req: Request, res: Response) => {
     // TODO validate exception while parsing
 
     let startDate = req.body.startDate ? req.body.startDate : "01-01-2021";
-    let endDate = req.body.endDate ? req.body.endDate : Date.now();
-
+    let endDate = req.body.endDate ? (new Date(req.body.endDate) > new Date() ? Date.now() : req.body.endDate) : Date.now();
+    
     let txs = JSON.parse(await searchTx(req.params.id, limit, page, req.body.minAmount ? req.body.minAmount : undefined, req.body.maxAmount ? req.body.maxAmount : undefined, req.body.receiver ? req.body.receiver : undefined, new Date(startDate), new Date(endDate)));
     if(txs.error){
       res.status(500).send(JSON.stringify({ error: txs.error }));
