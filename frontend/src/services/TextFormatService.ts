@@ -25,11 +25,12 @@ export function formatAdaAddress(input: string, visibleCharacters: number): stri
 }
 
 export function cutText(input: string, visibleCharacters: number): string {
-    if(input) {
+    // cut text if length is longer than desired character count
+    if(input && input.length > visibleCharacters) {
         const start = input.slice(0, visibleCharacters);
         return `${start}...`;
     }
-    return "";
+    return input;
 }
 
 export function hexToAsciiString(hexString: string): string {

@@ -48,7 +48,7 @@ const StakePoolCard: React.FC<ValueProps> = ({ wallet, pool, delegate, setSelect
                             />
                             <div className="flex flex-col">
                                 <span>{extractTicker(pool.name, true)}</span>
-                                <span>{extractTicker(pool.name, false)}</span>
+                                <span>{cutText(extractTicker(pool.name, false), 25)}</span>
                             </div>
                         </div>
             
