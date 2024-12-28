@@ -150,6 +150,11 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
 
   function getResultBalance(): number {
     let bal = (wallet.balance.available.quantity / loveLaceToAda) - getTxAmount() - estimatedFees;
+
+    if(getTxAmount() <= 0 || bal < 0) {
+        return wallet.balance.available.quantity / loveLaceToAda;
+    }
+
     return bal > 0 ? bal : 0;
   }
 
@@ -272,7 +277,7 @@ const SendAdaModal: React.FC<ValueProps> = ({ wallet }) => {
                             value={amount}
                             onValueChange={setAmountInputTouched}
                             isInvalid={isAmountInvalid()}
-                            errorMessage={getTxAmount() === 0 ? "Amount must be greater than 0" : "Amount can not be higher than your available balance! Available: ₳ " + formatNumber(wallet.balance.available.quantity / loveLaceToAda, 2)}
+                            errorMessage={getTxAmount() <= 0 ? "Amount must be greater than ₳ 0" : <span>Amount cannot be higher than your available balance! <br></br> Available: ₳ {formatNumber(wallet.balance.available.quantity / loveLaceToAda, 2)}</span>}
                         />
 
                         <Divider className="my-1" />
