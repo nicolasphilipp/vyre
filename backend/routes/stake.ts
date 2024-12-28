@@ -79,10 +79,13 @@ routes.get('/', async (req: Request, res: Response) => {
 
     let strippedPools = [];
     for(let i = 0; i < allPools.length; i++) {
-        // TODO remove pools which would result in 404 because img missing (?)
+        let data: any = allPools[i];
 
-        if (allPools[i] && fs.existsSync('./resources/pools/' + allPools[i].pool_id + ".json")) {
-            strippedPools.push(allPools[i]);
+        // filter pools with missing data
+        if(data && data.pool_id && data.name && (data.name as string).trim() !== "[]" && data.url
+            && data.saturation && data.pledge && data.tax_ratio && data.tax_fix && data.roa_short
+            && fs.existsSync('./resources/pools/' + allPools[i].pool_id + ".json")) {
+            strippedPools.push(data);
         }
     }
     
