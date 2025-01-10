@@ -1,24 +1,18 @@
 # Vyre
 
-To run the application, a running **cardano-node** and **cardano-wallet** are needed.
+To run the application, a running **cardano-node**, **cardano-wallet**, cardano-db-sync and postgres db are needed. Simply start the needed services defined in the compose file using:
 
-> cardano-node run --config config.json --topology topology.json --database-path ./db --socket-path ./db/node.socket
-
-> cardano-wallet serve --port 8090 --node-socket ./db/node.socket --testnet byron-genesis.json --database ./wallet-db --token-metadata-server https://metadata.cardano-testnet.iohkdev.io
+> docker compose up -d
 
 ## Backend
 
 > cd backend/
-
 > npm install
-
 > npm run dev
 
 
 ## Frontend
 
 > cd frontend/
-
 > npm install
-
 > npm run dev
